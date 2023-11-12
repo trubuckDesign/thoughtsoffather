@@ -19,6 +19,7 @@ const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
       backgroundColor: "#fdf8e1", // Off-white paper color
       background: "linear-gradient(to bottom, #fdf8e1, #f1e4c6)", // Subtle gradient
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+      zIndex: 2,
     }}
   >
     <Grid container sx={{ height: "100%" }}>

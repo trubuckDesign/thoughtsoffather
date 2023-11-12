@@ -51,23 +51,57 @@ export default function LandingPage() {
           Welcome to Our Park
         </Typography>
         {/* ... other content ... */}
-        <Book
-          leftPage={{
-            contents: [
-              {
-                imageSrc: "/story/boy 3.png",
-                isSingleImage: true,
-                text: "The boy just missed the bus now he has to walk and he might be late to school now. what shall he do??",
-              },
-            ],
+        <Box
+          sx={{
+            display: "flex", // Flexbox to center the book
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
+            margin: "20px auto",
+            padding: "20px",
+            backgroundColor: "#8c7b75", // Color for book cover
+            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)", // Shadow for depth
+            borderRadius: "10px", // Rounded corners for the cover
+            width: "calc(70vw + 40px)", // Adjust width to fit the book plus padding
+            maxWidth: "none", // Override max-width from Container
+            zIndex: 0,
           }}
-          rightPage={{
-            contents: [
-              { imageSrc: "/story/boy 1.png", isSingleImage: false, text: "Text for Image 2" },
-              { imageSrc: "/story/boy 2.png", isSingleImage: false, text: "Text for Image 3" },
-            ],
-          }}
-        />
+        >
+          {[...Array(5)].map((_, index) => (
+            <Box
+              key={index}
+              sx={{
+                position: "absolute",
+                top: `calc(100px + ${index * 2}px)`,
+                right: `calc(30px + ${index * 2}px)`,
+                bottom: `calc(30px + ${index * 2}px)`,
+                left: `calc(48px - ${index * 2}px)`,
+                background: "linear-gradient(to bottom, #fdfdfd, #f5f5f5)", // Lighter gradient closer to white
+                zIndex: 1,
+                width: `calc(70vw + 12px - ${index * 1}px)`, // Adjusting width to prevent extending too far to the right
+                height: `calc(82.5vh  - ${index * 3}px)`, // Reducing height by 40px
+                border: "1px solid #bbb",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+            />
+          ))}
+          <Book
+            leftPage={{
+              contents: [
+                {
+                  imageSrc: "/story/boy 3.png",
+                  isSingleImage: true,
+                  text: "The boy just missed the bus now he has to walk and he might be late to school now. what shall he do??",
+                },
+              ],
+            }}
+            rightPage={{
+              contents: [
+                { imageSrc: "/story/boy 1.png", isSingleImage: false, text: "Text for Image 2" },
+                { imageSrc: "/story/boy 2.png", isSingleImage: false, text: "Text for Image 3" },
+              ],
+            }}
+          />
+        </Box>
       </Container>
     </Box>
   );
