@@ -1,4 +1,5 @@
 "use client";
+import Book from "@/components/book/book";
 import { Container, Typography, Box } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
@@ -50,6 +51,15 @@ export default function LandingPage() {
           Welcome to Our Park
         </Typography>
         {/* ... other content ... */}
+        <Book
+          leftPage={{ contents: [{ imageSrc: "/story/boy 3.png", text: "Text for Image 1" }] }}
+          rightPage={{
+            contents: [
+              { imageSrc: "/story/boy 1.png", text: "Text for Image 2" },
+              { imageSrc: "/story/boy 2.png", text: "Text for Image 3" },
+            ],
+          }}
+        />
       </Container>
     </Box>
   );
