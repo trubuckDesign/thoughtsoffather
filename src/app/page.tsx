@@ -4,6 +4,7 @@ import { Container, Typography, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Book from "@/components/book/book";
 import Image from "next/image";
+import { BookFrame } from "@/components/frame/frame";
 
 type MousePosition = {
   scale: number;
@@ -51,55 +52,7 @@ export default function LandingPage() {
         <Typography variant="h2" gutterBottom component="h1">
           Welcome to Our Park
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            margin: "20px auto",
-            padding: "20px",
-            backgroundColor: "#8c7b75",
-            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
-            borderRadius: "10px",
-            width: "calc(70vw + 40px)", // Adjust width to fit the book plus padding
-            height: "86vh", // This height will control the scaling of the pages too
-            position: "relative",
-            border: "5px solid black", // This border scales correctly
-            maxWidth: "none",
-            zIndex: 0,
-          }}
-        >
-          {[...Array(5)].map((_, index) => (
-            <Box
-              key={index}
-              sx={{
-                position: "absolute",
-                top: 0, // Align with the top of the container
-                right: 0, // Align with the right of the container
-                bottom: 0, // Align with the bottom of the container
-                left: 0, // Align with the left of the container
-                margin: `${index * 5}px`, // Create the stacked effect, adjust the multiplier as needed
-                background: "linear-gradient(to bottom, #fdfdfd, #f5f5f5)",
-                zIndex: 1,
-                width: `calc(100% - ${index * 10}px)`, // Scale width based on the book's border
-                height: `calc(100% - ${index * 10}px + 0px)`, // Scale height based on the book's border
-                border: "1px solid #bbb",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease", // Smooth the transition on resizing
-                "&:after": {
-                  // Pseudo-element for the line
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  bottom: 0,
-                  left: "50%", // Center the line
-                  width: "1px", // Line width
-                  backgroundColor: "#000", // Line color
-                  zIndex: 2, // Above the extra pages
-                },
-              }}
-            />
-          ))}
+        <BookFrame>
           <Book
             leftPage={{
               contents: [
@@ -117,7 +70,7 @@ export default function LandingPage() {
               ],
             }}
           />
-        </Box>
+        </BookFrame>
       </Container>
     </Box>
   );

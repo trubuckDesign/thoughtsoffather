@@ -1,7 +1,7 @@
 import { Card, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-import { ImageText, ImageTextProps } from "../pageSection/bookPageSection";
+import { ImageText, ImageTextProps } from "./pageSection/bookPageSection";
 
 export interface BookPageProps {
   contents: ImageTextProps[];
