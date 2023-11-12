@@ -1,95 +1,56 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { Container, Typography, Box } from "@mui/material";
+import Image from "next/image";
+import { useState } from "react";
 
-export default function Home() {
+type MousePosition = {
+  scale: number;
+};
+
+export default function LandingPage() {
+  const [mousePosition, setMousePosition] = useState<MousePosition>({ scale: 1 });
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = event;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    // Calculate the distance from the center of the screen
+    const distanceX = Math.abs(clientX - width / 2);
+    const distanceY = Math.abs(clientY - height / 2);
+    // Calculate the scale based on the distance from the center, with some limits
+    const scale = 1 + (distanceX / width + distanceY / height) * 0.2; // Adjust the multiplier for sensitivity
+    setMousePosition({ scale });
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <Box
+      sx={{
+        position: "relative",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+      onMouseMove={handleMouseMove}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          height: "100vh",
+          width: "100vw",
+          top: 0,
+          left: 0,
+          zIndex: -1,
+          transition: "transform 0.9s ease-out", // Smooth the scaling transition
+          transform: `scale(${mousePosition.scale})`, // Apply scale transformation here
+        }}
+      >
+        <Image src="/park.png" alt="Park" layout="fill" objectFit="cover" quality={75} />
+      </Box>
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
+        <Typography variant="h2" gutterBottom component="h1">
+          Welcome to Our Park
+        </Typography>
+        {/* ... other content ... */}
+      </Container>
+    </Box>
+  );
 }
