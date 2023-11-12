@@ -1,0 +1,25 @@
+[
+    {
+      "pageType": "single",
+      "content": [
+        {
+          "imageSrc": "/path/to/image.jpg",
+          "text": "Story text for single image"
+        }
+      ]
+    },
+    {
+      "pageType": "double",
+      "content": [
+        {
+          "imageSrc": "/path/to/image1.jpg",
+          "text": "Option 1 text"
+        },
+        {
+          "imageSrc": "/path/to/image2.jpg",
+          "text": "Option 2 text"
+        }
+      ]
+    }
+  ]
+  

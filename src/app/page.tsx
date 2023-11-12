@@ -52,11 +52,19 @@ export default function LandingPage() {
         </Typography>
         {/* ... other content ... */}
         <Book
-          leftPage={{ contents: [{ imageSrc: "/story/boy 3.png", text: "Text for Image 1" }] }}
+          leftPage={{
+            contents: [
+              {
+                imageSrc: "/story/boy 3.png",
+                isSingleImage: true,
+                text: "The boy just missed the bus now he has to walk and he might be late to school now. what shall he do??",
+              },
+            ],
+          }}
           rightPage={{
             contents: [
-              { imageSrc: "/story/boy 1.png", text: "Text for Image 2" },
-              { imageSrc: "/story/boy 2.png", text: "Text for Image 3" },
+              { imageSrc: "/story/boy 1.png", isSingleImage: false, text: "Text for Image 2" },
+              { imageSrc: "/story/boy 2.png", isSingleImage: false, text: "Text for Image 3" },
             ],
           }}
         />
