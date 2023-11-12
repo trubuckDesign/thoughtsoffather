@@ -81,6 +81,17 @@ export default function LandingPage() {
                 height: `calc(82.5vh  - ${index * 3}px)`, // Reducing height by 40px
                 border: "1px solid #bbb",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                "&:after": {
+                  // Pseudo-element for the line
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: "50%", // Center the line
+                  width: "1px", // Line width
+                  backgroundColor: "#000", // Line color
+                  zIndex: 2, // Above the extra pages
+                },
               }}
             />
           ))}

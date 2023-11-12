@@ -14,7 +14,7 @@ const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
       width: "70vw",
       height: "80vh",
       margin: "auto",
-      overflow: "auto",
+      overflow: "hidden",
       position: "relative",
       backgroundColor: "#fdf8e1", // Off-white paper color
       background: "linear-gradient(to bottom, #fdf8e1, #f1e4c6)", // Subtle gradient
