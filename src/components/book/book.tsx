@@ -4,8 +4,9 @@ import React from "react";
 import { BookPageProps, BookPage } from "../page/bookPage";
 
 interface BookProps {
-  leftPage: BookPageProps;
-  rightPage: BookPageProps;
+  leftPage: BookPageProps | null;
+  rightPage: BookPageProps | null;
+  onClick: (pageId: number | null) => void;
 }
 
 const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
@@ -32,7 +33,7 @@ const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
           padding: "20px", // Padding to simulate page margin
         }}
       >
-        <BookPage {...leftPage} />
+        {leftPage && <BookPage {...leftPage} />}
         <Box
           sx={{
             position: "absolute",
@@ -54,7 +55,7 @@ const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
           padding: "20px", // Padding to simulate page margin
         }}
       >
-        <BookPage {...rightPage} />
+        {rightPage && <BookPage {...rightPage} />}
         <Box
           sx={{
             position: "absolute",

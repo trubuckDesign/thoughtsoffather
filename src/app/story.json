@@ -1,25 +1,54 @@
 [
-    {
-      "pageType": "single",
-      "content": [
-        {
-          "imageSrc": "/path/to/image.jpg",
-          "text": "Story text for single image"
-        }
-      ]
-    },
-    {
-      "pageType": "double",
-      "content": [
-        {
-          "imageSrc": "/path/to/image1.jpg",
-          "text": "Option 1 text"
-        },
-        {
-          "imageSrc": "/path/to/image2.jpg",
-          "text": "Option 2 text"
-        }
-      ]
-    }
-  ]
-  
+  {
+    "pageId": 1,
+    "type":"single",
+    "contents": [
+      {
+        "imageSrc": "/story/book cover.png",
+        "text": "Welcome to the Adventure",
+        "nextPage":null
+      }
+    ]
+  },
+  {
+    "pageId": 2,
+    "type":"double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 1.png",
+        "text": "Choice 1 text",
+        "nextPage": 5
+      },{
+        "imageSrc": "/story/boy 2.png",
+        "text": "Choice 2 text",
+        "nextPage": 3
+      }
+    ]
+  },
+  {
+    "pageId": 3,
+    "type":"single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 3.png",
+        "text": "Choice 1 text",
+        "nextPage": null
+      }
+    ]
+  },
+  {
+    "pageId": 4,
+    "type":"double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 4.png",
+        "text": "Choice 1 text",
+        "nextPage": 7
+      },{
+        "imageSrc": "/story/boy 5.png",
+        "text": "Choice 2 text",
+        "nextPage": 8
+      }
+    ]
+  }
+]

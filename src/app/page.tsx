@@ -1,19 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Book from "@/components/book/book";
 import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
-
+import storyData from "./story.json";
+import { BookPageSectionProps } from "@/components/page/pageSection/bookPageSection";
+import { BookPageProps } from "@/components/page/bookPage";
 type MousePosition = {
   scale: number;
 };
 
+export interface ContentData {
+  imageSrc: string;
+  text: string;
+  nextPage: number | null;
+}
+
+interface PageDataJson {
+  pageId: number;
+  type: "single" | "double";
+  contents: ContentData[];
+}
+
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState<MousePosition>({ scale: 1 });
   const theme = useTheme();
-  const isLgDown = useMediaQuery(theme.breakpoints.down("lg"));
+  const [currentPageId, setCurrentPageId] = useState(1);
+  const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
+  const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = event;
@@ -25,12 +41,39 @@ export default function LandingPage() {
     setMousePosition({ scale });
   };
 
+  const parsePageData = (pageData: any): BookPageProps => {
+    const validatedPageData = pageData as PageDataJson; // Type assertion here
+
+    return {
+      contents: validatedPageData.contents,
+      type: validatedPageData.type,
+      onClick: (nextPage: number | null) => goToPage(nextPage),
+    };
+  };
+
+  useEffect(() => {
+    const leftPage = storyData.find((page) => page.pageId === currentPageId);
+    const rightPage = storyData.find((page) => page.pageId === currentPageId + 1);
+
+    setLeftPageData(leftPage ? parsePageData(leftPage) : null);
+    setRightPageData(rightPage ? parsePageData(rightPage) : null);
+  }, [currentPageId]);
+
+  const goToPage = (pageId: number | null) => {
+    if (pageId) {
+      setCurrentPageId(pageId);
+    }
+  };
+
   return (
     <Box
       sx={{
         position: "relative",
         height: "100vh",
         overflow: "hidden",
+        display: "flex",
+        alignItems: "center", // Center vertically
+        justifyContent: "center", // Center horizontally
       }}
       onMouseMove={handleMouseMove}
     >
@@ -48,28 +91,9 @@ export default function LandingPage() {
       >
         <Image src="/park.png" alt="Park" layout="fill" objectFit="cover" quality={75} />
       </Box>
-      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
-        <Typography variant="h2" gutterBottom component="h1">
-          Welcome to Our Park
-        </Typography>
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
         <BookFrame>
-          <Book
-            leftPage={{
-              contents: [
-                {
-                  imageSrc: "/story/boy 3.png",
-                  isSingleImage: true,
-                  text: "The boy just missed the bus now he has to walk and he might be late to school now. what shall he do??",
-                },
-              ],
-            }}
-            rightPage={{
-              contents: [
-                { imageSrc: "/story/boy 1.png", isSingleImage: false, text: "Text for Image 2" },
-                { imageSrc: "/story/boy 2.png", isSingleImage: false, text: "Text for Image 3" },
-              ],
-            }}
-          />
+          <Book leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />
         </BookFrame>
       </Container>
     </Box>
