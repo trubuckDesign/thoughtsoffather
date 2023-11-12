@@ -1,8 +1,9 @@
 "use client";
+import React, { useState } from "react";
+import { Container, Typography, Box, useTheme } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Book from "@/components/book/book";
-import { Container, Typography, Box } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
 
 type MousePosition = {
   scale: number;
@@ -10,16 +11,16 @@ type MousePosition = {
 
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState<MousePosition>({ scale: 1 });
+  const theme = useTheme();
+  const isLgDown = useMediaQuery(theme.breakpoints.down("lg"));
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = event;
     const width = window.innerWidth;
     const height = window.innerHeight;
-    // Calculate the distance from the center of the screen
     const distanceX = Math.abs(clientX - width / 2);
     const distanceY = Math.abs(clientY - height / 2);
-    // Calculate the scale based on the distance from the center, with some limits
-    const scale = 1 + (distanceX / width + distanceY / height) * 0.2; // Adjust the multiplier for sensitivity
+    const scale = 1 + (distanceX / width + distanceY / height) * 0.2;
     setMousePosition({ scale });
   };
 
@@ -40,8 +41,8 @@ export default function LandingPage() {
           top: 0,
           left: 0,
           zIndex: -1,
-          transition: "transform 0.9s ease-out", // Smooth the scaling transition
-          transform: `scale(${mousePosition.scale})`, // Apply scale transformation here
+          transition: "transform 0.9s ease-out",
+          transform: `scale(${mousePosition.scale})`,
         }}
       >
         <Image src="/park.png" alt="Park" layout="fill" objectFit="cover" quality={75} />
@@ -50,19 +51,21 @@ export default function LandingPage() {
         <Typography variant="h2" gutterBottom component="h1">
           Welcome to Our Park
         </Typography>
-        {/* ... other content ... */}
         <Box
           sx={{
-            display: "flex", // Flexbox to center the book
-            justifyContent: "center", // Center horizontally
-            alignItems: "center", // Center vertically
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             margin: "20px auto",
             padding: "20px",
-            backgroundColor: "#8c7b75", // Color for book cover
-            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)", // Shadow for depth
-            borderRadius: "10px", // Rounded corners for the cover
+            backgroundColor: "#8c7b75",
+            boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+            borderRadius: "10px",
             width: "calc(70vw + 40px)", // Adjust width to fit the book plus padding
-            maxWidth: "none", // Override max-width from Container
+            height: "86vh", // This height will control the scaling of the pages too
+            position: "relative",
+            border: "5px solid black", // This border scales correctly
+            maxWidth: "none",
             zIndex: 0,
           }}
         >
@@ -71,16 +74,18 @@ export default function LandingPage() {
               key={index}
               sx={{
                 position: "absolute",
-                top: `calc(100px + ${index * 2}px)`,
-                right: `calc(30px + ${index * 2}px)`,
-                bottom: `calc(30px + ${index * 2}px)`,
-                left: `calc(48px - ${index * 2}px)`,
-                background: "linear-gradient(to bottom, #fdfdfd, #f5f5f5)", // Lighter gradient closer to white
+                top: 0, // Align with the top of the container
+                right: 0, // Align with the right of the container
+                bottom: 0, // Align with the bottom of the container
+                left: 0, // Align with the left of the container
+                margin: `${index * 5}px`, // Create the stacked effect, adjust the multiplier as needed
+                background: "linear-gradient(to bottom, #fdfdfd, #f5f5f5)",
                 zIndex: 1,
-                width: `calc(70vw + 12px - ${index * 1}px)`, // Adjusting width to prevent extending too far to the right
-                height: `calc(82.5vh  - ${index * 3}px)`, // Reducing height by 40px
+                width: `calc(100% - ${index * 10}px)`, // Scale width based on the book's border
+                height: `calc(100% - ${index * 10}px + 0px)`, // Scale height based on the book's border
                 border: "1px solid #bbb",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease", // Smooth the transition on resizing
                 "&:after": {
                   // Pseudo-element for the line
                   content: '""',
