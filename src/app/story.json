@@ -44,7 +44,7 @@
       {
         "imageSrc": "/story/boy 6.png",
         "text": "Walking into class, Ethan was greeted by his favorite teacher Mrs. Whitley. He took his seat ready for today's lessons",
-        "nextPage": 5
+        "nextPage": 7
       }
     ]
   },
@@ -104,7 +104,7 @@
       {
         "imageSrc": "/story/boy 12.png",
         "text": "One of the blue aliens approached the crowd and pointed at Ethan. Ethan stepped forward to meet the aliens. They hummed and buzzed, trying to communicate. Suddenly, Ethan heard their voices in his mind! They were telepathic! The aliens explained they had come for chicken nuggets, their favorite Earth delicacy. ",
-        "nextPage": null
+        "nextPage": 10
       }
     ]
   },
@@ -126,7 +126,7 @@
       {
         "imageSrc": "/story/boy thinks about what to do.png",
         "text": "Ethan had to think hard to try and find a solution, as he couldn't let them have ALL their chicken nuggets.",
-        "nextPage": null
+        "nextPage": 12
       }
     ]
   },
@@ -141,8 +141,8 @@
       },
       {
         "imageSrc": "/story/boy 15.png",
-        "text": "Ethan decided to challenge the leader to an arm wrestling competition, the winner would get all the nuggets. As Ethan grabbed the slightly slimy tentacle he knew he could do it. Before he knew it the match was on and he pushed with all his might and slowly the tentacle moved towards the table.",
-        "nextPage": 13
+        "text": "Ethan decided to challenge the leader to an arm wrestling competition, the winner would get all the nuggets. As Ethan grabbed the slightly slimy tentacle he began to push with all his might against the powerful alien tentacle",
+        "nextPage": 15
       }
     ]
   },
@@ -152,7 +152,40 @@
     "contents": [
       {
         "imageSrc": "/story/boy 16.png",
-        "text": "Ethan decided sharing was much better than keeping all the nuggets for himself so he shared his hot crunchy chicken nuggets with his new friends. They all ate together and had a great day playing on the playground.",
+        "text": "Ethan took one nugget and handed it to the alien and took one himself and held it to his mouth to see if the alien understood. Ethan held his breath, but after a few seconds the alien smiled and took a bite. They all ate together and had a great day playing on the playground.",
+        "nextPage": 14
+      }
+    ]
+  },
+  {
+    "pageId": 14,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy waving goodbye.png",
+        "text": "The final bell rang and all the aliens returned to their ships and said goodbye, Ethan stood waving and hoping next time he can maybe visit their school and try their lunches",
+        "nextPage": null
+      }
+    ]
+  },
+  {
+    "pageId": 15,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy wins.png",
+        "text": "Before he knew it, he felt his hand hit the table as he pushed the alien tentacle to the table and won. Ethan decided sharing was much better than keeping all the nuggets for himself so he shared his hot crunchy chicken nuggets with his new friends. They all ate together and had a great day playing on the playground.",
+        "nextPage": 16
+      }
+    ]
+  },
+  {
+    "pageId": 16,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy waving goodbye.png",
+        "text": "The final bell rang and all the aliens returned to their ships and said goodbye, Ethan stood waving and hoping next time he can maybe visit their school and try their lunches",
         "nextPage": null
       }
     ]

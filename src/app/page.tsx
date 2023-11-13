@@ -93,7 +93,7 @@ export default function LandingPage() {
   };
   const handleNextPage = () => {
     if (isSmallScreen) {
-      goToPage(currentPageId + 1);
+      if (leftPageData?.contents[0].nextPage) goToPage(currentPageId + 1);
     } else if (!isSmallScreen && rightPageData) {
       goToPage(rightPageData.contents[0].nextPage);
     }
@@ -113,7 +113,11 @@ export default function LandingPage() {
     if (isSmallScreen) {
       return <BookSinglePageView pageData={leftPageData} visible={visible} />;
     } else {
-      return <TwoPageBook visible={visible} leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />;
+      return (
+        <BookFrame>
+          <TwoPageBook visible={visible} leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />
+        </BookFrame>
+      );
     }
   };
 
@@ -161,7 +165,7 @@ export default function LandingPage() {
         />
       </Box>
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
-        <BookFrame>{renderBookView()}</BookFrame>
+        {renderBookView()}
       </Container>
       <Box
         sx={{

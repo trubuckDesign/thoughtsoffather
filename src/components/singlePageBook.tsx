@@ -16,7 +16,7 @@ const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, visib
   return (
     <Card
       sx={{
-        width: "70vw",
+        width: "90vw",
         height: "80vh",
         margin: "auto",
         overflow: "hidden",
