@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Grid, Button } from "@mui/material";
 import { BookPageProps, BookPage } from "./page/bookPage";
 
 interface BookSinglePageViewProps {
   pageData: BookPageProps | null;
+  visible: boolean;
   goToNextPage: () => void;
   goToPrevPage: () => void;
 }
 
-const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, goToNextPage, goToPrevPage }) => {
+const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, goToNextPage, goToPrevPage, visible }) => {
+  if (!pageData) {
+    return null;
+  } else {
+  }
+
   return (
     <Card
       sx={{
@@ -31,14 +37,20 @@ const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, goToN
             position: "relative",
             background: "url(/white_paper_texture_set.png)", // Paper texture background
             padding: "20px", // Padding to simulate page margin
+            opacity: visible ? 1 : 0,
+            transition: "opacity 1.0s ease",
           }}
         >
           {pageData && <BookPage {...pageData} />}
         </Grid>
 
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between", padding: 2, background: "url(/white_paper_texture_set.png)" }}>
-          <Button onClick={goToPrevPage}>Previous</Button>
-          <Button onClick={goToNextPage}>Next</Button>
+          <Button disabled={pageData.pageId % 2 !== 0} onClick={goToPrevPage}>
+            Previous
+          </Button>
+          <Button disabled={pageData.pageId % 2 === 0} onClick={goToNextPage}>
+            Next
+          </Button>
         </Grid>
       </Grid>
     </Card>

@@ -32,6 +32,7 @@ export default function LandingPage() {
   const [currentPageId, setCurrentPageId] = useState(1);
   const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
   const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
+  const [visible, setVisible] = useState(true);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = event;
@@ -58,12 +59,13 @@ export default function LandingPage() {
       return (
         <BookSinglePageView
           pageData={leftPageData}
+          visible={visible}
           goToNextPage={() => goToPage(currentPageId + 1)}
           goToPrevPage={() => goToPage(currentPageId - 1)}
         />
       );
     } else {
-      return <TwoPageBook leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />;
+      return <TwoPageBook visible={visible} leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />;
     }
   };
 
@@ -77,7 +79,11 @@ export default function LandingPage() {
 
   const goToPage = (pageId: number | null) => {
     if (pageId) {
-      setCurrentPageId(pageId);
+      setVisible(false); // Start fade-out
+      setTimeout(() => {
+        setCurrentPageId(pageId);
+        setVisible(true); // Fade back in after page change
+      }, 1000); // Transition duration
     }
   };
 

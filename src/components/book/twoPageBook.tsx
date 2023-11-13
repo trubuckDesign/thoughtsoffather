@@ -6,10 +6,11 @@ import { BookPageProps, BookPage } from "../page/bookPage";
 interface BookProps {
   leftPage: BookPageProps | null;
   rightPage: BookPageProps | null;
+  visible: boolean;
   onClick: (pageId: number | null) => void;
 }
 
-const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage }) => (
+const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage, visible }) => (
   <Card
     sx={{
       width: "70vw",
@@ -31,6 +32,8 @@ const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage }) => (
           position: "relative",
           background: "url(/white_paper_texture_set.png)", // Paper texture background
           padding: "20px", // Padding to simulate page margin
+          opacity: visible ? 1 : 0,
+          transition: "opacity 1.0s ease",
         }}
       >
         {leftPage && <BookPage {...leftPage} />}
@@ -53,6 +56,8 @@ const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage }) => (
           position: "relative",
           background: "url(/white_paper_texture_set.png)", // Paper texture background
           padding: "20px", // Padding to simulate page margin
+          opacity: visible ? 1 : 0,
+          transition: "opacity 1.0s ease",
         }}
       >
         {rightPage && <BookPage {...rightPage} />}
