@@ -7,10 +7,11 @@ import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
 import storyData from "./story.json";
 import { BookPageProps } from "@/components/page/bookPage";
-import BookSinglePageView from "@/components/singlePageBook";
+
 import Fab from "@mui/material/Fab";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import BookSinglePageView from "@/components/book/singlePageBook";
 
 type MousePosition = {
   scale: number;
@@ -45,6 +46,38 @@ export default function LandingPage() {
     const distanceY = Math.abs(clientY - height / 2);
     const scale = 1 + (distanceX / width + distanceY / height) * 0.2;
     setMousePosition({ scale });
+  };
+
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  // Minimum swipe distance
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > minSwipeDistance) {
+      // Swipe left - Next page
+      if (!isPageNavButtonDisabled("next")) {
+        handleNextPage();
+      }
+    } else if (touchEnd - touchStart > minSwipeDistance) {
+      // Swipe right - Previous page
+
+      if (!isPageNavButtonDisabled("previous")) {
+        handlePrevPage();
+      }
+    }
+    // Reset touch positions
+    setTouchStart(0);
+    setTouchEnd(0);
   };
 
   const goToPage = (pageId: number | null) => {
@@ -140,6 +173,9 @@ export default function LandingPage() {
         justifyContent: "center", // Center horizontally
       }}
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <Box
         sx={{

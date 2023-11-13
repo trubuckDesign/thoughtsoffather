@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Grid, Button } from "@mui/material";
-import { BookPageProps, BookPage } from "./page/bookPage";
+import { BookPageProps, BookPage } from "../page/bookPage";
 
 interface BookSinglePageViewProps {
   pageData: BookPageProps | null;
