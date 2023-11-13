@@ -164,7 +164,7 @@
       {
         "imageSrc": "/story/boy waving goodbye.png",
         "text": "The final bell rang and all the aliens returned to their ships and said goodbye, Ethan stood waving and hoping next time he can maybe visit their school and try their lunches",
-        "nextPage": null
+        "nextPage": 17
       }
     ]
   },
@@ -186,6 +186,17 @@
       {
         "imageSrc": "/story/boy waving goodbye.png",
         "text": "The final bell rang and all the aliens returned to their ships and said goodbye, Ethan stood waving and hoping next time he can maybe visit their school and try their lunches",
+        "nextPage": 17
+      }
+    ]
+  },
+  {
+    "pageId": 17,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 0.png",
+        "text": "The End",
         "nextPage": null
       }
     ]
