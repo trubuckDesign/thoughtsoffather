@@ -1,6 +1,6 @@
 import { ContentData } from "@/app/page";
 import { Card, Grid, Typography, Box, Divider } from "@mui/material";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React from "react";
 
 export interface BookPageSectionProps {

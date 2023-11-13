@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TwoPageBook from "@/components/book/twoPageBook";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { BookFrame } from "@/components/frame/frame";
 import storyData from "./story.json";
 import { BookPageSectionProps } from "@/components/page/pageSection/bookPageSection";
