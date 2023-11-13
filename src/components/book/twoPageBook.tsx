@@ -9,7 +9,7 @@ interface BookProps {
   onClick: (pageId: number | null) => void;
 }
 
-const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
+const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage }) => (
   <Card
     sx={{
       width: "70vw",
@@ -72,4 +72,4 @@ const Book: React.FC<BookProps> = ({ leftPage, rightPage }) => (
   </Card>
 );
 
-export default Book;
+export default TwoPageBook;

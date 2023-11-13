@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Book from "@/components/book/book";
+import TwoPageBook from "@/components/book/twoPageBook";
 import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
 import storyData from "./story.json";
 import { BookPageSectionProps } from "@/components/page/pageSection/bookPageSection";
 import { BookPageProps } from "@/components/page/bookPage";
+import BookSinglePageView from "@/components/singlePageBook";
 type MousePosition = {
   scale: number;
 };
@@ -27,6 +28,7 @@ interface PageDataJson {
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState<MousePosition>({ scale: 1 });
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [currentPageId, setCurrentPageId] = useState(1);
   const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
   const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
@@ -50,6 +52,19 @@ export default function LandingPage() {
       pageId: validatedPageData.pageId,
       onClick: (nextPage: number | null) => goToPage(nextPage),
     };
+  };
+  const renderBookView = () => {
+    if (isSmallScreen) {
+      return (
+        <BookSinglePageView
+          pageData={leftPageData}
+          goToNextPage={() => goToPage(currentPageId + 1)}
+          goToPrevPage={() => goToPage(currentPageId - 1)}
+        />
+      );
+    } else {
+      return <TwoPageBook leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />;
+    }
   };
 
   useEffect(() => {
@@ -93,9 +108,7 @@ export default function LandingPage() {
         <Image src="/park.png" alt="Park" layout="fill" objectFit="cover" quality={75} />
       </Box>
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
-        <BookFrame>
-          <Book leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />
-        </BookFrame>
+        <BookFrame>{renderBookView()}</BookFrame>
       </Container>
     </Box>
   );
