@@ -15,6 +15,18 @@ const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, goToN
   } else {
   }
 
+  const isNavButtonDisabled = (buttonName: string) => {
+    let isDisabled: boolean = false;
+
+    if (buttonName === "previous") {
+      isDisabled = pageData.pageId % 2 === 0 || (pageData.type === "single" && pageData.pageId % 2 === 0);
+    } else {
+      isDisabled = pageData.pageId % 2 !== 0 || (pageData.type === "single" && pageData.pageId % 2 === 0);
+    }
+
+    return !isDisabled;
+  };
+
   return (
     <Card
       sx={{
@@ -45,10 +57,10 @@ const BookSinglePageView: React.FC<BookSinglePageViewProps> = ({ pageData, goToN
         </Grid>
 
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between", padding: 2, background: "url(/white_paper_texture_set.png)" }}>
-          <Button disabled={pageData.pageId % 2 !== 0} onClick={goToPrevPage}>
+          <Button disabled={isNavButtonDisabled("previous")} onClick={goToPrevPage}>
             Previous
           </Button>
-          <Button disabled={pageData.pageId % 2 === 0} onClick={goToNextPage}>
+          <Button disabled={isNavButtonDisabled("next")} onClick={goToNextPage}>
             Next
           </Button>
         </Grid>

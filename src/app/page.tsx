@@ -78,6 +78,7 @@ export default function LandingPage() {
   }, [currentPageId]);
 
   const goToPage = (pageId: number | null) => {
+    console.log("goto:", pageId);
     if (pageId) {
       setVisible(false); // Start fade-out
       setTimeout(() => {
@@ -118,8 +119,9 @@ export default function LandingPage() {
           fill
           sizes="100vw"
           style={{
-            objectFit: "cover"
-          }} />
+            objectFit: "cover",
+          }}
+        />
       </Box>
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
         <BookFrame>{renderBookView()}</BookFrame>

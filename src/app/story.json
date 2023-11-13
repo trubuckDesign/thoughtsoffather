@@ -5,7 +5,7 @@
     "contents": [
       {
         "imageSrc": "/story/boy 0.png",
-        "text": "Ethan, an adventurous boy in elementary school, woke up to a sunny morning. Rubbing his eyes, he wondered, 'Should I go to school today?' His room was cozy, and his bed felt extra comfortable.",
+        "text": "Ethan, woke up to a sunny morning. Rubbing his eyes, he wondered, 'I wonder if I could close my eyes for a few more minutes?' His room was cozy, and his bed felt extra comfortable.",
         "nextPage": 2
       }
     ]
@@ -16,13 +16,13 @@
     "contents": [
       {
         "imageSrc": "/story/boy 1.png",
-        "text": "Ethan sprang out of bed, filled with a sense of adventure. He quickly got ready, grabbed his backpack, and raced to the bus stop. Just in time! The bus ride was smooth, and Ethan gazed out the window, wondering what the day would bring.",
+        "text": "Ethan decided he better get up, he hopped out of bed ready for adventure. He quickly got ready, grabbed his backpack, and made his way to the bus stop. ",
         "nextPage": 3
       },
       {
         "imageSrc": "/story/boy 2.png",
-        "text": "Ethan snuggled deeper into his bed, closing his eyes. He dreamed of distant planets and daring escapes. But when he finally woke up, the room was bright with daylight. 'Oh no!' he thought, 'I've missed the bus!' Ethan rushed to get ready, but he knew he'd be late for class.",
-        "nextPage": 4
+        "text": "Ethan snuggled deeper into his bed, closing his eyes thinking he had a few more minutes. He dreamed of distant planets and daring escapes. But when he finally woke up, the room was bright with daylight. 'Oh no!' he thought, 'I've missed the bus!' Ethan rushed to get ready, but he knew he'd be late for class.",
+        "nextPage": 5
       }
     ]
   },
@@ -31,25 +31,20 @@
     "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 3.png",
-        "text": "Continuing the story",
+        "imageSrc": "/story/boy 4.png",
+        "text": "Just in time! Ethan sat in his normal seat and gazed out the window, wondering what the day would bring.",
         "nextPage": 4
       }
     ]
   },
   {
     "pageId": 4,
-    "type": "double",
+    "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 4.png",
-        "text": "Another choice",
+        "imageSrc": "/story/boy 6.png",
+        "text": "Walking into class, Ethan was greeted by his favorite teacher Mrs. Whitley. He took his seat ready for today's lessons",
         "nextPage": 5
-      },
-      {
-        "imageSrc": "/story/boy 5.png",
-        "text": "A different path",
-        "nextPage": 6
       }
     ]
   },
@@ -58,25 +53,20 @@
     "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 6.png",
-        "text": "Text for page 5",
+        "imageSrc": "/story/boy 3.png",
+        "text": "Running after the bus he knew he wouldn't catch it. He slowed to a walk knowing that he had a long walk ahead of him.",
         "nextPage": 6
       }
     ]
   },
   {
     "pageId": 6,
-    "type": "double",
+    "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 7.png",
-        "text": "Text for choice 1 on page 6",
+        "imageSrc": "/story/boy 5.png",
+        "text": "When he finally got to class, his teacher Mrs. Whitley was dissapointed in his tardiness and he sat in his seat sadly.",
         "nextPage": 7
-      },
-      {
-        "imageSrc": "/story/boy 8.png",
-        "text": "Text for choice 2 on page 6",
-        "nextPage": 8
       }
     ]
   },
@@ -86,7 +76,7 @@
     "contents": [
       {
         "imageSrc": "/story/boy 9.png",
-        "text": "Text for page 7",
+        "text": "The day went on and while he was working on a math problem, he looked out the window and something caught his eye, several black dots in the sky, growing larger. They were spaceships! The spacecraft landed in the playground, the school buzzed with excitement as everyone went out to meet the visitors. ",
         "nextPage": 8
       }
     ]
@@ -97,13 +87,13 @@
     "contents": [
       {
         "imageSrc": "/story/boy 10.png",
-        "text": "Text for choice 1 on page 8",
+        "text": "Ethan didn't want to get too close and stayed near the back of the crowd surrounding the strange vehicle.",
         "nextPage": 9
       },
       {
-        "imageSrc": "/story/boy 11.png",
-        "text": "Text for choice 2 on page 8",
-        "nextPage": 10
+        "imageSrc": "/story/boy meets aliens front.png",
+        "text": "Ethan wanted to get as close as possible to get a good look at the aliens.",
+        "nextPage": 9
       }
     ]
   },
@@ -113,24 +103,19 @@
     "contents": [
       {
         "imageSrc": "/story/boy 12.png",
-        "text": "Text for page 9",
-        "nextPage": 10
+        "text": "One of the blue aliens approached the crowd and pointed at Ethan. Ethan stepped forward to meet the aliens. They hummed and buzzed, trying to communicate. Suddenly, Ethan heard their voices in his mind! They were telepathic! The aliens explained they had come for chicken nuggets, their favorite Earth delicacy. ",
+        "nextPage": null
       }
     ]
   },
   {
     "pageId": 10,
-    "type": "double",
+    "type": "single",
     "contents": [
       {
         "imageSrc": "/story/boy 13.png",
-        "text": "Text for choice 1 on page 10",
-        "nextPage": 11
-      },
-      {
-        "imageSrc": "/story/boy 14.png",
-        "text": "Text for choice 2 on page 10",
-        "nextPage": 12
+        "text": "Ethan asked how many they needed as it was one of his favorite foods too! When the alien said 'All Your Nuggets' Ethan froze. All? he asked ",
+        "nextPage": null
       }
     ]
   },
@@ -139,9 +124,9 @@
     "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 15.png",
-        "text": "Text for page 11",
-        "nextPage": 12
+        "imageSrc": "/story/boy thinks about what to do.png",
+        "text": "Ethan had to think hard to try and find a solution, as he couldn't let them have ALL their chicken nuggets.",
+        "nextPage": null
       }
     ]
   },
@@ -150,14 +135,14 @@
     "type": "double",
     "contents": [
       {
-        "imageSrc": "/story/boy 16.png",
-        "text": "Text for choice 1 on page 12",
+        "imageSrc": "/story/boy 14.png",
+        "text": "Ethan thought maybe the aliens would be open to sharing instead of taking all the nuggets. He rushed to the lunchroom to see if maybe they would be willing to share instead.",
         "nextPage": 13
       },
       {
-        "imageSrc": "/story/boy 17.png",
-        "text": "Text for choice 2 on page 12",
-        "nextPage": null
+        "imageSrc": "/story/boy 15.png",
+        "text": "Ethan decided to challenge the leader to an arm wrestling competition, the winner would get all the nuggets. As Ethan grabbed the slightly slimy tentacle he knew he could do it. Before he knew it the match was on and he pushed with all his might and slowly the tentacle moved towards the table.",
+        "nextPage": 13
       }
     ]
   },
@@ -166,8 +151,8 @@
     "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/boy 18.png",
-        "text": "Ending text for the adventure",
+        "imageSrc": "/story/boy 16.png",
+        "text": "Ethan decided sharing was much better than keeping all the nuggets for himself so he shared his hot crunchy chicken nuggets with his new friends. They all ate together and had a great day playing on the playground.",
         "nextPage": null
       }
     ]
