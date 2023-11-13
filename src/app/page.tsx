@@ -6,9 +6,12 @@ import TwoPageBook from "@/components/book/twoPageBook";
 import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
 import storyData from "./story.json";
-import { BookPageSectionProps } from "@/components/page/pageSection/bookPageSection";
 import { BookPageProps } from "@/components/page/bookPage";
 import BookSinglePageView from "@/components/singlePageBook";
+import Fab from "@mui/material/Fab";
+import UndoIcon from "@mui/icons-material/Undo";
+import RedoIcon from "@mui/icons-material/Redo";
+
 type MousePosition = {
   scale: number;
 };
@@ -44,6 +47,58 @@ export default function LandingPage() {
     setMousePosition({ scale });
   };
 
+  const goToPage = (pageId: number | null) => {
+    console.log("goto:", pageId);
+    if (pageId) {
+      setVisible(false); // Start fade-out
+      setTimeout(() => {
+        setCurrentPageId(pageId);
+        setVisible(true); // Fade back in after page change
+      }, 1000); // Transition duration
+    }
+  };
+
+  const isPageNavButtonDisabled = (buttonName: string) => {
+    let isDisabled: boolean = false;
+
+    if (isSmallScreen) {
+      if (leftPageData) {
+        if (buttonName === "previous") {
+          isDisabled = leftPageData.pageId % 2 === 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+        } else {
+          isDisabled = leftPageData.pageId % 2 !== 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+        }
+      }
+    } else {
+      if (rightPageData && leftPageData) {
+        if (buttonName === "previous") {
+          isDisabled = leftPageData.pageId % 2 === 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+        } else {
+          isDisabled = rightPageData.pageId % 2 !== 0 || (rightPageData.type === "single" && rightPageData.pageId % 2 === 0);
+        }
+      }
+    }
+
+    return !isDisabled;
+  };
+
+  const handlePrevPage = () => {
+    if (isSmallScreen) {
+      goToPage(currentPageId - 1);
+    } else if (!isSmallScreen && rightPageData) {
+      {
+        goToPage(currentPageId - 1);
+      }
+    }
+  };
+  const handleNextPage = () => {
+    if (isSmallScreen) {
+      goToPage(currentPageId + 1);
+    } else if (!isSmallScreen && rightPageData) {
+      goToPage(rightPageData.contents[0].nextPage);
+    }
+  };
+
   const parsePageData = (pageData: any): BookPageProps => {
     const validatedPageData = pageData as PageDataJson; // Type assertion here
 
@@ -56,14 +111,7 @@ export default function LandingPage() {
   };
   const renderBookView = () => {
     if (isSmallScreen) {
-      return (
-        <BookSinglePageView
-          pageData={leftPageData}
-          visible={visible}
-          goToNextPage={() => goToPage(currentPageId + 1)}
-          goToPrevPage={() => goToPage(currentPageId - 1)}
-        />
-      );
+      return <BookSinglePageView pageData={leftPageData} visible={visible} />;
     } else {
       return <TwoPageBook visible={visible} leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />;
     }
@@ -76,17 +124,6 @@ export default function LandingPage() {
     setLeftPageData(leftPage ? parsePageData(leftPage) : null);
     setRightPageData(rightPage ? parsePageData(rightPage) : null);
   }, [currentPageId]);
-
-  const goToPage = (pageId: number | null) => {
-    console.log("goto:", pageId);
-    if (pageId) {
-      setVisible(false); // Start fade-out
-      setTimeout(() => {
-        setCurrentPageId(pageId);
-        setVisible(true); // Fade back in after page change
-      }, 1000); // Transition duration
-    }
-  };
 
   return (
     <Box
@@ -126,6 +163,23 @@ export default function LandingPage() {
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
         <BookFrame>{renderBookView()}</BookFrame>
       </Container>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 5, // Adjust as needed for positioning
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 5, // Space between buttons
+        }}
+      >
+        <Fab color="primary" aria-label="previous" onClick={handlePrevPage} disabled={isPageNavButtonDisabled("previous")}>
+          <UndoIcon />
+        </Fab>
+        <Fab color="secondary" aria-label="next" onClick={handleNextPage} disabled={isPageNavButtonDisabled("next")}>
+          <RedoIcon />
+        </Fab>
+      </Box>
     </Box>
   );
 }
