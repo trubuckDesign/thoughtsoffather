@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TwoPageBook from "@/components/book/twoPageBook";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
 import storyData from "./story.json";
 import { BookPageSectionProps } from "@/components/page/pageSection/bookPageSection";
@@ -111,7 +111,15 @@ export default function LandingPage() {
           transform: `scale(${mousePosition.scale})`,
         }}
       >
-        <Image src="/park.png" alt="Park" layout="fill" objectFit="cover" quality={75} />
+        <Image
+          src="/park.png"
+          alt="Park"
+          quality={75}
+          fill
+          sizes="100vw"
+          style={{
+            objectFit: "cover"
+          }} />
       </Box>
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center" }}>
         <BookFrame>{renderBookView()}</BookFrame>

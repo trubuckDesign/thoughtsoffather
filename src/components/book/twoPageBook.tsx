@@ -1,5 +1,5 @@
 import { Card, Grid, Typography, Box } from "@mui/material";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import React from "react";
 import { BookPageProps, BookPage } from "../page/bookPage";
 
