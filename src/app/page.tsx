@@ -47,6 +47,7 @@ export default function LandingPage() {
     return {
       contents: validatedPageData.contents,
       type: validatedPageData.type,
+      pageId: validatedPageData.pageId,
       onClick: (nextPage: number | null) => goToPage(nextPage),
     };
   };

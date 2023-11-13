@@ -1,53 +1,174 @@
 [
   {
     "pageId": 1,
-    "type":"single",
+    "type": "single",
     "contents": [
       {
-        "imageSrc": "/story/book cover.png",
-        "text": "Welcome to the Adventure",
-        "nextPage":null
+        "imageSrc": "/story/boy 0.png",
+        "text": "Ethan, an adventurous boy in elementary school, woke up to a sunny morning. Rubbing his eyes, he wondered, 'Should I go to school today?' His room was cozy, and his bed felt extra comfortable.",
+        "nextPage": 2
       }
     ]
   },
   {
     "pageId": 2,
-    "type":"double",
+    "type": "double",
     "contents": [
       {
         "imageSrc": "/story/boy 1.png",
-        "text": "Choice 1 text",
-        "nextPage": 5
-      },{
-        "imageSrc": "/story/boy 2.png",
-        "text": "Choice 2 text",
+        "text": "Ethan sprang out of bed, filled with a sense of adventure. He quickly got ready, grabbed his backpack, and raced to the bus stop. Just in time! The bus ride was smooth, and Ethan gazed out the window, wondering what the day would bring.",
         "nextPage": 3
+      },
+      {
+        "imageSrc": "/story/boy 2.png",
+        "text": "Ethan snuggled deeper into his bed, closing his eyes. He dreamed of distant planets and daring escapes. But when he finally woke up, the room was bright with daylight. 'Oh no!' he thought, 'I've missed the bus!' Ethan rushed to get ready, but he knew he'd be late for class.",
+        "nextPage": 4
       }
     ]
   },
   {
     "pageId": 3,
-    "type":"single",
+    "type": "single",
     "contents": [
       {
         "imageSrc": "/story/boy 3.png",
-        "text": "Choice 1 text",
-        "nextPage": null
+        "text": "Continuing the story",
+        "nextPage": 4
       }
     ]
   },
   {
     "pageId": 4,
-    "type":"double",
+    "type": "double",
     "contents": [
       {
         "imageSrc": "/story/boy 4.png",
-        "text": "Choice 1 text",
-        "nextPage": 7
-      },{
+        "text": "Another choice",
+        "nextPage": 5
+      },
+      {
         "imageSrc": "/story/boy 5.png",
-        "text": "Choice 2 text",
+        "text": "A different path",
+        "nextPage": 6
+      }
+    ]
+  },
+  {
+    "pageId": 5,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 6.png",
+        "text": "Text for page 5",
+        "nextPage": 6
+      }
+    ]
+  },
+  {
+    "pageId": 6,
+    "type": "double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 7.png",
+        "text": "Text for choice 1 on page 6",
+        "nextPage": 7
+      },
+      {
+        "imageSrc": "/story/boy 8.png",
+        "text": "Text for choice 2 on page 6",
         "nextPage": 8
+      }
+    ]
+  },
+  {
+    "pageId": 7,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 9.png",
+        "text": "Text for page 7",
+        "nextPage": 8
+      }
+    ]
+  },
+  {
+    "pageId": 8,
+    "type": "double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 10.png",
+        "text": "Text for choice 1 on page 8",
+        "nextPage": 9
+      },
+      {
+        "imageSrc": "/story/boy 11.png",
+        "text": "Text for choice 2 on page 8",
+        "nextPage": 10
+      }
+    ]
+  },
+  {
+    "pageId": 9,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 12.png",
+        "text": "Text for page 9",
+        "nextPage": 10
+      }
+    ]
+  },
+  {
+    "pageId": 10,
+    "type": "double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 13.png",
+        "text": "Text for choice 1 on page 10",
+        "nextPage": 11
+      },
+      {
+        "imageSrc": "/story/boy 14.png",
+        "text": "Text for choice 2 on page 10",
+        "nextPage": 12
+      }
+    ]
+  },
+  {
+    "pageId": 11,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 15.png",
+        "text": "Text for page 11",
+        "nextPage": 12
+      }
+    ]
+  },
+  {
+    "pageId": 12,
+    "type": "double",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 16.png",
+        "text": "Text for choice 1 on page 12",
+        "nextPage": 13
+      },
+      {
+        "imageSrc": "/story/boy 17.png",
+        "text": "Text for choice 2 on page 12",
+        "nextPage": null
+      }
+    ]
+  },
+  {
+    "pageId": 13,
+    "type": "single",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 18.png",
+        "text": "Ending text for the adventure",
+        "nextPage": null
       }
     ]
   }
