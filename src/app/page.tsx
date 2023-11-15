@@ -83,7 +83,7 @@ const LandingPage = () => {
               opacity: "85%",
               transform: "translate(-50%, -50%)", // Adjust for centering
               textAlign: "center",
-              zIndex: 2, // Ensure it's above the image
+              zIndex: 2,
             }}
           >
             <Typography
@@ -91,7 +91,7 @@ const LandingPage = () => {
               color="black"
               sx={{ textAlign: "center", mt: 2, fontFamily: '"Times New Roman", Times, serif', fontWeight: "bold" }}
             >
-              Nuggets for Neptune: Ethan's Adventure
+              Nuggets for Neptune: Ethan`s Adventure
             </Typography>
           </Box>
         </Box>
