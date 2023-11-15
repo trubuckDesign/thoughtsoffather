@@ -2,7 +2,7 @@ import { Card, Divider, Grid } from "@mui/material";
 import React from "react";
 import { BookPageSection } from "./pageSection/bookPageSection";
 import { ContentData } from "@/app/story/page";
-import { EndPage } from "./pageSection/lastPage";
+import { EndPage } from "./lastPage";
 
 export interface BookPageProps {
   pageId: number;
