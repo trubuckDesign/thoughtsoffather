@@ -24,7 +24,7 @@ export interface ContentData {
 
 interface PageDataJson {
   pageId: number;
-  type: "single" | "double";
+  type: "single" | "double" | "end";
   contents: ContentData[];
 }
 
@@ -83,6 +83,7 @@ export default function StoryPage() {
     console.log("goto:", pageId);
     if (pageId) {
       setVisible(false); // Start fade-out
+
       setTimeout(() => {
         setCurrentPageId(pageId);
         setVisible(true); // Fade back in after page change

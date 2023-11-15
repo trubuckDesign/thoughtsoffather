@@ -200,5 +200,16 @@
         "nextPage": null
       }
     ]
+  },
+  {
+    "pageId": 18,
+    "type": "end",
+    "contents": [
+      {
+        "imageSrc": "/story/boy 0.png",
+        "text": "The End",
+        "nextPage": null
+      }
+    ]
   }
 ]
