@@ -14,28 +14,54 @@ import BookSinglePageView from "@/components/book/singlePageBook";
 import usePageNavigation from "@/globalHooks/usePageNavigation";
 import useTouchNavigation from "@/globalHooks/useTouchNavigation";
 import useMouseMove from "@/globalHooks/useMouseMove";
+import { Thought } from "@/app/page";
 
 type MousePosition = {
   scale: number;
 };
 
 export interface ContentData {
-  imageSrc: string;
   text: string;
   nextPage: number | null;
 }
 
-// interface PageDataJson {
-//   pageId: number;
-//   type: "single" | "double" | "end";
-//   contents: ContentData[];
-// }
+interface bookProps {
+  thoughts: Thought[];
+}
+function paginateContent(content: string, charsPerPage: number): BookPageProps[] {
+  const pages: BookPageProps[] = [];
+  let currentIndex = 0;
+  let pageId = 0;
 
-export default function BookContainer() {
+  while (currentIndex < content.length) {
+    let endIndex = currentIndex + charsPerPage;
+
+    // Adjust endIndex to avoid cutting words or HTML tags in the middle
+    if (endIndex < content.length) {
+      // Move endIndex to the nearest space to avoid cutting words
+      while (endIndex > currentIndex && content[endIndex] !== " " && content[endIndex] !== "<") {
+        endIndex--;
+      }
+      // Optionally, you can add more logic here to handle closing HTML tags
+    }
+
+    pages.push({
+      pageId: pageId++,
+      contents: { text: content.substring(currentIndex, endIndex).trim(), nextPage: null }, // contents should be an array
+      onClick: () => {}, // Implement or pass appropriate function
+    });
+
+    currentIndex = endIndex;
+  }
+
+  return pages;
+}
+
+export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   const theme = useTheme();
   const minSwipeDistance = 50;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { currentPageId, goToPage, nextPage, prevPage } = usePageNavigation();
+  const { currentPageId, goToPage, nextPage, prevPage } = usePageNavigation(0);
   const { handleTouchStart, handleTouchMove, handleTouchEnd } = useTouchNavigation(minSwipeDistance, nextPage, prevPage);
   const { mousePosition, handleMouseMove } = useMouseMove();
 
@@ -43,23 +69,38 @@ export default function BookContainer() {
   const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
   const [visible, setVisible] = useState(true);
 
+  const [paginatedThoughts, setPaginatedThoughts] = useState<BookPageProps[]>([]);
+  const charsPerPage = 600; // Adjust based on your layout
+
+  useEffect(() => {
+    if (thoughts.length > 0) {
+      // Assuming currentPageId is zero-based index
+      console.log("thoughts:", currentPageId, thoughts, thoughts[currentPageId]);
+      const currentThought = thoughts[currentPageId];
+      if (currentThought) {
+        const pages = paginateContent(currentThought.content, charsPerPage);
+        setPaginatedThoughts(pages);
+      }
+    }
+  }, [currentPageId, thoughts]);
+
   const isPageNavButtonDisabled = (buttonName: string) => {
     let isDisabled: boolean = false;
 
     if (isSmallScreen) {
       if (leftPageData) {
         if (buttonName === "previous") {
-          isDisabled = leftPageData.pageId % 2 === 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+          isDisabled = leftPageData.pageId % 2 === 0 || leftPageData.pageId % 2 === 0;
         } else {
-          isDisabled = leftPageData.pageId % 2 !== 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+          isDisabled = leftPageData.pageId % 2 !== 0 || leftPageData.pageId % 2 === 0;
         }
       }
     } else {
       if (rightPageData && leftPageData) {
         if (buttonName === "previous") {
-          isDisabled = leftPageData.pageId % 2 === 0 || (leftPageData.type === "single" && leftPageData.pageId % 2 === 0);
+          isDisabled = leftPageData.pageId % 2 === 0 || leftPageData.pageId % 2 === 0;
         } else {
-          isDisabled = rightPageData.pageId % 2 !== 0 || (rightPageData.type === "single" && rightPageData.pageId % 2 === 0);
+          isDisabled = rightPageData.pageId % 2 !== 0 || rightPageData.pageId % 2 === 0;
         }
       }
     }
@@ -78,41 +119,26 @@ export default function BookContainer() {
   };
   const handleNextPage = () => {
     if (isSmallScreen) {
-      if (leftPageData?.contents[0].nextPage) goToPage(currentPageId + 1);
+      if (leftPageData?.contents.nextPage) goToPage(currentPageId + 1);
     } else if (!isSmallScreen && rightPageData) {
-      goToPage(rightPageData.contents[0].nextPage);
+      goToPage(rightPageData.contents.nextPage);
     }
   };
 
-  // const parsePageData = (pageData: any): BookPageProps => {
-  //   const validatedPageData = pageData as PageDataJson; // Type assertion here
-
-  //   return {
-  //     contents: validatedPageData.contents,
-  //     type: validatedPageData.type,
-  //     pageId: validatedPageData.pageId,
-  //     onClick: (nextPage: number | null) => goToPage(nextPage),
-  //   };
-  // };
   const renderBookView = () => {
+    const currentLeftPage = paginatedThoughts[0]; // Adjust index based on your navigation logic
+    const currentRightPage = paginatedThoughts[1]; // For two-page view
+
     if (isSmallScreen) {
-      return <BookSinglePageView pageData={leftPageData} visible={visible} />;
+      return <BookSinglePageView pageData={currentLeftPage} visible={visible} />;
     } else {
       return (
         <BookFrame>
-          <TwoPageBook visible={visible} leftPage={leftPageData} rightPage={rightPageData} onClick={goToPage} />
+          <TwoPageBook visible={visible} leftPage={currentLeftPage} rightPage={currentRightPage} onClick={goToPage} />
         </BookFrame>
       );
     }
   };
-
-  // useEffect(() => {
-  //   const leftPage = storyData.find((page) => page.pageId === currentPageId);
-  //   const rightPage = storyData.find((page) => page.pageId === currentPageId + 1);
-
-  //   setLeftPageData(leftPage ? parsePageData(leftPage) : null);
-  //   setRightPageData(rightPage ? parsePageData(rightPage) : null);
-  // }, [currentPageId]);
 
   return (
     <>
@@ -151,4 +177,4 @@ export default function BookContainer() {
       </Box>
     </>
   );
-}
+};
