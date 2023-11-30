@@ -28,7 +28,7 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   const theme = useTheme();
   const minSwipeDistance = 50;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { nextPage, prevPage } = usePageNavigation(0);
+  const { nextPage, prevPage } = usePageNavigation(1);
 
   const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
   const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
