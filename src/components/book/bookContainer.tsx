@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Container, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TwoPageBook from "@/components/book/twoPageBook";
-import Image from "next/image";
 import { BookFrame } from "@/components/frame/frame";
 import { BookPageProps } from "@/components/page/bookPage";
-import storyData from "../../app/story.json";
 import Fab from "@mui/material/Fab";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
@@ -15,10 +13,7 @@ import usePageNavigation from "@/globalHooks/usePageNavigation";
 import useTouchNavigation from "@/globalHooks/useTouchNavigation";
 import useMouseMove from "@/globalHooks/useMouseMove";
 import { Thought } from "@/app/page";
-
-type MousePosition = {
-  scale: number;
-};
+import { useBookPagination } from "@/globalHooks/useBookPagination";
 
 export interface ContentData {
   text: string;
@@ -28,106 +23,46 @@ export interface ContentData {
 interface bookProps {
   thoughts: Thought[];
 }
-function paginateContent(content: string, charsPerPage: number): BookPageProps[] {
-  const pages: BookPageProps[] = [];
-  let currentIndex = 0;
-  let pageId = 0;
-
-  while (currentIndex < content.length) {
-    let endIndex = currentIndex + charsPerPage;
-
-    // Adjust endIndex to avoid cutting words or HTML tags in the middle
-    if (endIndex < content.length) {
-      // Move endIndex to the nearest space to avoid cutting words
-      while (endIndex > currentIndex && content[endIndex] !== " " && content[endIndex] !== "<") {
-        endIndex--;
-      }
-      // Optionally, you can add more logic here to handle closing HTML tags
-    }
-
-    pages.push({
-      pageId: pageId++,
-      contents: { text: content.substring(currentIndex, endIndex).trim(), nextPage: null }, // contents should be an array
-      onClick: () => {}, // Implement or pass appropriate function
-    });
-
-    currentIndex = endIndex;
-  }
-
-  return pages;
-}
 
 export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   const theme = useTheme();
   const minSwipeDistance = 50;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { currentPageId, goToPage, nextPage, prevPage } = usePageNavigation(0);
-  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useTouchNavigation(minSwipeDistance, nextPage, prevPage);
-  const { mousePosition, handleMouseMove } = useMouseMove();
+  const { nextPage, prevPage } = usePageNavigation(0);
 
   const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
   const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
   const [visible, setVisible] = useState(true);
 
-  const [paginatedThoughts, setPaginatedThoughts] = useState<BookPageProps[]>([]);
-  const charsPerPage = 600; // Adjust based on your layout
-
-  useEffect(() => {
-    if (thoughts.length > 0) {
-      // Assuming currentPageId is zero-based index
-      console.log("thoughts:", currentPageId, thoughts, thoughts[currentPageId]);
-      const currentThought = thoughts[currentPageId];
-      if (currentThought) {
-        const pages = paginateContent(currentThought.content, charsPerPage);
-        setPaginatedThoughts(pages);
-      }
-    }
-  }, [currentPageId, thoughts]);
+  const { paginatedThoughts, currentPageId, goToPage } = useBookPagination(thoughts, 600); // Use the custom hook
 
   const isPageNavButtonDisabled = (buttonName: string) => {
-    let isDisabled: boolean = false;
-
-    if (isSmallScreen) {
-      if (leftPageData) {
-        if (buttonName === "previous") {
-          isDisabled = leftPageData.pageId % 2 === 0 || leftPageData.pageId % 2 === 0;
-        } else {
-          isDisabled = leftPageData.pageId % 2 !== 0 || leftPageData.pageId % 2 === 0;
-        }
-      }
+    const step = isSmallScreen ? 1 : 2;
+    if (buttonName === "previous") {
+      return currentPageId === 0;
     } else {
-      if (rightPageData && leftPageData) {
-        if (buttonName === "previous") {
-          isDisabled = leftPageData.pageId % 2 === 0 || leftPageData.pageId % 2 === 0;
-        } else {
-          isDisabled = rightPageData.pageId % 2 !== 0 || rightPageData.pageId % 2 === 0;
-        }
-      }
+      // "next" button
+      const maxPageIndex = paginatedThoughts.length - (isSmallScreen ? 1 : 2);
+      return currentPageId >= maxPageIndex;
     }
-
-    return !isDisabled;
   };
 
   const handlePrevPage = () => {
-    if (isSmallScreen) {
-      goToPage(currentPageId - 1);
-    } else if (!isSmallScreen && rightPageData) {
-      {
-        goToPage(currentPageId - 1);
-      }
-    }
+    const step = isSmallScreen ? 1 : 2; // Step back 1 page for small screens, 2 for larger screens
+    const newPageIndex = Math.max(currentPageId - step, 0); // Ensure the new page index doesn't go below 0
+    goToPage(newPageIndex);
   };
+
   const handleNextPage = () => {
-    if (isSmallScreen) {
-      if (leftPageData?.contents.nextPage) goToPage(currentPageId + 1);
-    } else if (!isSmallScreen && rightPageData) {
-      goToPage(rightPageData.contents.nextPage);
-    }
+    const step = isSmallScreen ? 1 : 2; // Step forward 1 page for small screens, 2 for larger screens
+    const maxPageIndex = paginatedThoughts.length - 1;
+    const newPageIndex = isSmallScreen ? Math.min(currentPageId + step, maxPageIndex) : Math.min(currentPageId + step, maxPageIndex - 1); // Adjust for two-page view
+    goToPage(newPageIndex);
   };
 
   const renderBookView = () => {
-    const currentLeftPage = paginatedThoughts[0]; // Adjust index based on your navigation logic
-    const currentRightPage = paginatedThoughts[1]; // For two-page view
+    const currentLeftPage = paginatedThoughts[currentPageId];
+    const currentRightPage = isSmallScreen ? null : paginatedThoughts[currentPageId + 1];
 
     if (isSmallScreen) {
       return <BookSinglePageView pageData={currentLeftPage} visible={visible} />;
@@ -157,24 +92,24 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
         }}
       >
         {renderBookView()}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 5, // Adjust as needed for positioning
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: 5,
+          }}
+        >
+          <Fab color="primary" aria-label="previous" onClick={handlePrevPage} disabled={isPageNavButtonDisabled("previous")}>
+            <UndoIcon />
+          </Fab>
+          <Fab color="secondary" aria-label="next" onClick={handleNextPage} disabled={isPageNavButtonDisabled("next")}>
+            <RedoIcon />
+          </Fab>
+        </Box>
       </Container>
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 5, // Adjust as needed for positioning
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          gap: 5,
-        }}
-      >
-        <Fab color="primary" aria-label="previous" onClick={handlePrevPage} disabled={isPageNavButtonDisabled("previous")}>
-          <UndoIcon />
-        </Fab>
-        <Fab color="secondary" aria-label="next" onClick={handleNextPage} disabled={isPageNavButtonDisabled("next")}>
-          <RedoIcon />
-        </Fab>
-      </Box>
     </>
   );
 };

@@ -2,8 +2,7 @@ import { Box, Button } from "@mui/material";
 import React from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { useRouter } from "next/navigation";
-
-export interface BookPageProps {}
+import { BookPageProps } from "./bookPage";
 
 export const EndPage: React.FC<BookPageProps> = () => {
   const router = useRouter();
