@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/prismaClient";
 
-export async function GET(req: Request) {
-  const data = await req.json();
-  const page: number = parseInt(data.page as string) || 0;
-  const limit: number = 2; // Number of posts per page
+export async function GET(req: NextRequest) {
+  const page = parseInt(req.nextUrl.searchParams.get("page") as string) || 0;
+  const limit = 2; // Number of posts per page
 
   try {
     const posts = await prisma.thoughts.findMany({
