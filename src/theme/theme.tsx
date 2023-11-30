@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   typography: {
-    fontSize: 25,
+    fontSize: 23,
     fontFamily: [
       "NothingYouCouldDo", // Name of your font
       "Arial", // Fallback font

@@ -24,7 +24,7 @@ const ContentBox = styled(Box)({
   position: "relative",
 });
 
-const StyledCard = styled(Card)({
+const StyledCard = styled(Box)({
   fontFamily: '"Libre Baskerville", serif',
   padding: "20px",
   color: "#000",

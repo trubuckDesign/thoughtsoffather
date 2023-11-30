@@ -3,82 +3,82 @@ import { useState, useEffect } from "react";
 import usePageNavigation from "./usePageNavigation";
 import { Thought } from "@/app/page";
 import { BookPageProps } from "@/components/page/bookPage";
+import ReactDOM from "react-dom";
+import { MeasuredContent } from "@/components/measureContent/measureContent";
 
-function paginateContent(content: string, charsPerPage: number): BookPageProps[] {
+const paginateContent = (content: string, containerHeight: number, setPages: React.Dispatch<React.SetStateAction<BookPageProps[]>>): void => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(content, "text/html");
-  const body = doc.body;
-  const pages: BookPageProps[] = [];
-  let accumulatedHTML = "";
+  let accumulatedHeight = 0;
+  let accumulatedNodes: ChildNode[] = [];
 
-  // Function to add a page if there's content
-  const addPage = () => {
-    if (accumulatedHTML.trim()) {
-      pages.push({
-        pageId: pages.length,
-        contents: { text: accumulatedHTML.trim(), nextPage: null },
-      });
-      accumulatedHTML = "";
+  const finalizePage = (): void => {
+    if (accumulatedNodes.length > 0) {
+      const pageContent = accumulatedNodes
+        .map((node) => (node.nodeType === Node.ELEMENT_NODE ? (node as Element).outerHTML : node.textContent || ""))
+        .join("");
+      setPages((prevPages) => [...prevPages, { pageId: prevPages.length, contents: { text: pageContent } }]);
+    }
+    accumulatedNodes = [];
+    accumulatedHeight = 0;
+  };
+
+  const processNode = async (node: ChildNode): Promise<void> => {
+    let htmlContent = node.nodeType === Node.ELEMENT_NODE ? (node as Element).outerHTML : node.textContent || "";
+
+    // Create a temporary container for measurement
+    const tempContainer = document.createElement("div");
+    tempContainer.style.visibility = "hidden";
+    document.body.appendChild(tempContainer);
+
+    const nodeHeight = await new Promise<number>((resolve) => {
+      ReactDOM.render(
+        <MeasuredContent
+          htmlContent={htmlContent}
+          onMeasure={(height) => {
+            resolve(height);
+          }}
+        />,
+        tempContainer
+      );
+    });
+
+    // Clean up
+    ReactDOM.unmountComponentAtNode(tempContainer);
+    document.body.removeChild(tempContainer);
+
+    if (accumulatedHeight + nodeHeight > containerHeight) {
+      finalizePage();
+    }
+
+    accumulatedNodes.push(node);
+    accumulatedHeight += nodeHeight;
+
+    if (node.nextSibling) {
+      await processNode(node.nextSibling);
+    } else {
+      finalizePage();
     }
   };
 
-  // Iterate over child nodes
-  Array.from(body.childNodes).forEach((node) => {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const element = node as Element;
-
-      // If the element is an <img>, add current content and the image as new pages
-      if (element.tagName === "IMG") {
-        addPage(); // Add accumulated content as a page
-        pages.push({
-          pageId: pages.length,
-          contents: { text: element.outerHTML, nextPage: null },
-        });
-        accumulatedHTML = ""; // Reset accumulated content
-      } else {
-        accumulatedHTML += element.outerHTML;
-        if (accumulatedHTML.length >= charsPerPage) {
-          addPage();
-        }
-      }
-    } else if (node.nodeType === Node.TEXT_NODE) {
-      const textContent = node.textContent || "";
-      if (textContent.trim()) {
-        accumulatedHTML += textContent;
-        if (accumulatedHTML.length >= charsPerPage) {
-          addPage();
-        }
-      }
-    }
-  });
-
-  // Add remaining content as the last page
-  addPage();
-
-  // Add an empty page if the total number of pages is odd
-  if (pages.length % 2 !== 0) {
-    pages.push({
-      pageId: pages.length,
-      contents: { text: "", nextPage: null },
-    });
+  if (doc.body.firstChild) {
+    processNode(doc.body.firstChild);
   }
+};
 
-  return pages;
-}
-
-export function useBookPagination(thoughts: Thought[], charsPerPage: number) {
+export function useBookPagination(thoughts: Thought[]) {
   const { currentPageId, goToPage } = usePageNavigation(0);
+  const [containerHeight, setContainerHeight] = useState(0);
   const [paginatedThoughts, setPaginatedThoughts] = useState<BookPageProps[]>([]);
 
   useEffect(() => {
     if (thoughts.length > 0) {
       const currentThought = thoughts[currentPageId];
       if (currentThought) {
-        const pages = paginateContent(currentThought.content, charsPerPage);
-        setPaginatedThoughts(pages);
+        paginateContent(currentThought.content, containerHeight, setPaginatedThoughts);
       }
     }
-  }, [currentPageId, thoughts]);
+  }, [currentPageId, thoughts, containerHeight]);
 
-  return { paginatedThoughts, currentPageId, goToPage };
+  return { paginatedThoughts, currentPageId, goToPage, setContainerHeight };
 }

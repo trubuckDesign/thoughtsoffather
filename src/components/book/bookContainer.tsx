@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Container, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TwoPageBook from "@/components/book/twoPageBook";
@@ -13,11 +13,11 @@ import usePageNavigation from "@/globalHooks/usePageNavigation";
 import useTouchNavigation from "@/globalHooks/useTouchNavigation";
 import useMouseMove from "@/globalHooks/useMouseMove";
 import { Thought } from "@/app/page";
+import Measure from "react-measure";
 import { useBookPagination } from "@/globalHooks/useBookPagination";
 
 export interface ContentData {
   text: string;
-  nextPage: number | null;
 }
 
 interface bookProps {
@@ -28,13 +28,9 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   const theme = useTheme();
   const minSwipeDistance = 50;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { nextPage, prevPage } = usePageNavigation(1);
-
-  const [leftPageData, setLeftPageData] = useState<BookPageProps | null>(null);
-  const [rightPageData, setRightPageData] = useState<BookPageProps | null>(null);
   const [visible, setVisible] = useState(true);
 
-  const { paginatedThoughts, currentPageId, goToPage } = useBookPagination(thoughts, 600); // Use the custom hook
+  const { paginatedThoughts, currentPageId, goToPage, setContainerHeight } = useBookPagination(thoughts); // Use the custom hook
 
   const isPageNavButtonDisabled = (buttonName: string) => {
     const step = isSmallScreen ? 1 : 2;
@@ -46,7 +42,7 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
       return currentPageId >= maxPageIndex;
     }
   };
-
+  console.log("pages:", paginatedThoughts);
   const handlePrevPage = () => {
     const step = isSmallScreen ? 1 : 2; // Step back 1 page for small screens, 2 for larger screens
     const newPageIndex = Math.max(currentPageId - step, 0); // Ensure the new page index doesn't go below 0
@@ -65,11 +61,35 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
     const currentRightPage = isSmallScreen ? null : paginatedThoughts[currentPageId + 1];
 
     if (isSmallScreen) {
-      return <BookSinglePageView pageData={currentLeftPage} visible={visible} />;
+      return (
+        <Measure
+          bounds
+          onResize={(contentRect) => {
+            setContainerHeight(contentRect.bounds?.height || 100);
+          }}
+        >
+          {({ measureRef }) => (
+            <div ref={measureRef}>
+              <BookSinglePageView pageData={currentLeftPage} visible={visible} />
+            </div>
+          )}
+        </Measure>
+      );
     } else {
       return (
         <BookFrame>
-          <TwoPageBook visible={visible} leftPage={currentLeftPage} rightPage={currentRightPage} onClick={goToPage} />
+          <Measure
+            bounds
+            onResize={(contentRect) => {
+              setContainerHeight(contentRect.bounds?.height || 100);
+            }}
+          >
+            {({ measureRef }) => (
+              <div ref={measureRef}>
+                <TwoPageBook visible={visible} leftPage={currentLeftPage} rightPage={currentRightPage} onClick={goToPage} />
+              </div>
+            )}
+          </Measure>
         </BookFrame>
       );
     }
