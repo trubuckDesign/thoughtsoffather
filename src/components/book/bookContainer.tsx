@@ -4,7 +4,6 @@ import { Container, Box, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TwoPageBook from "@/components/book/twoPageBook";
 import { BookFrame } from "@/components/frame/frame";
-import { BookPageProps } from "@/components/page/bookPage";
 import Fab from "@mui/material/Fab";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
@@ -13,8 +12,8 @@ import usePageNavigation from "@/globalHooks/usePageNavigation";
 import useTouchNavigation from "@/globalHooks/useTouchNavigation";
 import useMouseMove from "@/globalHooks/useMouseMove";
 import { Thought } from "@/app/page";
-import Measure from "react-measure";
 import { useBookPagination } from "@/globalHooks/useBookPagination";
+import { useBookPaginationContext } from "@/store/BookStore";
 
 export interface ContentData {
   text: string;
@@ -30,7 +29,7 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [visible, setVisible] = useState(true);
 
-  const { paginatedThoughts, currentPageId, goToPage, setContainerHeight } = useBookPagination(thoughts); // Use the custom hook
+  const { paginatedThoughts, currentPageId, goToPage, setContainerHeight } = useBookPaginationContext();
 
   const isPageNavButtonDisabled = (buttonName: string) => {
     const step = isSmallScreen ? 1 : 2;
@@ -61,35 +60,11 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
     const currentRightPage = isSmallScreen ? null : paginatedThoughts[currentPageId + 1];
 
     if (isSmallScreen) {
-      return (
-        <Measure
-          bounds
-          onResize={(contentRect) => {
-            setContainerHeight(contentRect.bounds?.height || 100);
-          }}
-        >
-          {({ measureRef }) => (
-            <div ref={measureRef}>
-              <BookSinglePageView pageData={currentLeftPage} visible={visible} />
-            </div>
-          )}
-        </Measure>
-      );
+      return <BookSinglePageView pageData={currentLeftPage} visible={visible} />;
     } else {
       return (
         <BookFrame>
-          <Measure
-            bounds
-            onResize={(contentRect) => {
-              setContainerHeight(contentRect.bounds?.height || 100);
-            }}
-          >
-            {({ measureRef }) => (
-              <div ref={measureRef}>
-                <TwoPageBook visible={visible} leftPage={currentLeftPage} rightPage={currentRightPage} onClick={goToPage} />
-              </div>
-            )}
-          </Measure>
+          <TwoPageBook visible={visible} leftPage={currentLeftPage} rightPage={currentRightPage} onClick={goToPage} />
         </BookFrame>
       );
     }

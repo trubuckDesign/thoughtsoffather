@@ -7,6 +7,8 @@ import { BookContainer } from "@/components/book/bookContainer";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
 import BackgroundImageContainer from "@/components/background/background";
+import { BookPaginationProvider } from "@/store/BookStore";
+import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
 
 export interface Thought {
   title: string;
@@ -17,6 +19,7 @@ export interface Thought {
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
   const [thoughts, setThoughts] = useState<Thought[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { mousePosition, handleMouseMove } = useMouseMove();
 
   const handleBookClick = () => {
@@ -25,6 +28,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     const fetchThoughts = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/thoughts?page=0", {
           method: "GET",
@@ -40,25 +44,32 @@ const LandingPage = () => {
       } catch (error) {
         console.error("Failed to fetch thoughts", error);
       }
+      setIsLoading(false);
     };
 
     fetchThoughts();
   }, []);
 
   return (
-    <BackgroundImageContainer>
-      <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
-        <Box sx={{ position: "absolute" }}>
-          <JournalButton handleClick={handleBookClick} />
-        </Box>
-      </CSSTransition>
+    <BookPaginationProvider thoughts={thoughts} setThoughts={setThoughts}>
+      <BackgroundImageContainer>
+        <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
+          <Box sx={{ position: "absolute" }}>
+            <JournalButton handleClick={handleBookClick} />
+          </Box>
+        </CSSTransition>
 
-      <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-        <Box sx={{ position: "absolute" }}>
-          <BookContainer thoughts={thoughts} />
-        </Box>
-      </CSSTransition>
-    </BackgroundImageContainer>
+        {isLoading ? (
+          <HandwritingSpinner />
+        ) : (
+          <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
+            <Box sx={{ position: "absolute" }}>
+              <BookContainer thoughts={thoughts} />
+            </Box>
+          </CSSTransition>
+        )}
+      </BackgroundImageContainer>
+    </BookPaginationProvider>
   );
 };
 

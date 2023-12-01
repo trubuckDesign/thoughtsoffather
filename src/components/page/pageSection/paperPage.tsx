@@ -1,6 +1,8 @@
 import React from "react";
-import { Card, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { styled } from "@mui/system";
+import Measure from "react-measure";
+import { useBookPaginationContext } from "@/store/BookStore";
 
 const PaperOverlay = styled(Box)({
   position: "absolute",
@@ -32,22 +34,37 @@ const StyledCard = styled(Box)({
   backgroundColor: "transparent", // Optional, depending on desired effect
 });
 
-interface letterCardProps {
+interface PaperPageProps {
   contentChunk: string;
 }
-const LetterCard: React.FC<letterCardProps> = ({ contentChunk }) => {
+const PaperPage: React.FC<PaperPageProps> = ({ contentChunk }) => {
+  const { setContainerHeight, setIsMeasuring } = useBookPaginationContext();
+
   return (
     <>
       <PaperOverlay />
-      <ContentBox>
-        <StyledCard>
-          <Typography variant="body1">
-            <Box dangerouslySetInnerHTML={{ __html: contentChunk }} />
-          </Typography>
-        </StyledCard>
-      </ContentBox>
+      <Measure
+        bounds
+        key="measureComp"
+        onResize={(contentRect) => {
+          setContainerHeight(contentRect.bounds?.height || 100);
+          setIsMeasuring(false);
+        }}
+      >
+        {({ measureRef }) => (
+          <div id="measureDiv" ref={measureRef}>
+            <ContentBox>
+              <StyledCard>
+                <Typography variant="body1">
+                  <Box dangerouslySetInnerHTML={{ __html: contentChunk }} />
+                </Typography>
+              </StyledCard>
+            </ContentBox>
+          </div>
+        )}
+      </Measure>
     </>
   );
 };
 
-export default LetterCard;
+export default PaperPage;

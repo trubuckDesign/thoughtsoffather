@@ -22,15 +22,18 @@
     "axios": "^1.6.2",
     "base-64": "^1.0.0",
     "dompurify": "^3.0.6",
+    "lodash": "^4.17.21",
     "next": "^13.5.6",
     "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
     "react-measure": "^2.5.2",
+    "react-spring": "^9.7.3",
     "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
     "@types/base-64": "^1.0.2",
+    "@types/lodash": "^4.14.202",
     "@types/next-auth": "^3.15.0",
     "@types/node": "^20",
     "@types/react": "^18",
