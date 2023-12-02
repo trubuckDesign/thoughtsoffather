@@ -10,6 +10,7 @@ const PaperOverlay = styled(Box)({
   bottom: 0,
   left: 0,
   right: 0,
+  maxHeight: "100%",
   mixBlendMode: "multiply",
   backgroundRepeat: "repeat",
   pointerEvents: "none",
@@ -19,6 +20,7 @@ const PaperOverlay = styled(Box)({
 
 const ContentBox = styled(Box)({
   width: "min(100%, 600px)",
+  maxHeight: "100%",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -27,22 +29,28 @@ const ContentBox = styled(Box)({
 });
 
 const StyledCard = styled(Box)({
-  fontFamily: '"Libre Baskerville", serif',
-  padding: "20px",
+  paddingleft: "10px",
+  paddingRight: "10px",
+  maxHeight: "100%",
   color: "#000",
   maxWidth: "600px",
   backgroundColor: "transparent", // Optional, depending on desired effect
+  boxSizing: "border-box",
 });
 
 interface PaperPageProps {
   contentChunk: string;
 }
+const MeasureContainer = styled("div")({
+  width: "100%",
+  height: "100%", // Ensures it takes up all available space
+});
 const PaperPage: React.FC<PaperPageProps> = ({ contentChunk }) => {
   const { setContainerHeight, setIsMeasuring } = useBookPaginationContext();
 
   return (
     <>
-      <PaperOverlay />
+      <PaperOverlay id="paperOverlay" />
       <Measure
         bounds
         key="measureComp"
@@ -52,15 +60,15 @@ const PaperPage: React.FC<PaperPageProps> = ({ contentChunk }) => {
         }}
       >
         {({ measureRef }) => (
-          <div id="measureDiv" ref={measureRef}>
-            <ContentBox>
-              <StyledCard>
+          <MeasureContainer id="measureContainer" ref={measureRef}>
+            <ContentBox id="contentBox">
+              <StyledCard id="styledCard">
                 <Typography variant="body1">
-                  <Box dangerouslySetInnerHTML={{ __html: contentChunk }} />
+                  <Box id="contentBoxInner" dangerouslySetInnerHTML={{ __html: contentChunk }} />
                 </Typography>
               </StyledCard>
             </ContentBox>
-          </div>
+          </MeasureContainer>
         )}
       </Measure>
     </>

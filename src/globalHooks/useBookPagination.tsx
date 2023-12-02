@@ -9,7 +9,7 @@ import { debounce } from "lodash";
 
 export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispatch<React.SetStateAction<Thought[]>>) {
   const { currentPageId, goToPage } = usePageNavigation(0);
-  const [containerHeight, setContainerHeight] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(500);
   const [paginatedThoughts, setPaginatedThoughts] = useState<BookPageProps[]>([]);
   const [measuredContent, setMeasuredContent] = useState<ReactNode | null>(null);
   const [isMeasuring, setIsMeasuring] = useState(false);
@@ -44,12 +44,12 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
         accumulatedHeight = 0;
       };
 
-      const processNode = async (node: ChildNode) => {
+      const processNode = async (node: ChildNode, isChild = false) => {
         console.log("Processing node:", node);
-        // Filter out nodes that are only whitespace
+
         if (!node.textContent || node.textContent.trim() === "" || node.textContent === "\u00A0") {
-          if (node.nextSibling) {
-            await processNode(node.nextSibling); // Move to next node if current is non-content
+          if (node.nextSibling && !isChild) {
+            await processNode(node.nextSibling);
           }
           return;
         }
@@ -57,7 +57,7 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
         let htmlContent = node.nodeType === Node.ELEMENT_NODE ? (node as Element).outerHTML : node.textContent || "";
         setMeasuredContent(htmlContent);
         setIsMeasuring(true);
-        // Create a temporary container for measurement
+
         const tempContainer = document.createElement("div");
         tempContainer.style.visibility = "hidden";
         document.body.appendChild(tempContainer);
@@ -65,23 +65,37 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
         const nodeHeight = await new Promise<number>((resolve) => {
           ReactDOM.render(<MeasuredContent htmlContent={htmlContent} onMeasure={(height) => resolve(height)} />, tempContainer);
         });
+
         console.log("Node height:", nodeHeight);
 
-        // Clean up
         ReactDOM.unmountComponentAtNode(tempContainer);
         document.body.removeChild(tempContainer);
 
-        if (accumulatedHeight + nodeHeight <= containerHeight - containerHeight * padding) {
-          accumulatedNodes.push(node);
-          accumulatedHeight += nodeHeight;
+        if (nodeHeight > containerHeight) {
+          if (node.nodeType === Node.ELEMENT_NODE && node.hasChildNodes()) {
+            // Process child nodes individually
+            const children = Array.from(node.childNodes);
+            for (const child of children) {
+              await processNode(child, true);
+            }
+          } else {
+            // Node is too large and cannot be broken down further, create a new page
+            finalizePage();
+            accumulatedNodes.push(node);
+            accumulatedHeight = nodeHeight;
+          }
         } else {
-          finalizePage();
-          accumulatedNodes.push(node);
-          accumulatedHeight = nodeHeight;
+          if (accumulatedHeight + nodeHeight <= containerHeight - containerHeight * padding) {
+            accumulatedNodes.push(node);
+            accumulatedHeight += nodeHeight;
+          } else {
+            finalizePage();
+            accumulatedNodes.push(node);
+            accumulatedHeight = nodeHeight;
+          }
         }
 
-        // if (node.nextSibling && node.nextSibling.textContent && node.nextSibling.textContent.trim() !== "" && node.nextSibling.textContent !== "\u00A0") {
-        if (node.nextSibling) {
+        if (node.nextSibling && !isChild) {
           await processNode(node.nextSibling);
         }
       };

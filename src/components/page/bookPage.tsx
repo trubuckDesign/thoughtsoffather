@@ -10,10 +10,8 @@ export interface BookPageProps {
 
 export const BookPage: React.FC<BookPageProps> = ({ contents }) => {
   return (
-    <Grid container spacing={2} sx={{ margin: 1 }}>
-      <>
-        <PaperPage contentChunk={contents.text} />
-      </>
+    <Grid container id="bookPageGrid" spacing={2} sx={{ margin: 1, width: "100%", height: "100%" }}>
+      <PaperPage contentChunk={contents.text} />
     </Grid>
   );
 };

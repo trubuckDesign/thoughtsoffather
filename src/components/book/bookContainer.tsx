@@ -73,6 +73,7 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
   return (
     <>
       <Container
+        id="bookContainer"
         maxWidth="lg"
         sx={{
           position: "relative",
@@ -88,6 +89,7 @@ export const BookContainer: React.FC<bookProps> = ({ thoughts }) => {
       >
         {renderBookView()}
         <Box
+          id="navigationBox"
           sx={{
             position: "absolute",
             bottom: 5, // Adjust as needed for positioning

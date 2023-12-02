@@ -14,8 +14,10 @@ const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage, visible }) => (
   <Box
     id="twoBookPage"
     sx={{
-      width: "100vw",
-      height: "82vh",
+      width: "98%",
+      height: "98%",
+      maxHeight: "900px", // Add a maximum height
+      minHeight: "400px", // Add a minimum height
       marginLeft: "6px",
       overflow: "hidden",
       position: "relative",
@@ -24,15 +26,18 @@ const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage, visible }) => (
       zIndex: 2,
     }}
   >
-    <Grid container sx={{ height: "100%" }}>
+    <Grid container id="bookGridContainer" sx={{ height: "100%" }}>
       <Grid
         item
         xs={6}
+        id="leftPageGridItem"
         sx={{
           position: "relative",
           background: "url(/white_paper_texture_set.png)", // Paper texture background
-          padding: "20px", // Padding to simulate page margin
+          // padding: "20px", // Padding to simulate page margin
+          paddingRight: "20px",
           opacity: visible ? 1 : 0,
+          height: "100%",
           transition: "opacity 1.0s ease",
         }}
       >
@@ -52,11 +57,13 @@ const TwoPageBook: React.FC<BookProps> = ({ leftPage, rightPage, visible }) => (
       <Grid
         item
         xs={6}
+        id="rightPageGridItem"
         sx={{
           position: "relative",
           background: "url(/white_paper_texture_set.png)", // Paper texture background
-          padding: "20px", // Padding to simulate page margin
+          // padding: "20px", // Padding to simulate page margin
           opacity: visible ? 1 : 0,
+          height: "100%",
           transition: "opacity 1.0s ease",
         }}
       >
