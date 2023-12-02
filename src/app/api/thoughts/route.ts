@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
     const posts = await prisma.thoughts.findMany({
       skip: page * limit,
       take: limit,
+      where: { isExpired: false },
       orderBy: {
         createdAt: "desc",
       },
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
           content,
         },
       });
-      return NextResponse.json({ message: "Success", newThought }, { status: 404 });
+      return NextResponse.json({ message: "Success", newThought }, { status: 200 });
     } catch (error) {
       console.log(error);
       return NextResponse.json({ message: "Server Error with uploading thought" }, { status: 500 });

@@ -77,4 +77,5 @@ model Thoughts {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isExpired Boolean  @default(false)
 }
