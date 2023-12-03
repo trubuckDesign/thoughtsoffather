@@ -124,7 +124,7 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
         // Node doesn't fit, finalize current page and start a new one
         finalizePage(accumulatedNodes, setPages, setContainerHeight, accumulatedHeight);
         accumulatedNodes = [node];
-        accumulatedHeight = nodeHeight;
+        accumulatedHeight = 0;
       }
     }
     console.log("End processing node", { node, accumulatedHeight });
