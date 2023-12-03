@@ -1,11 +1,11 @@
 // useBookPagination.js
-import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from "react";
+import { useState, useEffect, useCallback, ReactNode } from "react";
 import usePageNavigation from "./usePageNavigation";
 import { Thought } from "@/app/page";
 import { BookPageProps } from "@/components/page/bookPage";
-import ReactDOM from "react-dom";
 import { MeasuredContent } from "@/components/measureContent/measureContent";
 import { debounce } from "lodash";
+import { Root, createRoot } from "react-dom/client";
 
 export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispatch<React.SetStateAction<Thought[]>>) {
   const { currentPageId, goToPage } = usePageNavigation(0);
@@ -24,20 +24,26 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
     document.body.appendChild(tempContainer);
     return tempContainer;
   };
-  const measureNodeHeight = async (htmlContent: string, tempContainer: HTMLDivElement): Promise<number> => {
-    return new Promise<number>((resolve) => {
-      ReactDOM.render(
-        <MeasuredContent
-          htmlContent={htmlContent}
-          onMeasure={(height) => {
-            console.log("Measured node height:", height);
-            resolve(height);
-          }}
-        />,
-        tempContainer
-      );
+  const createAndRenderRoot = (container: HTMLDivElement, jsxElement: JSX.Element) => {
+    try {
+      const root = createRoot(container);
+      root.render(jsxElement);
+      return root;
+    } catch (error) {
+      console.error("Failed to create root:", error);
+      return null;
+    }
+  };
+
+  const measureNodeHeight = async (content: string, tempContainer: HTMLDivElement): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      const root = createAndRenderRoot(tempContainer, <MeasuredContent htmlContent={content} onMeasure={resolve} />);
+      if (!root) {
+        reject("Root creation failed");
+      }
     });
   };
+
   const finalizePage = (
     accumulatedNodes: ChildNode[],
     setPages: React.Dispatch<React.SetStateAction<BookPageProps[]>>,
@@ -134,52 +140,61 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
     ) => {
       console.log("Start pagination", { containerHeight });
       const doc = parseHTMLContent(content);
-      const tempContainer = createTempContainer();
+
       let accumulatedHeight = 0;
       let accumulatedNodes: ChildNode[] = [];
       const padding = 0.2;
+      const tempContainer = createTempContainer();
 
-      // Reset pages
-      setPages([]);
+      try {
+        const measuredHeight = await new Promise<number>((resolve, reject) => {
+          const root = createAndRenderRoot(tempContainer, <MeasuredContent htmlContent={content} onMeasure={resolve} />);
+          if (!root) {
+            reject("Root creation failed");
+          }
+        });
 
-      if (doc.body.firstChild) {
-        let node: ChildNode | null = doc.body.firstChild;
-        while (node) {
-          const result = await processNode(
-            node,
-            accumulatedNodes,
-            accumulatedHeight,
-            containerHeight,
-            padding,
-            setPages,
-            setMeasuredContent,
-            setIsMeasuring,
-            tempContainer
-          );
-          accumulatedNodes = result.accumulatedNodes;
-          accumulatedHeight = result.accumulatedHeight;
-          if (node.nextSibling) {
+        setPages([]); // Reset pages
+
+        if (doc.body.firstChild) {
+          let node: ChildNode | null = doc.body.firstChild;
+          while (node) {
+            const result = await processNode(
+              node,
+              accumulatedNodes,
+              accumulatedHeight,
+              containerHeight,
+              padding,
+              setPages,
+              setMeasuredContent,
+              setIsMeasuring,
+              tempContainer
+            );
+            accumulatedNodes = result.accumulatedNodes;
+            accumulatedHeight = result.accumulatedHeight;
             node = node.nextSibling;
-          } else {
-            node = null;
           }
         }
-      }
 
-      finalizePage(accumulatedNodes, setPages, setContainerHeight, accumulatedHeight);
-      ReactDOM.unmountComponentAtNode(tempContainer);
-      document.body.removeChild(tempContainer);
+        finalizePage(accumulatedNodes, setPages, setContainerHeight, accumulatedHeight);
+      } catch (error) {
+        console.error("Error during pagination:", error);
+      } finally {
+        if (tempContainer.parentNode) {
+          document.body.removeChild(tempContainer);
+        }
+      }
 
       // Check if the number of pages is odd, and if so, add an empty page
       setPages((prevPages) => {
         if (prevPages.length % 2 !== 0) {
-          return [...prevPages, { pageId: prevPages.length, contents: { text: "" }, setContainerHeight: setContainerHeight }];
+          return [...prevPages, { pageId: prevPages.length, contents: { text: "" } }];
         }
         return prevPages;
       });
       console.log("Pagination complete. Total pages:", paginatedThoughts.length);
     },
-    [containerHeight, setContainerHeight]
+    [containerHeight, setPaginatedThoughts]
   );
 
   const debouncedPaginateContent = useCallback(
