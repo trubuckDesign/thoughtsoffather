@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import useMouseMove from "@/globalHooks/useMouseMove";
+import JournalButton from "@/components/buttons/journalButton";
+import { BookContainer } from "@/components/book/bookContainer";
+import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
 import BackgroundImageContainer from "@/components/background/background";
 import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
-import PaperPage from "@/components/page/pageSection/paperPage";
 import ThoughtPage from "@/components/page/thoughtPage";
 import { Thoughts } from "@prisma/client";
 
@@ -14,6 +16,10 @@ const LandingPage = () => {
   const [thoughts, setThoughts] = useState<Thoughts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { mousePosition, handleMouseMove } = useMouseMove();
+
+  const handleBookClick = () => {
+    setOpen(!isOpen);
+  };
 
   useEffect(() => {
     const fetchThoughts = async () => {
@@ -41,19 +47,27 @@ const LandingPage = () => {
 
   return (
     <BackgroundImageContainer>
+      <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
+        <Box sx={{ position: "absolute" }}>
+          <JournalButton handleClick={handleBookClick} />
+        </Box>
+      </CSSTransition>
+
       {isLoading ? (
         <HandwritingSpinner />
       ) : (
-        <Box
-          id="pageBoxContainer"
-          sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflowY: "auto", maxHeight: "95vh", width: "100vw" }}
-        >
-          <Box>
-            {thoughts.map((thought, index) => (
-              <ThoughtPage key={index} thought={thought} />
-            ))}
+        <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
+          <Box
+            id="pageBoxContainer"
+            sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflowY: "auto", maxHeight: "95vh", width: "100vw" }}
+          >
+            <Box>
+              {thoughts.map((thought, index) => (
+                <ThoughtPage key={index} thought={thought} />
+              ))}
+            </Box>
           </Box>
-        </Box>
+        </CSSTransition>
       )}
     </BackgroundImageContainer>
   );

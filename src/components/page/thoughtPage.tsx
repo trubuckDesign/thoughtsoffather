@@ -12,7 +12,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
       elevation={3}
       sx={{
         width: "65%",
-        margin: "30px auto",
+        margin: "100px auto",
         boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.2)",
         backgroundColor: "#faf7f4",
         border: "1px solid #ddd",
@@ -34,7 +34,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "10px 20px",
+          padding: "20px",
           backgroundColor: "#faf7f4",
         }}
       >
