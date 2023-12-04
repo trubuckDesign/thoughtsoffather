@@ -7,21 +7,28 @@ interface ThoughtPageProps {
 }
 
 const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
-  useEffect(() => {
-    const images = document.querySelectorAll("#BoxWithContent img");
-    images.forEach((img) => {
-      const htmlImg = img as HTMLElement; // Type assertion
-      const rotation = Math.random() * 10 - 5; // Random rotation between -5 and 5 degrees
-      htmlImg.style.transform = `rotate(${rotation}deg)`;
-      htmlImg.style.padding = "10px";
-      htmlImg.style.backgroundColor = "white";
-      htmlImg.style.border = "1px solid #ddd";
-      htmlImg.style.boxShadow = "5px 5px 15px rgba(0, 0, 0, 0.5)";
-      htmlImg.style.marginBottom = "25px";
-      htmlImg.style.marginTop = "25px";
-      htmlImg.style.display = "inline-block";
-    });
-  }, [thought.content]);
+  const modifyHTMLContent = (htmlContent: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+
+    const images = doc.getElementsByTagName("img");
+    for (const img of Array.from(images)) {
+      const rotation = Math.random() * 10 - 5;
+      img.style.transform = `rotate(${rotation}deg)`;
+      img.style.padding = "10px";
+      img.style.backgroundColor = "white";
+      img.style.border = "1px solid #ddd";
+      img.style.boxShadow = "5px 5px 15px rgba(0, 0, 0, 0.5)";
+      img.style.marginBottom = "25px";
+      img.style.marginTop = "25px";
+      img.style.display = "inline-block";
+      // Add other styles as needed
+    }
+
+    return doc.body.innerHTML;
+  };
+
+  const modifiedContent = modifyHTMLContent(thought.content);
 
   return (
     <Card
@@ -52,14 +59,15 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
           justifyContent: "space-between",
           padding: "20px",
           backgroundColor: "#faf7f4",
+          fontFamily: "'NothingYouCouldDo', Arial, sans-serif",
         }}
       >
         <Box sx={{ backgroundColor: "#faf7f4", flex: 1, textAlign: "center" }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", fontFamily: "'NothingYouCouldDo', Arial, sans-serif" }}>
             {thought.title}
           </Typography>
         </Box>
-        <Typography variant="h6" sx={{ flexShrink: 0, backgroundColor: "#faf7f4" }}>
+        <Typography variant="h6" sx={{ flexShrink: 0, fontFamily: "'NothingYouCouldDo', Arial, sans-serif" }}>
           {new Date(thought.createdAt).toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
@@ -68,11 +76,12 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
         </Typography>
       </Box>
       <Box
-        dangerouslySetInnerHTML={{ __html: thought.content }}
+        dangerouslySetInnerHTML={{ __html: modifiedContent }}
         id="BoxWithContent"
         sx={{
           backgroundColor: "#faf7f4",
           typography: "body1",
+          fontFamily: "'NothingYouCouldDo', Arial, sans-serif",
           "& img": {
             maxWidth: "100%",
             height: "auto",

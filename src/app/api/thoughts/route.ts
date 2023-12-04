@@ -3,7 +3,7 @@ import prisma from "../../../../prisma/prismaClient";
 
 export async function GET(req: NextRequest) {
   const page = parseInt(req.nextUrl.searchParams.get("page") as string) || 0;
-  const limit = 6; // Number of posts per page
+  const limit = 16; // Number of posts per page
 
   try {
     const posts = await prisma.thoughts.findMany({

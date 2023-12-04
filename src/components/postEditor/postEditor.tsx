@@ -50,7 +50,6 @@ const PostEditor: React.FC = () => {
   };
   const postThought = async () => {
     try {
-      console.log("thoughts:", title, content);
       const response = await fetch("/api/thoughts", {
         method: "POST",
         headers: {
@@ -82,22 +81,31 @@ const PostEditor: React.FC = () => {
       <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} fullWidth margin="normal" />
       <Editor
         onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue="<p>Initial content</p>"
+        initialValue=""
         apiKey={process.env.TINYMCE_KEY} // Access the API key from the environment variable
         init={{
-          height: 500,
+          height: "50vh",
+          width: "50vw",
 
           menubar: false,
           plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
+            "advlist table autolink lists link image charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
             "insertdatetime media table paste code help wordcount",
             "image", // Include this line if not already included
           ],
+          image_default_dimensions: {
+            width: 300, // Default width
+            height: 200, // Default height
+          },
+          table_toolbar:
+            "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+
+          table_responsive_width: true,
           toolbar:
-            "undo redo | formatselect | " +
+            "table undo redo | formatselect | " +
             "bold italic | alignleft aligncenter " +
-            "alignright alignjustify | bullist numlist outdent indent | " +
+            "alignright alignjustify |  bullist numlist outdent indent | " +
             "help | image",
           content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           images_upload_handler: uploadImage,

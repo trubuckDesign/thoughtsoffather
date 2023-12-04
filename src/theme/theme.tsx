@@ -5,7 +5,7 @@ const theme = createTheme({
   typography: {
     fontSize: 23,
     fontFamily: [
-      "NothingYouCouldDo", // Name of your font
+      "Roboto", // Default font
       "Arial", // Fallback font
       "sans-serif", // Generic font family
     ].join(","),

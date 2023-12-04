@@ -34,6 +34,5 @@ function findUserAccountById(
   id: string,
   prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>
 ) {
-  console.log("test");
   return {};
 }
