@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Card, Typography } from "@mui/material";
 import { Thoughts } from "@prisma/client";
 
@@ -7,6 +7,22 @@ interface ThoughtPageProps {
 }
 
 const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
+  useEffect(() => {
+    const images = document.querySelectorAll("#BoxWithContent img");
+    images.forEach((img) => {
+      const htmlImg = img as HTMLElement; // Type assertion
+      const rotation = Math.random() * 10 - 5; // Random rotation between -5 and 5 degrees
+      htmlImg.style.transform = `rotate(${rotation}deg)`;
+      htmlImg.style.padding = "10px";
+      htmlImg.style.backgroundColor = "white";
+      htmlImg.style.border = "1px solid #ddd";
+      htmlImg.style.boxShadow = "5px 5px 15px rgba(0, 0, 0, 0.5)";
+      htmlImg.style.marginBottom = "25px";
+      htmlImg.style.marginTop = "25px";
+      htmlImg.style.display = "inline-block";
+    });
+  }, [thought.content]);
+
   return (
     <Card
       elevation={3}
@@ -62,7 +78,8 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
             height: "auto",
           },
           "& a": {
-            textDecoration: "none",
+            textDecoration: "underline",
+            fontWeight: "bold",
             color: "black",
           },
           padding: "20px",
