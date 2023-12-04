@@ -29,7 +29,7 @@ const BackgroundImageContainer: FC<backgroundProps> = ({ children }) => {
           width: "100vw",
           top: 0,
           left: 0,
-          zIndex: -1,
+          zIndex: -20,
           transition: "transform 0.9s ease-out",
           transform: `scale(${mousePosition.scale})`,
         }}
