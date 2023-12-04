@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Card, Paper, Typography, styled } from "@mui/material";
-import { Thought } from "@/app/page";
+import { Box, Card, Typography } from "@mui/material";
+import { Thoughts } from "@prisma/client";
 
 interface ThoughtPageProps {
-  thought: Thought;
+  thought: Thoughts;
 }
 
 const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
@@ -14,14 +14,11 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
         width: "65%",
         margin: "30px auto",
         boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.2)",
-
-        backgroundColor: "#faf7f4", // Solid off-white color, no transparency
+        backgroundColor: "#faf7f4",
         border: "1px solid #ddd",
-
         background: `
-          repeating-linear-gradient(0deg, #fdfdfd, #fdfdfd 1px, rgba(0, 0, 0, 0.02) 1px, rgba(0, 0, 0, 0.02) 2px)`, // Subtle texture with no transparency
+          repeating-linear-gradient(0deg, #fdfdfd, #fdfdfd 1px, rgba(0, 0, 0, 0.02) 1px, rgba(0, 0, 0, 0.02) 2px)`,
         "&:before": {
-          // Inset shadow for curled edge effect
           position: "absolute",
           top: 0,
           left: 0,
@@ -32,6 +29,28 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
       }}
       id="CardThoughtPage"
     >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 20px",
+          backgroundColor: "#faf7f4",
+        }}
+      >
+        <Box sx={{ backgroundColor: "#faf7f4", flex: 1, textAlign: "center" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            {thought.title}
+          </Typography>
+        </Box>
+        <Typography variant="h6" sx={{ flexShrink: 0, backgroundColor: "#faf7f4" }}>
+          {new Date(thought.createdAt).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
+        </Typography>
+      </Box>
       <Box
         dangerouslySetInnerHTML={{ __html: thought.content }}
         id="BoxWithContent"
@@ -46,6 +65,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
             textDecoration: "none",
             color: "black",
           },
+          padding: "20px",
         }}
       />
     </Card>

@@ -7,16 +7,11 @@ import BackgroundImageContainer from "@/components/background/background";
 import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
 import PaperPage from "@/components/page/pageSection/paperPage";
 import ThoughtPage from "@/components/page/thoughtPage";
-
-export interface Thought {
-  title: string;
-  content: string;
-  createdOn: Date;
-}
+import { Thoughts } from "@prisma/client";
 
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
-  const [thoughts, setThoughts] = useState<Thought[]>([]);
+  const [thoughts, setThoughts] = useState<Thoughts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { mousePosition, handleMouseMove } = useMouseMove();
 
