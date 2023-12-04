@@ -3,8 +3,8 @@ import React, { useState } from "react";
 
 import { Box } from "@mui/material";
 
-import PostEditor from "@/components/postEditor/postEditor";
 import BackgroundImageContainer from "@/components/background/background";
+import PostEditor from "@/components/postEditor/postEditor";
 
 const AddPostPage = () => {
   return (
