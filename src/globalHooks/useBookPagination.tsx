@@ -18,12 +18,32 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
     const parser = new DOMParser();
     return parser.parseFromString(content, "text/html");
   };
+  const contentStyle = {
+    fontSize: "16px", // Adjust as per your main component's style
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', // Example font family
+  };
+  // const createTempContainer = (): HTMLDivElement => {
+  //   const tempContainer = document.createElement("div");
+  //   tempContainer.style.visibility = "hidden";
+  //   tempContainer.style.fontSize = contentStyle.fontSize;
+  //   tempContainer.style.fontFamily = contentStyle.fontFamily;
+  //   document.body.appendChild(tempContainer);
+  //   return tempContainer;
+  // };
   const createTempContainer = (): HTMLDivElement => {
+    //visible container
     const tempContainer = document.createElement("div");
-    tempContainer.style.visibility = "hidden";
+    tempContainer.style.position = "fixed";
+    tempContainer.style.top = "10px"; // Adjust as needed
+    tempContainer.style.left = "10px"; // Adjust as needed
+    tempContainer.style.border = "1px solid red"; // For visibility
+    tempContainer.style.backgroundColor = "lightgrey"; // For visibility
+    tempContainer.style.maxWidth = "500px"; // Limit size
+    tempContainer.style.zIndex = "1000"; // To ensure it's on top
     document.body.appendChild(tempContainer);
     return tempContainer;
   };
+
   const createAndRenderRoot = (container: HTMLDivElement, jsxElement: JSX.Element) => {
     try {
       const root = createRoot(container);
@@ -43,6 +63,58 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
       }
     });
   };
+  function splitHTMLContent(htmlContent: string, splitIndex: number): [string, string] {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const body = doc.body;
+
+    const traverseAndSplit = (node: ChildNode, currentIndex: number): [number, boolean] => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const textContent = node.textContent || "";
+        const length = textContent.length;
+
+        if (currentIndex + length > splitIndex && currentIndex <= splitIndex) {
+          // Split point found within this text node
+          const splitPoint = splitIndex - currentIndex;
+          const part1 = textContent.substring(0, splitPoint);
+          const part2 = textContent.substring(splitPoint);
+
+          node.textContent = part1;
+          const newNode = document.createTextNode(part2);
+          if (node.nextSibling) {
+            node.parentNode?.insertBefore(newNode, node.nextSibling);
+          } else {
+            node.parentNode?.appendChild(newNode);
+          }
+
+          return [currentIndex + length, true];
+        }
+
+        return [currentIndex + length, false];
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const children = Array.from(node.childNodes);
+        for (const child of children) {
+          const [newIndex, splitOccurred] = traverseAndSplit(child, currentIndex);
+          currentIndex = newIndex;
+          if (splitOccurred) {
+            // Split the element node
+            const clonedNode = (node as Element).cloneNode(false); // clone without children
+            while (child.nextSibling) {
+              clonedNode.appendChild(child.nextSibling);
+            }
+            node.parentNode?.insertBefore(clonedNode, node.nextSibling);
+            return [currentIndex, true];
+          }
+        }
+      }
+
+      return [currentIndex, false];
+    };
+
+    traverseAndSplit(body, 0);
+
+    return [body.innerHTML, body.nextSibling instanceof Element ? body.nextSibling.outerHTML : ""];
+  }
 
   const finalizePage = (
     accumulatedNodes: ChildNode[],
@@ -143,7 +215,7 @@ export function useBookPagination(thoughts: Thought[], setThoughts: React.Dispat
 
       let accumulatedHeight = 0;
       let accumulatedNodes: ChildNode[] = [];
-      const padding = 0.2;
+      const padding = 0.25;
       const tempContainer = createTempContainer();
 
       try {
