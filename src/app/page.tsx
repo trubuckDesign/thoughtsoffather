@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import useMouseMove from "@/globalHooks/useMouseMove";
 import JournalButton from "@/components/buttons/journalButton";
-import { BookContainer } from "@/components/book/bookContainer";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
 import BackgroundImageContainer from "@/components/background/background";
