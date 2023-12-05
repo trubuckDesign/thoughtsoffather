@@ -31,7 +31,8 @@
     "react-dom": "^18",
     "react-measure": "^2.5.2",
     "react-spring": "^9.7.3",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "tinify": "^1.7.1"
   },
   "devDependencies": {
     "@types/base-64": "^1.0.2",

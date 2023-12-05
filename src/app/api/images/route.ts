@@ -5,17 +5,48 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: Request): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
-    const filename = searchParams.get("filename") ?? "image.png";
+    const filename = searchParams.get("filename") ?? "optimized_image.png";
+
     if (request.body && filename) {
-      const blob = await put(filename, request.body, {
+      // Buffer the request body
+      const requestBodyBuffer = await request.arrayBuffer();
+      const imageBuffer = Buffer.from(requestBodyBuffer);
+
+      // Send to Tinify for optimization
+      const tinifyUrl = "https://api.tinify.com/shrink";
+      const authHeader = "Basic " + Buffer.from(`api:${process.env.TINIFY_API_KEY}`).toString("base64");
+
+      const tinifyResponse = await fetch(tinifyUrl, {
+        method: "POST",
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/octet-stream",
+        },
+        body: imageBuffer,
+      });
+
+      if (!tinifyResponse.ok) {
+        throw new Error(`Tinify API responded with status: ${tinifyResponse.status}`);
+      }
+
+      const tinifyData = await tinifyResponse.json();
+      console.log(tinifyData);
+      // Download the optimized image
+      const optimizedImageResponse = await fetch(tinifyData.output.url);
+      const optimizedImageBuffer = await optimizedImageResponse.arrayBuffer();
+
+      // Upload the optimized image to Vercel Blob
+      const optimizedBlob = await put(filename, Buffer.from(optimizedImageBuffer), {
         access: "public",
       });
-      return NextResponse.json(blob);
+
+      return NextResponse.json(optimizedBlob);
     }
+
     return NextResponse.json({ message: "nothing there" }, { status: 404 });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ message: "Server Error with uploading Image" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ message: "Server Error with uploading and optimizing Image" }, { status: 500 });
   }
 }
 
