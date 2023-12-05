@@ -75,14 +75,13 @@ const PostEditor: React.FC = () => {
       // Handle failure (e.g., showing an error message)
     }
   };
-
   return (
     <Box>
       <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} fullWidth margin="normal" />
       <Editor
         onInit={(evt, editor) => (editorRef.current = editor)}
         initialValue=""
-        apiKey={process.env.TINYMCE_KEY} // Access the API key from the environment variable
+        apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY} // Access the API key from the environment variable
         init={{
           height: "50vh",
           width: "50vw",
