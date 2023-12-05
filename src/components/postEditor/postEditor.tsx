@@ -75,6 +75,8 @@ const PostEditor: React.FC = () => {
       // Handle failure (e.g., showing an error message)
     }
   };
+  console.log("TINYMCE KEY Exists:", Boolean(process.env.NEXT_PUBLIC_TINYMCE_KEY));
+
   return (
     <Box>
       <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} fullWidth margin="normal" />
