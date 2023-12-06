@@ -8,8 +8,7 @@ import BackgroundImageContainer from "@/components/background/background";
 import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
 import ThoughtPage from "@/components/page/thoughtPage";
 import { Thoughts } from "@prisma/client";
-import { debounce } from "lodash";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -17,7 +16,7 @@ const PRIOR_POST_COUNT = 3;
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
   const [thoughts, setThoughts] = useState<Thoughts[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
   const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
@@ -31,6 +30,7 @@ const LandingPage = () => {
   const fetchMoreData = async () => {
     console.log("hasMore", hasMore);
     if (!hasMore) return;
+    setIsLoading(true); // Set isLoading to true at the beginning of data fetch
 
     // Using the ID of the last post to determine the start of the next fetch
     const lastPostId = thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId : 0;
@@ -42,8 +42,16 @@ const LandingPage = () => {
       setHasMore(data.posts.length === POSTS_PER_PAGE);
     } catch (error) {
       console.error("Error loading more posts:", error);
+    } finally {
+      setIsLoading(false); // Set isLoading to true at the beginning of data fetch
     }
   };
+
+  const { setTarget } = useInfiniteScroll({
+    isLoading,
+    hasMore,
+    onLoadMore: fetchMoreData,
+  });
 
   useEffect(() => {
     console.log("InitialData:");
@@ -59,29 +67,17 @@ const LandingPage = () => {
       </CSSTransition>
 
       <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-        {/* Ensure this container can scroll */}
-        <Box
-          sx={{
-            overflowY: "auto", // Enable vertical scrolling
-            maxHeight: "95vh", // Adjust as needed
-            width: "100vw",
-            padding: "20px 0", // Add vertical padding for aesthetics
-          }}
-        >
-          <InfiniteScroll
-            dataLength={thoughts.length}
-            next={() => fetchMoreData()}
-            hasMore={hasMore}
-            loader={<HandwritingSpinner />}
-            endMessage={<p style={{ textAlign: "center" }}>You have seen it all!</p>}
-            style={{ width: "100%", overflow: "hidden" }} // Ensure the InfiniteScroll itself does not scroll
-          >
-            {thoughts.map((thought, index) => (
-              <Box key={index}>
-                <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
-              </Box>
-            ))}
-          </InfiniteScroll>
+        <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
+          {thoughts.map((thought, index) => (
+            <Box key={index}>
+              <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+            </Box>
+          ))}
+          {hasMore && (
+            <div ref={(el) => setTarget(el)}>
+              <HandwritingSpinner />
+            </div>
+          )}
         </Box>
       </CSSTransition>
     </BackgroundImageContainer>
