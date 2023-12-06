@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
-import useMouseMove from "@/globalHooks/useMouseMove";
 import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
@@ -11,92 +10,83 @@ import ThoughtPage from "@/components/page/thoughtPage";
 import { Thoughts } from "@prisma/client";
 
 const POSTS_PER_PAGE = 5;
+const PRIOR_POST_COUNT = 3;
 
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
   const [thoughts, setThoughts] = useState<Thoughts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { mousePosition, handleMouseMove } = useMouseMove();
-  const [page, setPage] = useState(1); // Pagination control
-  const loaderRef = useRef(null); // Reference for the observer element
-  const [loadingMore, setLoadingMore] = useState(false); // State to track loading of additional posts
+  const loaderRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
+  const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
 
   const handleBookClick = () => {
     setOpen(!isOpen);
   };
 
-  // Add to the LandingPage component
   useEffect(() => {
-    const savedPosition = localStorage.getItem("readingPosition");
-    if (savedPosition) {
-      // Logic to scroll to the saved position
-    }
-  }, []);
+    const lastReadThoughtIdString = localStorage.getItem("lastReadThoughtId") || "1";
+    let lastReadThoughtId = parseInt(lastReadThoughtIdString);
+    setLastVisiblePostId(lastReadThoughtId);
 
-  const handleScroll = () => {
-    const position = window.scrollY;
-    localStorage.setItem("readingPosition", position.toString());
-  };
+    const loadInitialPosts = async () => {
+      setIsLoading(true);
+      try {
+        let url = `/api/thoughts?startId=${lastReadThoughtId}&thoughtCount=${POSTS_PER_PAGE}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        setThoughts(data.posts);
+        setHasMore(data.hasMore);
+      } catch (error) {
+        console.error("Error loading initial posts:", error);
+      }
+      setIsLoading(false);
+    };
 
-  // Add an event listener for scroll
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  //---initial load
+    loadInitialPosts();
 
-  useEffect(() => {
-    // Function to check if the loader is visible and load more posts
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prevPage) => prevPage + 1);
+        const firstEntry = entries[0];
+        console.log("Observer triggered", firstEntry.isIntersecting);
+        if (firstEntry.isIntersecting && hasMore) {
+          loadMorePosts("down");
         }
       },
-      {
-        rootMargin: "200px", // Load more before reaching the bottom
-      }
+      { threshold: 0.1, rootMargin: "100px" } // Adjust rootMargin as needed
     );
 
     if (loaderRef.current) {
       observer.observe(loaderRef.current);
     }
 
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, []);
+    return () => observer.disconnect();
+  }, [hasMore]);
 
-  useEffect(() => {
-    // Function to fetch more thoughts when the page number changes
-    const fetchMoreThoughts = async () => {
-      if (!hasMore) return;
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/thoughts?page=${page}&pageCount=${POSTS_PER_PAGE}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setThoughts((prevThoughts) => [...prevThoughts, ...data.posts]);
-      } catch (error) {
-        console.error("Failed to fetch thoughts", error);
+  const loadMorePosts = async (direction: string) => {
+    setIsLoading(true);
+    try {
+      let url = `/api/thoughts?direction=${direction}&startId=${lastVisiblePostId}&thoughtCount=${POSTS_PER_PAGE}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const newPosts: Thoughts[] = data.posts.filter(
+        (post: Thoughts) => !thoughts.some((existingPost: Thoughts) => existingPost.thoughtId === post.thoughtId)
+      );
+
+      // Sort newPosts by createdAt date
+      newPosts.sort((a: Thoughts, b: Thoughts) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+      if (direction === "down") {
+        setThoughts((prevThoughts) => [...prevThoughts, ...newPosts]);
+      } else {
+        setThoughts((prevThoughts) => [...newPosts, ...prevThoughts]);
       }
-      setIsLoading(false);
-    };
-    console.log("pageHasMore", page, hasMore);
-    if (page > 0) {
-      fetchMoreThoughts();
+      setHasMore(data.hasMore);
+    } catch (error) {
+      console.error("Error loading more posts:", error);
     }
-  }, [page]);
+    setIsLoading(false);
+  };
 
   return (
     <BackgroundImageContainer>
@@ -110,16 +100,19 @@ const LandingPage = () => {
         <HandwritingSpinner />
       ) : (
         <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-          <Box
-            id="pageBoxContainer"
-            sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflowY: "auto", maxHeight: "95vh", width: "100vw" }}
-          >
-            <Box>
+          <>
+            <Box
+              id="pageBoxContainer"
+              sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflowY: "auto", maxHeight: "95vh", width: "100vw" }}
+            >
               {thoughts.map((thought, index) => (
-                <ThoughtPage key={index} thought={thought} />
+                <Box key={index}>
+                  <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+                </Box>
               ))}
             </Box>
-          </Box>
+            <div ref={loaderRef} style={{ height: "20px", margin: "10px", backgroundColor: "red" }}></div>
+          </>
         </CSSTransition>
       )}
     </BackgroundImageContainer>

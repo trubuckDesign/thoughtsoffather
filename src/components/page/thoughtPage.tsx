@@ -1,12 +1,30 @@
 import React, { useEffect } from "react";
 import { Box, Card, Typography } from "@mui/material";
 import { Thoughts } from "@prisma/client";
+import { useOnScreen } from "@/globalHooks/useOnScreen";
+import { debounce } from "lodash";
 
 interface ThoughtPageProps {
   thought: Thoughts;
+  setLastVisiblePostId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
+const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId }) => {
+  const [ref, isIntersecting] = useOnScreen({ threshold: 0.5 });
+
+  useEffect(() => {
+    const debounceSaveLastRead = debounce((id) => {
+      localStorage.setItem("lastReadThoughtId", id.toString());
+      setLastVisiblePostId(id);
+      console.log("POST ID Visible: ", id);
+    }, 5000); // Adjust debounce timing as needed
+
+    if (isIntersecting) {
+      console.log(`ThoughtPage ${thought.thoughtId} is visible.`);
+      debounceSaveLastRead(thought.thoughtId);
+    }
+  }, [isIntersecting, thought.thoughtId]);
+
   const modifyHTMLContent = (htmlContent: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
@@ -32,6 +50,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought }) => {
 
   return (
     <Card
+      ref={ref} // Attach the ref here
       elevation={3}
       sx={{
         width: "65%",
