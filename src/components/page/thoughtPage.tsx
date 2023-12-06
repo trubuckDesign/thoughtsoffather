@@ -16,11 +16,9 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId
     const debounceSaveLastRead = debounce((id) => {
       localStorage.setItem("lastReadThoughtId", id.toString());
       setLastVisiblePostId(id);
-      console.log("POST ID Visible: ", id);
     }, 5000); // Adjust debounce timing as needed
 
     if (isIntersecting) {
-      console.log(`ThoughtPage ${thought.thoughtId} is visible.`);
       debounceSaveLastRead(thought.thoughtId);
     }
   }, [isIntersecting, thought.thoughtId]);
@@ -53,8 +51,8 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId
       ref={ref} // Attach the ref here
       elevation={3}
       sx={{
-        width: "65%",
-        margin: "100px auto",
+        width: "80%",
+        margin: "50px auto",
         boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.2)",
         backgroundColor: "#faf7f4",
         border: "1px solid #ddd",

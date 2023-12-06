@@ -1,21 +1,12 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import useMouseMove from "@/globalHooks/useMouseMove";
+import React from "react";
 
-const LandingPage = () => {
+const LandingPageTest = () => {
   return (
-    <Box
-      sx={{
-        position: "relative",
-        height: "100vh",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    ></Box>
+    <div style={{ height: "100vh", overflow: "auto", background: "lightblue" }}>
+      <h1>Test Component</h1>
+      <p>If this text is visible, the component is rendering correctly.</p>
+    </div>
   );
 };
 
-export default LandingPage;
+export default LandingPageTest;
