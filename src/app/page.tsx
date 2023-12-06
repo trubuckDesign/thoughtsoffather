@@ -30,6 +30,7 @@ const LandingPage = () => {
     setLastVisiblePostId(lastReadThoughtId);
 
     const loadInitialPosts = async () => {
+      console.log("Loading initial posts...");
       setIsLoading(true);
       try {
         let url = `/api/thoughts?startId=${lastReadThoughtId}&thoughtCount=${POSTS_PER_PAGE}`;
@@ -45,25 +46,36 @@ const LandingPage = () => {
 
     loadInitialPosts();
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const firstEntry = entries[0];
-        console.log("Observer triggered", firstEntry.isIntersecting);
-        if (firstEntry.isIntersecting && hasMore) {
-          loadMorePosts("down");
-        }
-      },
-      { threshold: 0.1, rootMargin: "100px" } // Adjust rootMargin as needed
-    );
+    const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      console.log("Observer callback called", entries, observer);
+      if (entries[0].isIntersecting && hasMore) {
+        console.log("Loading more posts...");
+        loadMorePosts("down");
+      }
+    };
+
+    const observerOptions = {
+      root: null, // observing in relation to the viewport
+      rootMargin: "0px",
+      threshold: 0.1, // trigger when 10% of the loaderRef is visible
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     if (loaderRef.current) {
+      console.log("Observing loaderRef");
       observer.observe(loaderRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
   }, [hasMore]);
 
   const loadMorePosts = async (direction: string) => {
+    console.log(`Loading more posts in direction: ${direction}`);
     setIsLoading(true);
     try {
       let url = `/api/thoughts?direction=${direction}&startId=${lastVisiblePostId}&thoughtCount=${POSTS_PER_PAGE}`;
@@ -73,13 +85,11 @@ const LandingPage = () => {
         (post: Thoughts) => !thoughts.some((existingPost: Thoughts) => existingPost.thoughtId === post.thoughtId)
       );
 
-      // Sort newPosts by createdAt date
-      newPosts.sort((a: Thoughts, b: Thoughts) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      console.log("New posts loaded:", newPosts);
 
       if (direction === "down") {
         setThoughts((prevThoughts) => [...prevThoughts, ...newPosts]);
-      } else {
-        setThoughts((prevThoughts) => [...newPosts, ...prevThoughts]);
+        setLastVisiblePostId(newPosts[newPosts.length - 1]?.thoughtId); // Update the lastVisiblePostId
       }
       setHasMore(data.hasMore);
     } catch (error) {
