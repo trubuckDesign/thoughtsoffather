@@ -8,6 +8,7 @@ import BackgroundImageContainer from "@/components/background/background";
 import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
 import ThoughtPage from "@/components/page/thoughtPage";
 import { Thoughts } from "@prisma/client";
+import { debounce } from "lodash";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -19,9 +20,24 @@ const LandingPage = () => {
   const loaderRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
   const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
+  const [startPostId, setStartPostId] = useState(1);
+  const [endPostId, setEndPostId] = useState(5);
 
   const handleBookClick = () => {
     setOpen(!isOpen);
+  };
+
+  // Debounced load more posts function
+  const debounceLoadMorePosts = debounce((direction: string) => {
+    setLastVisiblePostId((lastPostId) => lastPostId + POSTS_PER_PAGE);
+  }, 300);
+
+  const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+    console.log("Observer callback called", entries, observer);
+    if (entries[0].isIntersecting && hasMore) {
+      console.log("Loading more posts...");
+      debounceLoadMorePosts("down");
+    }
   };
 
   useEffect(() => {
@@ -78,18 +94,27 @@ const LandingPage = () => {
     console.log(`Loading more posts in direction: ${direction}`);
     setIsLoading(true);
     try {
-      let url = `/api/thoughts?direction=${direction}&startId=${lastVisiblePostId}&thoughtCount=${POSTS_PER_PAGE}`;
+      let url = `/api/thoughts?startId=${lastVisiblePostId}&thoughtCount=${POSTS_PER_PAGE}`;
       const response = await fetch(url);
       const data = await response.json();
       const newPosts: Thoughts[] = data.posts.filter(
         (post: Thoughts) => !thoughts.some((existingPost: Thoughts) => existingPost.thoughtId === post.thoughtId)
       );
 
-      console.log("New posts loaded:", newPosts);
+      if (newPosts.length > 0) {
+        const ids = newPosts.map((post: Thoughts) => post.thoughtId);
+        const minId = Math.min(...ids);
+        const maxId = Math.max(...ids);
+
+        // Update startPostId and endPostId
+        setStartPostId(minId);
+        setEndPostId(maxId);
+      }
 
       if (direction === "down") {
-        setThoughts((prevThoughts) => [...prevThoughts, ...newPosts]);
-        setLastVisiblePostId(newPosts[newPosts.length - 1]?.thoughtId); // Update the lastVisiblePostId
+        setThoughts([...thoughts, ...data.posts]);
+      } else {
+        setThoughts([...data.posts, ...thoughts]);
       }
       setHasMore(data.hasMore);
     } catch (error) {
@@ -97,6 +122,18 @@ const LandingPage = () => {
     }
     setIsLoading(false);
   };
+  useEffect(() => {
+    // Function to determine the direction based on the distance to start and end post IDs
+    const determineDirection = () => {
+      const distanceToStart = Math.abs(lastVisiblePostId - startPostId);
+      const distanceToEnd = Math.abs(lastVisiblePostId - endPostId);
+      return distanceToStart < distanceToEnd ? "down" : "up";
+    };
+
+    // Call loadMorePosts with the appropriate direction
+    const direction = determineDirection();
+    loadMorePosts(direction);
+  }, [lastVisiblePostId, isOpen]);
 
   return (
     <BackgroundImageContainer>
