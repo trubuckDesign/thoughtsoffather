@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
@@ -11,6 +11,7 @@ import { Thoughts } from "@prisma/client";
 import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
 import ContinueReadingDialog from "@/components/dialogs/lastPostDialog";
 import axios from "axios";
+import TimelineBar from "@/components/timeline/timeline";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -98,56 +99,72 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch timeline data from the API
-    const fetchData = async () => {
+    const fetchTimelineData = async () => {
       try {
-        const response = await axios.get<TimelineData[]>("/api/thoughts/timeline");
-        setTimelineData(response.data);
+        const response = await fetch("/api/thoughts/timeline");
+        const data = await response.json();
+
+        // Log the data to check its structure
+        console.log(data);
+
+        if (Array.isArray(data)) {
+          setTimelineData(data);
+        } else {
+          // Handle the case where data is not an array
+          console.error("Timeline data is not an array:", data);
+        }
       } catch (error) {
         console.error("Error fetching timeline data:", error);
-        // Handle error appropriately
       }
     };
 
-    fetchData();
+    fetchTimelineData();
   }, []);
+
   return (
     <BackgroundImageContainer>
-      <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
-        <Box sx={{ position: "absolute" }}>
-          <JournalButton handleClick={handleBookClick} />
-        </Box>
-      </CSSTransition>
+      <Grid container>
+        <Grid item xs={1} md={1}>
+          <TimelineBar data={timelineData} />
+        </Grid>
+        <Grid item xs={11} md={11}>
+          <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
+            <Box sx={{ position: "absolute" }}>
+              <JournalButton handleClick={handleBookClick} />
+            </Box>
+          </CSSTransition>
 
-      <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-        <>
-          <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
-            {showStartFromBeginningButton && (
-              <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
-                <Button variant="contained" onClick={resetAndFetchFromStart}>
-                  Start from Beginning
-                </Button>
+          <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
+            <>
+              <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
+                {showStartFromBeginningButton && (
+                  <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
+                    <Button variant="contained" onClick={resetAndFetchFromStart}>
+                      Start from Beginning
+                    </Button>
+                  </Box>
+                )}
+                {thoughts.map((thought, index) => (
+                  <Box key={index}>
+                    <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+                  </Box>
+                ))}
+                {hasMore && (
+                  <div ref={(el) => setTarget(el)}>
+                    <HandwritingSpinner />
+                  </div>
+                )}
               </Box>
-            )}
-            {thoughts.map((thought, index) => (
-              <Box key={index}>
-                <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
-              </Box>
-            ))}
-            {hasMore && (
-              <div ref={(el) => setTarget(el)}>
-                <HandwritingSpinner />
-              </div>
-            )}
-          </Box>
-        </>
-      </CSSTransition>
-      <ContinueReadingDialog
-        continueFromLastRead={continueFromLastRead}
-        setShowContinuePrompt={setShowContinuePrompt}
-        showContinuePrompt={showContinuePrompt}
-        startFromBeginning={startFromBeginning}
-      />
+            </>
+          </CSSTransition>
+          <ContinueReadingDialog
+            continueFromLastRead={continueFromLastRead}
+            setShowContinuePrompt={setShowContinuePrompt}
+            showContinuePrompt={showContinuePrompt}
+            startFromBeginning={startFromBeginning}
+          />
+        </Grid>
+      </Grid>
     </BackgroundImageContainer>
   );
 };

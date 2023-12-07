@@ -1,27 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../../prisma/prismaClient";
 
+interface GroupedData {
+  [key: string]: {
+    year: number;
+    month: string;
+    count: number;
+  };
+}
+
 export async function GET(req: NextRequest) {
   try {
-    const timelineData = await prisma.thoughts.groupBy({
-      by: ["createdAt"],
-      _count: {
-        thoughtId: true,
-      },
-      orderBy: {
-        createdAt: "asc",
+    const thoughts = await prisma.thoughts.findMany({
+      select: {
+        createdAt: true,
       },
     });
 
-    // Transform the data into the desired format
-    const formattedData = timelineData.map((entry) => {
-      const date = new Date(entry.createdAt);
-      return {
-        year: date.getFullYear(),
-        month: date.toLocaleString("default", { month: "long" }),
-        count: entry._count.thoughtId,
-      };
-    });
+    // Group and count thoughts by year and month
+    const groupedData = thoughts.reduce<GroupedData>((acc, { createdAt }) => {
+      const year = createdAt.getFullYear();
+      const month = createdAt.toLocaleString("default", { month: "long" });
+      const key = `${year}-${month}`;
+
+      if (!acc[key]) {
+        acc[key] = { year, month, count: 1 };
+      } else {
+        acc[key].count++;
+      }
+
+      return acc;
+    }, {});
+
+    const formattedData = Object.values(groupedData);
     return NextResponse.json(
       {
         formattedData,
