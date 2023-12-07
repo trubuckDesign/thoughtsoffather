@@ -6,13 +6,20 @@ import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
 import BackgroundImageContainer from "@/components/background/background";
 import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
-import ThoughtPage from "@/components/page/thoughtPage";
+import ThoughtPage from "@/components/thoughtPage/thoughtPage";
 import { Thoughts } from "@prisma/client";
 import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
 import ContinueReadingDialog from "@/components/dialogs/lastPostDialog";
+import axios from "axios";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
+
+interface TimelineData {
+  year: number;
+  month: string;
+  count: number;
+}
 
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
@@ -23,6 +30,7 @@ const LandingPage = () => {
 
   const [hasMore, setHasMore] = useState(true);
   const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
+  const [timelineData, setTimelineData] = useState<TimelineData[]>([]);
 
   const continueFromLastRead = async () => {
     setShowContinuePrompt(false);
@@ -46,16 +54,6 @@ const LandingPage = () => {
     setLastVisiblePostId(1); // Reset last visible post ID
     await fetchMoreData(1); // Fetch from the first post
   };
-
-  useEffect(() => {
-    const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
-    setLastVisiblePostId(lastReadPostId);
-    if (lastReadPostId) {
-      setShowContinuePrompt(true); // Show prompt if there's a last read post ID
-    } else {
-      fetchMoreData(); // Initial data load
-    }
-  }, []);
 
   const handleBookClick = () => {
     setOpen(!isOpen);
@@ -89,6 +87,30 @@ const LandingPage = () => {
     onLoadMore: fetchMoreData,
   });
 
+  useEffect(() => {
+    const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
+    setLastVisiblePostId(lastReadPostId);
+    if (lastReadPostId) {
+      setShowContinuePrompt(true); // Show prompt if there's a last read post ID
+    } else {
+      fetchMoreData(); // Initial data load
+    }
+  }, []);
+
+  useEffect(() => {
+    // Fetch timeline data from the API
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<TimelineData[]>("/api/thoughts/timeline");
+        setTimelineData(response.data);
+      } catch (error) {
+        console.error("Error fetching timeline data:", error);
+        // Handle error appropriately
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <BackgroundImageContainer>
       <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>

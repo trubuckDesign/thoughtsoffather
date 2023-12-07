@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        message: "There was an issue with saving the useraccount",
+        message: "There was an issue with loading the thoughts",
         error: error,
       },
       { status: 500 }
