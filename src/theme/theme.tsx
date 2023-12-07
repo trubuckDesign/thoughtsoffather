@@ -25,7 +25,7 @@ const theme = createTheme({
       fontSize: "3rem", // Secondary header for large screens
     },
     body1: {
-      fontSize: "2rem", // Body text for large screens
+      fontSize: "1.40rem", // Body text for large screens
     },
     // Add other typography variants as needed
   },
@@ -47,30 +47,14 @@ const theme = createTheme({
           html {
             font-size: 90%;
           }
-          .MuiTypography-h1 {
-            font-size: 2.25rem;
-          }
-          .MuiTypography-h2 {
-            font-size: 1.75rem;
-          }
-          .MuiTypography-body1 {
-            font-size: 0.9rem;
-          }
+         
         }
 
         @media (max-width: ${breakpoints.values.sm}px) {
           html {
             font-size: 80%;
           }
-          .MuiTypography-h1 {
-            font-size: 2rem;
-          }
-          .MuiTypography-h2 {
-            font-size: 1.5rem;
-          }
-          .MuiTypography-body1 {
-            font-size: 0.8rem;
-          }
+        
         }
       `,
     },
