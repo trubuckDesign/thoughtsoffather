@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
       select: {
         createdAt: true,
       },
+      orderBy: { createdAt: "asc" },
     });
 
     // Group and count thoughts by year and month

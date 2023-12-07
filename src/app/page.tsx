@@ -105,10 +105,10 @@ const LandingPage = () => {
         const data = await response.json();
 
         // Log the data to check its structure
-        console.log(data);
+        console.log(data.formattedData);
 
-        if (Array.isArray(data)) {
-          setTimelineData(data);
+        if (Array.isArray(data.formattedData)) {
+          setTimelineData(data.formattedData);
         } else {
           // Handle the case where data is not an array
           console.error("Timeline data is not an array:", data);
@@ -123,48 +123,42 @@ const LandingPage = () => {
 
   return (
     <BackgroundImageContainer>
-      <Grid container>
-        <Grid item xs={1} md={1}>
-          <TimelineBar data={timelineData} />
-        </Grid>
-        <Grid item xs={11} md={11}>
-          <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
-            <Box sx={{ position: "absolute" }}>
-              <JournalButton handleClick={handleBookClick} />
-            </Box>
-          </CSSTransition>
+      <TimelineBar data={timelineData} />
+      <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
+        <Box sx={{ position: "absolute" }}>
+          <JournalButton handleClick={handleBookClick} />
+        </Box>
+      </CSSTransition>
 
-          <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-            <>
-              <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
-                {showStartFromBeginningButton && (
-                  <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
-                    <Button variant="contained" onClick={resetAndFetchFromStart}>
-                      Start from Beginning
-                    </Button>
-                  </Box>
-                )}
-                {thoughts.map((thought, index) => (
-                  <Box key={index}>
-                    <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
-                  </Box>
-                ))}
-                {hasMore && (
-                  <div ref={(el) => setTarget(el)}>
-                    <HandwritingSpinner />
-                  </div>
-                )}
+      <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
+        <>
+          <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
+            {showStartFromBeginningButton && (
+              <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
+                <Button variant="contained" onClick={resetAndFetchFromStart}>
+                  Start from Beginning
+                </Button>
               </Box>
-            </>
-          </CSSTransition>
-          <ContinueReadingDialog
-            continueFromLastRead={continueFromLastRead}
-            setShowContinuePrompt={setShowContinuePrompt}
-            showContinuePrompt={showContinuePrompt}
-            startFromBeginning={startFromBeginning}
-          />
-        </Grid>
-      </Grid>
+            )}
+            {thoughts.map((thought, index) => (
+              <Box key={index}>
+                <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+              </Box>
+            ))}
+            {hasMore && (
+              <div ref={(el) => setTarget(el)}>
+                <HandwritingSpinner />
+              </div>
+            )}
+          </Box>
+        </>
+      </CSSTransition>
+      <ContinueReadingDialog
+        continueFromLastRead={continueFromLastRead}
+        setShowContinuePrompt={setShowContinuePrompt}
+        showContinuePrompt={showContinuePrompt}
+        startFromBeginning={startFromBeginning}
+      />
     </BackgroundImageContainer>
   );
 };
