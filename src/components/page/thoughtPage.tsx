@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Box, Card, Typography } from "@mui/material";
 import { Thoughts } from "@prisma/client";
 import { useOnScreen } from "@/globalHooks/useOnScreen";
@@ -9,7 +9,11 @@ interface ThoughtPageProps {
   setLastVisiblePostId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId }) => {
+const areEqual = (prevProps: ThoughtPageProps, nextProps: ThoughtPageProps) => {
+  return prevProps.thought.thoughtId === nextProps.thought.thoughtId;
+};
+
+const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisiblePostId }) => {
   const [ref, isIntersecting] = useOnScreen({ threshold: 0.5 });
 
   useEffect(() => {
@@ -26,10 +30,10 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId
   const modifyHTMLContent = (htmlContent: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
-
+    console.log("rendering:", thought.thoughtId);
     const images = doc.getElementsByTagName("img");
     for (const img of Array.from(images)) {
-      const rotation = Math.random() * 10 - 5;
+      const rotation = Math.random() * 10.5 - 5;
       img.style.transform = `rotate(${rotation}deg)`;
       img.style.padding = "10px";
       img.style.backgroundColor = "white";
@@ -44,7 +48,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId
     return doc.body.innerHTML;
   };
 
-  const modifiedContent = modifyHTMLContent(thought.content);
+  const modifiedContent = useMemo(() => modifyHTMLContent(thought.content), [thought.content]);
 
   return (
     <Card
@@ -113,6 +117,6 @@ const ThoughtPage: React.FC<ThoughtPageProps> = ({ thought, setLastVisiblePostId
       />
     </Card>
   );
-};
+}, areEqual);
 
 export default ThoughtPage;

@@ -18,7 +18,7 @@ export const useOnScreen = (options?: IntersectionObserverInit): [RefObject<HTML
         observer.unobserve(ref.current);
       }
     };
-  }, [ref, options]);
+  }, [options]);
 
   return [ref, isIntersecting];
 };
