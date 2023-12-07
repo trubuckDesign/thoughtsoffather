@@ -12,14 +12,12 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore }: UseInfinit
 
   useEffect(() => {
     if (isLoading) {
-      console.log("Loading in progress, observer not set");
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          console.log("Bottom reached, calling onLoadMore");
           onLoadMore();
         }
       },
@@ -30,7 +28,6 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore }: UseInfinit
     );
 
     if (target) {
-      console.log("Observing target");
       observer.observe(target);
     }
 
