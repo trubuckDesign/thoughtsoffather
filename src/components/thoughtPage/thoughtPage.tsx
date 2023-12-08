@@ -14,13 +14,13 @@ const areEqual = (prevProps: ThoughtPageProps, nextProps: ThoughtPageProps) => {
 };
 
 const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisiblePostId }) => {
-  const [ref, isIntersecting] = useOnScreen({ threshold: 0.5 });
+  const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 0.5, 0.75, 1] });
 
   useEffect(() => {
     const debounceSaveLastRead = debounce((id) => {
       localStorage.setItem("lastReadThoughtId", id.toString());
       setLastVisiblePostId(id);
-    }, 5000); // Adjust debounce timing as needed
+    }, 1000); // Adjust debounce timing as needed
 
     if (isIntersecting) {
       debounceSaveLastRead(thought.thoughtId);
@@ -30,7 +30,6 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
   const modifyHTMLContent = (htmlContent: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
-    console.log("rendering:", thought.thoughtId);
     const images = doc.getElementsByTagName("img");
     for (const img of Array.from(images)) {
       const rotation = Math.random() * 10.5 - 5;

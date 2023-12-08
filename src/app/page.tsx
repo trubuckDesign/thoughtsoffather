@@ -12,6 +12,7 @@ import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
 import ContinueReadingDialog from "@/components/dialogs/lastPostDialog";
 import axios from "axios";
 import TimelineBar from "@/components/timeline/timeline";
+import { Moment } from "moment";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -20,6 +21,26 @@ interface TimelineData {
   year: number;
   month: string;
   count: number;
+}
+interface Thought {
+  thoughtId: number;
+  createdAt: string;
+  title: string;
+}
+
+interface DayThought {
+  day: number;
+  thought: Thought;
+}
+
+export interface GroupedThoughts {
+  year: number;
+  month: string;
+  days: DayThought[];
+}
+
+export interface GroupedData {
+  [key: string]: GroupedThoughts;
 }
 
 const LandingPage = () => {
@@ -31,7 +52,9 @@ const LandingPage = () => {
 
   const [hasMore, setHasMore] = useState(true);
   const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
-  const [timelineData, setTimelineData] = useState<TimelineData[]>([]);
+  const [timelineData, setTimelineData] = useState<GroupedData>({});
+  const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
+  const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
 
   const continueFromLastRead = async () => {
     setShowContinuePrompt(false);
@@ -97,22 +120,49 @@ const LandingPage = () => {
       fetchMoreData(); // Initial data load
     }
   }, []);
+  useEffect(() => {
+    if (thoughtSummary && lastVisiblePostId) {
+      const visibleThought = thoughtSummary.find((thought) => thought.thoughtId === lastVisiblePostId);
+      if (visibleThought) {
+        const visibleDate = new Date(visibleThought.createdAt);
+        setCurrentVisibleDate(visibleDate);
+      }
+    }
+  }, [lastVisiblePostId, thoughtSummary]);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
       try {
         const response = await fetch("/api/thoughts/timeline");
-        const data = await response.json();
+        const { thoughtSummary }: { thoughtSummary: Thought[] } = await response.json();
 
+        setThoughtSummary(thoughtSummary);
         // Log the data to check its structure
-        console.log(data.formattedData);
+        const groupThoughtsByDate = (thoughts: Thought[]): GroupedData => {
+          return thoughts.reduce<GroupedData>((acc, thought) => {
+            const createdAt = new Date(thought.createdAt);
+            const year = createdAt.getFullYear();
+            const month = createdAt.toLocaleString("default", { month: "long" });
+            const day = createdAt.getDate();
+            const key = `${year}-${month}`;
 
-        if (Array.isArray(data.formattedData)) {
-          setTimelineData(data.formattedData);
-        } else {
-          // Handle the case where data is not an array
-          console.error("Timeline data is not an array:", data);
-        }
+            if (!acc[key]) {
+              acc[key] = { year, month, days: [{ day, thought }] };
+            } else {
+              // Check if the day already exists in the array
+              if (!acc[key].days.some((d) => d.day === day)) {
+                acc[key].days.push({ day, thought });
+              }
+            }
+
+            return acc;
+          }, {});
+        };
+
+        const formattedData = groupThoughtsByDate(thoughtSummary);
+        console.log("formattedData", formattedData);
+
+        setTimelineData(formattedData);
       } catch (error) {
         console.error("Error fetching timeline data:", error);
       }
@@ -123,7 +173,7 @@ const LandingPage = () => {
 
   return (
     <BackgroundImageContainer>
-      <TimelineBar data={timelineData} />
+      <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
       <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
         <Box sx={{ position: "absolute" }}>
           <JournalButton handleClick={handleBookClick} />
