@@ -19,10 +19,10 @@ const theme = createTheme({
     fontFamily: ["Roboto", "Arial", "sans-serif"].join(","),
     fontSize: 16, // Base font size for large screens
     h1: {
-      fontSize: "4.5rem", // Large header for large screens
+      fontSize: "2.8rem", // Large header for large screens
     },
     h2: {
-      fontSize: "3rem", // Secondary header for large screens
+      fontSize: "1.8rem", // Secondary header for large screens
     },
     body1: {
       fontSize: "1.40rem", // Body text for large screens

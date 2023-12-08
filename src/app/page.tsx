@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Drawer, Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
@@ -10,7 +10,8 @@ import ThoughtPage from "@/components/thoughtPage/thoughtPage";
 import { Thoughts } from "@prisma/client";
 import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
 import ContinueReadingDialog from "@/components/dialogs/lastPostDialog";
-import axios from "axios";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import TimelineBar from "@/components/timeline/timeline";
 import { Moment } from "moment";
 
@@ -55,6 +56,13 @@ const LandingPage = () => {
   const [timelineData, setTimelineData] = useState<GroupedData>({});
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [showTimeline, setShowTimeline] = useState(isMobile);
+
+  const toggleTimeline = () => {
+    setShowTimeline(!showTimeline);
+  };
 
   const continueFromLastRead = async () => {
     setShowContinuePrompt(false);
@@ -174,10 +182,41 @@ const LandingPage = () => {
   return (
     <BackgroundImageContainer>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
-        <Box sx={{ flexGrow: 1, paddingLeft: "160px" }}>
-          {" "}
-          {/* Adjusted padding */}
+        {isMobile && (
+          <Drawer
+            anchor="left"
+            open={isOpen && showTimeline}
+            onClose={toggleTimeline}
+            sx={{
+              width: "250px",
+              "& .MuiDrawer-paper": {
+                width: "250px",
+                zIndex: 1300,
+              },
+            }}
+          >
+            <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
+          </Drawer>
+        )}
+        {!isMobile && isOpen && showTimeline && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
+        {!isMobile && isOpen && showTimeline && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
+        <Box sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "10px" }}>
+          {isMobile && isOpen && (
+            <IconButton
+              sx={{
+                backgroundColor: theme.palette.primary.main, // Theme primary color
+                color: theme.palette.primary.contrastText, // Contrast text color for the primary color
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
+                },
+                marginTop: 2,
+              }}
+              onClick={toggleTimeline}
+              size="large"
+            >
+              {showTimeline ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+            </IconButton>
+          )}
           <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
             <Box sx={{ position: "absolute" }}>
               <JournalButton handleClick={handleBookClick} />

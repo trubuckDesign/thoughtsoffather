@@ -23,8 +23,8 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
         left: "10px",
         top: "50%",
         transform: "translateY(-50%)",
-        width: "auto", // Fixed width
-        zIndex: 2, // Higher z-index
+        width: "auto",
+        zIndex: 1000, // Increased z-index
       }}
     >
       {Object.entries(data).map(([key, { year, month, days }], index) => {
@@ -77,3 +77,9 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
 };
 
 export default TimelineBar;
+
+//to do
+// fix mobile sizing and/or hide timeline
+// add onclick to timeline  to load different set of posts and scroll to it? (maybe)
+// fix all font sizes
+// add lines to timeline
