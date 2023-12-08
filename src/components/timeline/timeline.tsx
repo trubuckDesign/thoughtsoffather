@@ -20,10 +20,11 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
       position="right"
       sx={{
         position: "fixed",
-        left: "0px",
+        left: "10px",
         top: "50%",
         transform: "translateY(-50%)",
-        width: "auto",
+        width: "auto", // Fixed width
+        zIndex: 2, // Higher z-index
       }}
     >
       {Object.entries(data).map(([key, { year, month, days }], index) => {
@@ -40,7 +41,11 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
                 <TimelineDot />
                 {index < Object.entries(data).keys.length - 1 && <TimelineConnector />}
               </TimelineSeparator>
-              <TimelineContent>
+              <TimelineContent
+                sx={{
+                  fontSize: "1.5rem",
+                }}
+              >
                 {year} | {moment().month(month).format("MMM")} {/* Format month */}
               </TimelineContent>
             </TimelineItem>

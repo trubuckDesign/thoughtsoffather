@@ -173,42 +173,47 @@ const LandingPage = () => {
 
   return (
     <BackgroundImageContainer>
-      <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
-      <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
-        <Box sx={{ position: "absolute" }}>
-          <JournalButton handleClick={handleBookClick} />
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
+        <Box sx={{ flexGrow: 1, paddingLeft: "160px" }}>
+          {" "}
+          {/* Adjusted padding */}
+          <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
+            <Box sx={{ position: "absolute" }}>
+              <JournalButton handleClick={handleBookClick} />
+            </Box>
+          </CSSTransition>
+          <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
+            <>
+              <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
+                {showStartFromBeginningButton && (
+                  <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
+                    <Button variant="contained" onClick={resetAndFetchFromStart}>
+                      Start from Beginning
+                    </Button>
+                  </Box>
+                )}
+                {thoughts.map((thought, index) => (
+                  <Box key={index}>
+                    <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+                  </Box>
+                ))}
+                {hasMore && (
+                  <div ref={(el) => setTarget(el)}>
+                    <HandwritingSpinner />
+                  </div>
+                )}
+              </Box>
+            </>
+          </CSSTransition>
+          <ContinueReadingDialog
+            continueFromLastRead={continueFromLastRead}
+            setShowContinuePrompt={setShowContinuePrompt}
+            showContinuePrompt={showContinuePrompt}
+            startFromBeginning={startFromBeginning}
+          />
         </Box>
-      </CSSTransition>
-
-      <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
-        <>
-          <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
-            {showStartFromBeginningButton && (
-              <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
-                <Button variant="contained" onClick={resetAndFetchFromStart}>
-                  Start from Beginning
-                </Button>
-              </Box>
-            )}
-            {thoughts.map((thought, index) => (
-              <Box key={index}>
-                <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
-              </Box>
-            ))}
-            {hasMore && (
-              <div ref={(el) => setTarget(el)}>
-                <HandwritingSpinner />
-              </div>
-            )}
-          </Box>
-        </>
-      </CSSTransition>
-      <ContinueReadingDialog
-        continueFromLastRead={continueFromLastRead}
-        setShowContinuePrompt={setShowContinuePrompt}
-        showContinuePrompt={showContinuePrompt}
-        startFromBeginning={startFromBeginning}
-      />
+      </Box>
     </BackgroundImageContainer>
   );
 };
