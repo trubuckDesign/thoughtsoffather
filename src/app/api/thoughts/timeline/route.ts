@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
         createdAt: true,
         title: true,
       },
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(

@@ -12,17 +12,17 @@ const BackgroundImageContainer: FC<backgroundProps> = ({ children }) => {
 
   return (
     <Box
+      id="BackgroundImageContainer"
       sx={{
         position: "relative",
         height: "100vh",
         overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        // display: "flex",
       }}
       onMouseMove={(e) => handleMouseMove(e as unknown as MouseEvent)}
     >
       <Box
+        id="backgroundImagebox"
         sx={{
           position: "absolute",
           height: "100vh",

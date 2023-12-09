@@ -58,10 +58,11 @@ const LandingPage = () => {
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [showTimeline, setShowTimeline] = useState(isMobile);
+  const [showTimeline, setShowTimeline] = useState(!isMobile);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Separate state for mobile drawer visibility
 
-  const toggleTimeline = () => {
-    setShowTimeline(!showTimeline);
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
   const continueFromLastRead = async () => {
@@ -181,16 +182,18 @@ const LandingPage = () => {
 
   return (
     <BackgroundImageContainer>
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
+      <Box id="main-layout-box" sx={{ display: "flex", flexDirection: "row" }}>
         {isMobile && (
           <Drawer
+            id="timeline-drawer"
             anchor="left"
-            open={isOpen && showTimeline}
-            onClose={toggleTimeline}
+            open={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
             sx={{
-              width: "250px",
+              width: "200px",
               "& .MuiDrawer-paper": {
-                width: "250px",
+                id: "drawer-paper",
+                width: "200px",
                 zIndex: 1300,
               },
             }}
@@ -198,33 +201,46 @@ const LandingPage = () => {
             <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
           </Drawer>
         )}
-        {!isMobile && isOpen && showTimeline && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
-        {!isMobile && isOpen && showTimeline && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
-        <Box sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "10px" }}>
-          {isMobile && isOpen && (
-            <IconButton
-              sx={{
-                backgroundColor: theme.palette.primary.main, // Theme primary color
-                color: theme.palette.primary.contrastText, // Contrast text color for the primary color
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
-                },
-                marginTop: 2,
-              }}
-              onClick={toggleTimeline}
-              size="large"
-            >
-              {showTimeline ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
-            </IconButton>
-          )}
+
+        {!isMobile && isOpen && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
+        {/* <Box id="content-area" sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "0px" }}> */}
+        <Box
+          id="content-area"
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%", // Take full width
+          }}
+        >
           <CSSTransition in={!isOpen} timeout={1500} classNames="fade" unmountOnExit>
-            <Box sx={{ position: "absolute" }}>
+            <Box id="journal-button-box" sx={{ marginTop: "25vh" }}>
               <JournalButton handleClick={handleBookClick} />
             </Box>
           </CSSTransition>
           <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
             <>
-              <Box sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
+              {isMobile && isOpen && (
+                <IconButton
+                  id="toggle-timeline-button"
+                  sx={{
+                    backgroundColor: theme.palette.primary.main, // Theme primary color
+                    color: theme.palette.primary.contrastText, // Contrast text color for the primary color
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
+                    },
+                    marginTop: 2,
+                    marginLeft: -8,
+                  }}
+                  onClick={toggleDrawer}
+                  size="large"
+                >
+                  {isDrawerOpen ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+                </IconButton>
+              )}
+              <Box id="posts-container" sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
                 {showStartFromBeginningButton && (
                   <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
                     <Button variant="contained" onClick={resetAndFetchFromStart}>
