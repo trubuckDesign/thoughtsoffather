@@ -10,10 +10,12 @@ import moment from "moment";
 interface TimelineBarProps {
   data: GroupedData;
   currentVisibleDate: Date | Moment | undefined;
-  onDateSelect: (date: Date) => void; // Add this prop
+  onDateSelect: (date: Date) => void;
+  expandedMonth: string | null;
+  onMonthToggle: (monthKey: string) => void;
 }
 
-const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onDateSelect }) => {
+const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onDateSelect, expandedMonth, onMonthToggle }) => {
   const currentMonthKey = moment(currentVisibleDate).format("YYYY-MMMM");
 
   return (
@@ -34,9 +36,11 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
         const isCurrentMonth = key === currentMonthKey;
         const currentDate = moment(currentVisibleDate).date();
 
+        const isExpanded = key === expandedMonth || key === currentMonthKey;
+
         return (
           <React.Fragment key={`${year}-${month}`}>
-            <TimelineItem>
+            <TimelineItem onClick={() => onMonthToggle(key)}>
               <TimelineOppositeContent sx={{ display: "none" }}></TimelineOppositeContent>
               <TimelineSeparator>
                 <TimelineDot />
@@ -50,7 +54,7 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
                 {year} | {moment().month(month).format("MMM")} {/* Format month */}
               </TimelineContent>
             </TimelineItem>
-            {isCurrentMonth &&
+            {isExpanded &&
               uniqueDays.map(({ day, thought }) => (
                 <TimelineItem key={thought.thoughtId} onClick={() => onDateSelect(new Date(thought.createdAt))}>
                   <TimelineContent
@@ -80,5 +84,4 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
 export default TimelineBar;
 
 //to do
-// add onclick to timeline  to load different set of posts and scroll to it? (maybe)
-// add lines to timeline
+// finish the toggle month view, make it so that if the user scrolls it will collapse any months that are not in view

@@ -63,6 +63,11 @@ const LandingPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
+
+  const handleMonthToggle = (monthKey: string) => {
+    setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
+  };
 
   const toggleAboutDialog = () => {
     setIsAboutOpen(!isAboutOpen);
@@ -218,11 +223,25 @@ const LandingPage = () => {
               },
             }}
           >
-            <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} />
+            <TimelineBar
+              data={timelineData}
+              currentVisibleDate={currentVisibleDate}
+              onDateSelect={navigateToDate}
+              expandedMonth={expandedMonth}
+              onMonthToggle={handleMonthToggle}
+            />
           </Drawer>
         )}
 
-        {!isMobile && isOpen && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} />}
+        {!isMobile && isOpen && (
+          <TimelineBar
+            data={timelineData}
+            currentVisibleDate={currentVisibleDate}
+            onDateSelect={navigateToDate}
+            expandedMonth={expandedMonth}
+            onMonthToggle={handleMonthToggle}
+          />
+        )}
         {/* <Box id="content-area" sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "0px" }}> */}
         <Box
           id="content-area"
