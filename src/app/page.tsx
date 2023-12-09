@@ -62,6 +62,7 @@ const LandingPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const toggleAboutDialog = () => {
     setIsAboutOpen(!isAboutOpen);
@@ -100,14 +101,14 @@ const LandingPage = () => {
   const fetchMoreData = async (startId?: number) => {
     if (!hasMore || isLoading) return;
     setIsLoading(true);
-
+    console.log("preload thoughts:", thoughts);
     // Use startId if provided, otherwise calculate based on the current posts
     let fetchStartId = startId ?? (thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId + 1 : 0);
 
     try {
       const response = await fetch(`/api/thoughts?startId=${fetchStartId}&thoughtCount=${POSTS_PER_PAGE}`);
       const data = await response.json();
-
+      console.log("response thoughts:", data.posts);
       // If starting fresh, replace thoughts, otherwise append
       const newThoughts = startId === 1 ? data.posts : [...thoughts, ...data.posts];
       setThoughts(newThoughts);
@@ -124,7 +125,21 @@ const LandingPage = () => {
     hasMore,
     onLoadMore: fetchMoreData,
   });
+  useEffect(() => {
+    if (selectedDate) {
+      const thoughtForDate = thoughtSummary.find((thought) => new Date(thought.createdAt).toDateString() === selectedDate.toDateString());
 
+      if (thoughtForDate) {
+        setLastVisiblePostId(thoughtForDate.thoughtId);
+        fetchMoreData(thoughtForDate.thoughtId);
+      }
+    }
+  }, [selectedDate]);
+
+  const navigateToDate = (date: Date) => {
+    setThoughts([]);
+    setSelectedDate(date);
+  };
   useEffect(() => {
     const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
     setLastVisiblePostId(lastReadPostId);
@@ -203,11 +218,11 @@ const LandingPage = () => {
               },
             }}
           >
-            <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />
+            <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} />
           </Drawer>
         )}
 
-        {!isMobile && isOpen && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} />}
+        {!isMobile && isOpen && <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} />}
         {/* <Box id="content-area" sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "0px" }}> */}
         <Box
           id="content-area"

@@ -10,9 +10,10 @@ import moment from "moment";
 interface TimelineBarProps {
   data: GroupedData;
   currentVisibleDate: Date | Moment | undefined;
+  onDateSelect: (date: Date) => void; // Add this prop
 }
 
-const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) => {
+const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onDateSelect }) => {
   const currentMonthKey = moment(currentVisibleDate).format("YYYY-MMMM");
 
   return (
@@ -51,7 +52,7 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
             </TimelineItem>
             {isCurrentMonth &&
               uniqueDays.map(({ day, thought }) => (
-                <TimelineItem key={thought.thoughtId}>
+                <TimelineItem key={thought.thoughtId} onClick={() => onDateSelect(new Date(thought.createdAt))}>
                   <TimelineContent
                     sx={{
                       typography: "body1",
