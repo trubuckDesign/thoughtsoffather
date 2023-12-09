@@ -14,6 +14,8 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import TimelineBar from "@/components/timeline/timeline";
 import { Moment } from "moment";
+import AboutDialog from "@/components/dialogs/aboutDialog";
+import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -58,9 +60,12 @@ const LandingPage = () => {
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [showTimeline, setShowTimeline] = useState(!isMobile);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Separate state for mobile drawer visibility
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
+  const toggleAboutDialog = () => {
+    setIsAboutOpen(!isAboutOpen);
+  };
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -267,6 +272,8 @@ const LandingPage = () => {
             showContinuePrompt={showContinuePrompt}
             startFromBeginning={startFromBeginning}
           />
+          <AnimatedAboutButton onClick={toggleAboutDialog} />
+          <AboutDialog setShowAbout={setIsAboutOpen} showAbout={isAboutOpen} />
         </Box>
       </Box>
     </BackgroundImageContainer>

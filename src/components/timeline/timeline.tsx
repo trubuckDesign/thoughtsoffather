@@ -79,7 +79,5 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate }) =
 export default TimelineBar;
 
 //to do
-// fix mobile sizing and/or hide timeline
 // add onclick to timeline  to load different set of posts and scroll to it? (maybe)
-// fix all font sizes
 // add lines to timeline
