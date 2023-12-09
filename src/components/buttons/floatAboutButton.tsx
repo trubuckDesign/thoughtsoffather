@@ -1,24 +1,30 @@
 // components/buttons/AnimatedButton.tsx
-import React from "react";
-import { IconButton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { styled, useTheme } from "@mui/material/styles";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
-const AnimatedIconButton = styled(IconButton)(({ theme }) => ({
+// Define a custom interface that extends IconButtonProps and includes the 'animate' prop
+interface AnimatedIconButtonProps extends IconButtonProps {
+  animate: boolean;
+}
+
+const AnimatedIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "animate", // Prevent 'animate' prop from being forwarded to the DOM element
+})<AnimatedIconButtonProps>(({ theme, animate }) => ({
   position: "fixed",
   bottom: "20px",
   right: "20px",
-  animation: "float 3s ease-in-out infinite",
+  animation: animate ? "float 3s ease-in-out infinite" : "none",
   boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.6)",
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+  },
   "@keyframes float": {
     "0%, 100%": { transform: "translateY(0)" },
     "50%": { transform: "translateY(-20px)" },
-
-    backgroundColor: theme.palette.primary.main, // Theme primary color
-    color: theme.palette.primary.contrastText, // Contrast text color for the primary color
-    "&:hover": {
-      backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
-    },
   },
 }));
 
@@ -27,13 +33,23 @@ interface AnimatedButtonProps {
 }
 
 const AnimatedAboutButton: React.FC<AnimatedButtonProps> = ({ onClick }) => {
-  const theme = useTheme(); // Use the useTheme hook to access the theme
+  const theme = useTheme();
+  const [animate, setAnimate] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimate(false);
+    }, 15000); // Set the animation to stop after 10 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <AnimatedIconButton
       color="primary"
-      theme={theme} // Pass the theme to the styled component
+      theme={theme}
       onClick={onClick}
+      animate={animate} // Pass the animate state
     >
       <QuestionMarkIcon style={{ fontSize: "3rem" }} />
     </AnimatedIconButton>
