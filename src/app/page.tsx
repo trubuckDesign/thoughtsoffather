@@ -25,7 +25,7 @@ interface TimelineData {
   month: string;
   count: number;
 }
-interface Thought {
+export interface Thought {
   thoughtId: number;
   createdAt: string;
   title: string;
