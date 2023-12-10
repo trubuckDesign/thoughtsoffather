@@ -14,20 +14,44 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import HomeIcon from "@mui/icons-material/Home";
 
 import BackgroundImageContainer from "@/components/background/background";
 import PostEditor from "@/components/postEditor/postEditor";
-import { GroupedData, Thought } from "../page";
+import { Thought } from "../page";
 import { Thoughts } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const AddPostPage = () => {
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
   const [selectedThought, setSelectedThought] = useState<Thoughts | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const { data: session, status } = useSession();
+  const sessionLoading = status === "loading";
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+
+  useEffect(() => {
+    if (sessionLoading) return;
+
+    if (!session) {
+      // Not signed in
+      router.replace("/signin");
+    } else if (!session.isAuthorized) {
+      // Signed in but not authorized
+      router.replace("/");
+    } else {
+      // Signed in and authorized
+      setIsLoading(false);
+      // Fetch data or perform other actions for authorized user
+    }
+  }, [session, sessionLoading, router]);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
@@ -57,6 +81,9 @@ const AddPostPage = () => {
       console.error("Error fetching thought details:", error);
     }
   };
+  const navigateHome = () => {
+    router.push("/"); // Navigates to the home page
+  };
   const renderPostList = () => (
     <List>
       {thoughtSummary.map((thought) => (
@@ -83,7 +110,23 @@ const AddPostPage = () => {
         </Box>
       ) : (
         <>
-          <Grid container spacing={1} sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1 }}>
+          <Box
+            sx={{
+              position: "fixed",
+              top: 16, // Adjusts the distance from the top
+              right: 16, // Adjusts the distance from the right
+              zIndex: 1500, // Ensures the button is above everything else
+            }}
+          >
+            <Button variant="contained" color="primary" onClick={navigateHome} startIcon={<HomeIcon />}>
+              Home
+            </Button>
+          </Box>
+          <Grid
+            container
+            spacing={1}
+            sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1, marginTop: 5 }}
+          >
             <Grid item xs={12} sm={4}>
               {isMobile ? (
                 <Accordion sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}>

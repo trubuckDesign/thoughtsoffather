@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "@/theme/theme";
+import AuthProvider from "@/components/auth/authProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <body className={inter.className}>{children}</body>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <body className={inter.className}>{children}</body>
+        </ThemeProvider>
+      </AuthProvider>
     </html>
   );
 }

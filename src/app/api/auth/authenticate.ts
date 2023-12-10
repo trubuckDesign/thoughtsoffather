@@ -3,11 +3,13 @@ import { getToken } from "next-auth/jwt";
 import { User } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { getUserFromToken } from "./checkToken";
+import { findUserAccountById } from "../userAccount/userAccount";
 
 export async function authenticateAndAuthorize(req: NextRequest, prisma: PrismaClient, allowNewUser: boolean = false) {
   // Authentication
+
   const token = await getToken({ req });
-  //console.log("token:", token);
+
   if (!token || !token.access_token) {
     return { status: 401, message: "Not Authenticated" };
   }
@@ -18,7 +20,9 @@ export async function authenticateAndAuthorize(req: NextRequest, prisma: PrismaC
   }
   //console.log("user:", user);
   // Authorization
+
   const userAcct = await findUserAccountById(user.id, prisma);
+
   //console.log("userAcct:", userAcct);
   if (!userAcct) {
     if (allowNewUser) {
@@ -29,10 +33,4 @@ export async function authenticateAndAuthorize(req: NextRequest, prisma: PrismaC
   }
 
   return { status: 200, userAcct };
-}
-function findUserAccountById(
-  id: string,
-  prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>
-) {
-  return {};
 }

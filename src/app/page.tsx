@@ -16,6 +16,7 @@ import TimelineBar from "@/components/timeline/timeline";
 import { Moment } from "moment";
 import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
+import { useRouter } from "next/navigation";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -64,6 +65,7 @@ const LandingPage = () => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleMonthToggle = (monthKey: string) => {
     setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
@@ -204,9 +206,23 @@ const LandingPage = () => {
 
     fetchTimelineData();
   }, []);
-
+  const navigateToSignIn = () => {
+    router.push("/signin"); // Navigates to the sign-in page
+  };
   return (
     <BackgroundImageContainer>
+      <Box
+        sx={{
+          position: "fixed",
+          top: -10, // Adjusts the distance from the top
+          right: -10, // Adjusts the distance from the right
+          zIndex: 1500, // Ensures the button is above everything else
+        }}
+      >
+        <Button variant="text" sx={{ color: "white" }} onClick={navigateToSignIn}>
+          π
+        </Button>
+      </Box>
       <Box id="main-layout-box" sx={{ display: "flex", flexDirection: "row" }}>
         {isMobile && (
           <Drawer

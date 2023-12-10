@@ -15,8 +15,8 @@ async function refreshAccessToken(token: any) {
     const url =
       "https://oauth2.googleapis.com/token?" +
       new URLSearchParams({
-        client_id: process.env.GOOGLE_ID!.toString(),
-        client_secret: process.env.GOOGLE_SECRET!.toString(),
+        client_id: process.env.GOOGLE_CLIENT_ID!.toString(),
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!.toString(),
         grant_type: "refresh_token",
         refresh_token: token.refreshToken,
       });
@@ -53,8 +53,8 @@ async function refreshAccessToken(token: any) {
 const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       authorization: GOOGLE_AUTHORIZATION_URL,
     }),
   ],
@@ -73,11 +73,17 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, account, user }) {
       // Initial sign in
       if (account && user) {
+        const userAccount = await prisma.userAccount.findUnique({
+          where: { id: user.id },
+          include: { UserType: true },
+        });
+
         return {
           access_token: account.access_token,
           accessTokenExpires: Date.now() + account!.expires_at! * 1000,
           refreshToken: account.refresh_token,
           user,
+          authorized: userAccount?.UserType.userTypeName === "Admin",
         };
       }
 
@@ -89,11 +95,15 @@ const authOptions: NextAuthOptions = {
       // Access token has expired, try to update it
       return refreshAccessToken(token);
     },
-
-    async session({ session, token }: { session: Session; token: any }) {
+    async session({ session, token }) {
       session.accessToken = token.access_token;
+      session.isAuthorized = Boolean(token.authorized); // Add the user account details to the session
       return session;
     },
+    // async session({ session, token }: { session: Session; token: any }) {
+    //   session.accessToken = token.access_token;
+    //   return session;
+    // },
   },
 };
 

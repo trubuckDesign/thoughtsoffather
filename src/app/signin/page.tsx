@@ -5,6 +5,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import Image from "next/image";
 
 const SignInPage = () => {
+  const callbackUrl = "/add";
+
   return (
     <Container
       component="main"
@@ -27,13 +29,19 @@ const SignInPage = () => {
           borderRadius: 2,
         }}
       >
-        <Image src="/logo dark.png" alt="Logo" height={60} width={60} />
+        <Image src="/journal.png" alt="Logo" height={60} width={60} />
         <Typography variant="h5" component="h1" gutterBottom>
           Sign In
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Button variant="contained" color="primary" fullWidth onClick={() => signIn("google")} startIcon={<GoogleIcon />}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => signIn("google", { callbackUrl: callbackUrl })}
+              startIcon={<GoogleIcon />}
+            >
               Sign in with Google
             </Button>
           </Grid>

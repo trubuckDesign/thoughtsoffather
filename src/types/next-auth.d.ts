@@ -9,6 +9,7 @@ declare module "next-auth" {
    */
   interface Session {
     accessToken?: string;
+    isAuthorized?: boolean;
   }
 }
 declare module "next-auth/jwt" {

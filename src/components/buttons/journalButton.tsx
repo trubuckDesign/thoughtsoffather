@@ -12,8 +12,8 @@ const JournalButton: FC<journalProps> = ({ handleClick }) => {
   return (
     <Box
       sx={{
-        width: "80vw",
-        height: "60vh",
+        width: "30vw",
+        height: "50vh",
         cursor: "pointer",
         overflow: "hidden",
         position: "relative",
