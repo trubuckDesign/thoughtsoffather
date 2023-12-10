@@ -207,7 +207,7 @@ const LandingPage = () => {
     fetchTimelineData();
   }, []);
   const navigateToSignIn = () => {
-    router.push("/signin"); // Navigates to the sign-in page
+    router.push("/add"); // Navigates to the sign-in page
   };
   return (
     <BackgroundImageContainer>
