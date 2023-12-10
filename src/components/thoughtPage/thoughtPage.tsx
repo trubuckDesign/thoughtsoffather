@@ -12,7 +12,6 @@ interface ThoughtPageProps {
 const areEqual = (prevProps: ThoughtPageProps, nextProps: ThoughtPageProps) => {
   return prevProps.thought.thoughtId === nextProps.thought.thoughtId;
 };
-
 const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisiblePostId }) => {
   const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 0.5, 0.75, 1] });
 
@@ -117,5 +116,7 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
     </Card>
   );
 }, areEqual);
+
+ThoughtPage.displayName = "ThoughtPage";
 
 export default ThoughtPage;
