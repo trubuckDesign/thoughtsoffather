@@ -1,14 +1,46 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, useMediaQuery, useTheme } from "@mui/material";
 
-const PostEditor: React.FC = () => {
-  const [content, setContent] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const editorRef = useRef<any>(null); // Add a ref for the TinyMCE editor
+interface PostEditorProps {
+  existingTitle?: string;
+  existingContent?: string;
+  existingThoughtId?: number;
+  setSelectedThought: React.Dispatch<
+    React.SetStateAction<{
+      thoughtId: number;
+      title: string;
+      content: string;
+      createdAt: Date;
+      updatedAt: Date;
+      isExpired: boolean;
+    } | null>
+  >;
+}
+
+const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent, existingThoughtId, setSelectedThought }) => {
+  const [content, setContent] = useState<string>(existingContent || "");
+  const [title, setTitle] = useState<string>(existingTitle || "");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const editorRef = useRef<any>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    if (existingContent) {
+      setIsLoading(true);
+      if (editorRef.current) {
+        editorRef.current.setContent(existingContent, { format: "raw" });
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [existingContent]);
   const handleEditorChange = (content: string) => {
     setContent(content);
   };
+
   interface BlobInfo {
     id: () => string;
     name: () => string;
@@ -50,12 +82,15 @@ const PostEditor: React.FC = () => {
   };
   const postThought = async () => {
     try {
+      const method = existingThoughtId ? "PUT" : "POST";
+      const url = existingThoughtId ? `/api/thoughts/${existingThoughtId}` : "/api/thoughts";
+
       const response = await fetch("/api/thoughts", {
-        method: "POST",
+        method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, thoughtId: existingThoughtId }), // Include thoughtId if editing
       });
 
       if (!response.ok) {
@@ -75,44 +110,76 @@ const PostEditor: React.FC = () => {
       // Handle failure (e.g., showing an error message)
     }
   };
+  const handleReset = () => {
+    setContent("");
+    setTitle("");
+    setSelectedThought(null);
+    if (editorRef.current) {
+      editorRef.current.setContent("");
+    }
+  };
+  const editorInitConfig = {
+    height: isMobile ? "80vh" : "68vh",
+    width: isMobile ? "98vw" : "60vw",
+    menubar: false,
+    plugins: [
+      "advlist table autolink lists link image charmap print preview anchor",
+      "searchreplace visualblocks code fullscreen",
+      "insertdatetime media table paste code help wordcount",
+      "image",
+    ],
+    table_toolbar:
+      "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+    table_responsive_width: true,
+    toolbar: isMobile
+      ? ["undo redo | formatselect | bold italic", "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image"]
+      : "undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | help | image",
+    content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+    images_upload_handler: uploadImage,
+  };
+  useEffect(() => {
+    if (existingContent && editorRef.current) {
+      editorRef.current.setContent(existingContent);
+    }
+  }, [existingContent]);
+
+  useEffect(() => {
+    if (existingTitle) {
+      setTitle(existingTitle);
+    }
+  }, [existingTitle]);
 
   return (
     <Box>
-      <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} fullWidth margin="normal" />
-      <Editor
-        onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue=""
-        apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY} // Access the API key from the environment variable
-        init={{
-          height: "50vh",
-          width: "50vw",
-
-          menubar: false,
-          plugins: [
-            "advlist table autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount",
-            "image", // Include this line if not already included
-          ],
-          image_default_dimensions: {
-            width: 300, // Default width
-            height: 200, // Default height
-          },
-          table_toolbar:
-            "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
-
-          table_responsive_width: true,
-          toolbar:
-            "table undo redo | formatselect | " +
-            "bold italic | alignleft aligncenter " +
-            "alignright alignjustify |  bullist numlist outdent indent | " +
-            "help | image",
-          content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-          images_upload_handler: uploadImage,
-        }}
-        onEditorChange={handleEditorChange}
+      <TextField
+        label="Title"
+        variant="outlined"
+        value={title}
+        onChange={handleTitleChange}
+        margin="normal"
+        sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }}
       />
-      <Button onClick={postThought}>Post Thought</Button>
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Editor
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          initialValue=""
+          apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
+          init={editorInitConfig}
+          onEditorChange={handleEditorChange}
+        />
+      )}
+      <Button variant="contained" sx={{ margin: 2 }} onClick={postThought}>
+        {existingThoughtId ? "Update Thought" : "Post Thought"}
+      </Button>
+      {content && (
+        <Button variant="contained" onClick={handleReset}>
+          Reset
+        </Button>
+      )}
     </Box>
   );
 };
