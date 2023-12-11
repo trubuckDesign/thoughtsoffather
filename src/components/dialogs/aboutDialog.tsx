@@ -13,17 +13,17 @@ const AboutDialog: FC<ContinueProp> = ({ showAbout, setShowAbout }) => {
       <DialogContent>
         <DialogContentText>
           <Box>
-            <Image src="/elopement.jpg" layout="fill" objectFit="contain" alt={"Family"} />
-            This gift is a heartfelt homage to the man who is both my father and so much more - my dad. To me, the term &apos;father&apos;
-            doesn&apos;t quite capture the depth of his influence and the special bond we share. He&apos;s the one I&apos;ve always looked up to, the
-            one I&apos;ve sought to emulate in so many ways. My dad is not just a parent; he&apos;s my confidant, my best friend. I am endlessly
-            grateful for the joy and privilege of calling him my dad. Merry Christmas (2023) from your family, we love you
+            This gift is a heartfelt homage to the man who is both my father and so much more - my dad. To me, the term &apos;father&apos; doesn&apos;t quite capture the depth of his influence and the
+            special bond we share. He&apos;s the one I&apos;ve always looked up to, the one I&apos;ve sought to emulate in so many ways. My dad is not just a parent; he&apos;s my confidant, my best
+            friend. I am endlessly grateful for the joy and privilege of calling him my dad. Merry Christmas (2023) from your family, we love you
+          </Box>
+          <Box sx={{ my: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Image src="/elopement.jpg" width={500} height={300} objectFit="contain" alt="Family" />
           </Box>
           <Box sx={{ marginTop: 4 }}>
-            My dad&apos;s passion for writing and his profound respect for the past are aspects of his character that I deeply admire. To celebrate
-            this, I&apos;ve created a space to safeguard his musings, his life experiences, and his reflections on days gone by. It&apos;s a legacy I
-            hope to preserve and share, a way for my children and their children to discover and appreciate the rich and meaningful narratives of our
-            family&apos;s journey, all penned and pondered by him.
+            My dad&apos;s passion for writing and his profound respect for the past are aspects of his character that I deeply admire. To celebrate this, I&apos;ve created a space to safeguard his
+            musings, his life experiences, and his reflections on days gone by. It&apos;s a legacy I hope to preserve and share, a way for my children and their children to discover and appreciate the
+            rich and meaningful narratives of our family&apos;s journey, all penned and pondered by him.
           </Box>
         </DialogContentText>
       </DialogContent>
