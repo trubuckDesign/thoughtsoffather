@@ -4,7 +4,6 @@ import prisma from "../../../../prisma/prismaClient";
 export async function GET(req: NextRequest) {
   const pageCount = parseInt(req.nextUrl.searchParams.get("thoughtCount") as string) || 0;
   const startId = parseInt(req.nextUrl.searchParams.get("startId") as string) || 0;
-  console.log("pageCount/startId:", pageCount, startId);
   try {
     const posts = await prisma.thoughts.findMany({
       take: pageCount,

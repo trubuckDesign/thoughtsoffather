@@ -103,6 +103,3 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
 };
 
 export default TimelineBar;
-
-//to do
-// finish the toggle month view, make it so that if the user scrolls it will collapse any months that are not in view
