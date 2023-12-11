@@ -40,35 +40,42 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
         scrollbarWidth: "none", // Firefox
       }}
     >
-      {Object.entries(data).map(([key, { year, month, days }], index) => {
+      {Object.entries(data).map(([key, { year, month, days }], index, arr) => {
         const uniqueDays = Array.from(days); // Convert Set to Array
 
         const isCurrentMonth = key === currentMonthKey;
         const currentDate = moment(currentVisibleDate).date();
 
         const isExpanded = key === expandedMonth || key === currentMonthKey;
-
+        console.log(isExpanded ? `${uniqueDays.length * 48}px` : "20px", isExpanded);
         return (
           <React.Fragment key={`${year}-${month}`}>
             <TimelineItem
               onClick={() => onMonthToggle(key)}
               sx={{
                 marginBottom: "8px", // Regular margin
-                transition: "transform 0.18s ease-in-out",
-                cursor: "pointer", // Change cursor to pointer
-                "&:hover": {
-                  transform: "scale(1.3)", // Scale up on hover
-                },
               }}
             >
               <TimelineOppositeContent sx={{ display: "none" }}></TimelineOppositeContent>
               <TimelineSeparator>
                 <TimelineDot />
-                {index < Object.entries(data).keys.length - 1 && <TimelineConnector />}
+
+                {index !== arr.length - 1 && (
+                  <TimelineConnector
+                    sx={{
+                      height: isExpanded ? `${uniqueDays.length * 48}px` : "90px", // Adjust the height dynamically
+                    }}
+                  />
+                )}
               </TimelineSeparator>
               <TimelineContent
                 sx={{
                   fontSize: "1.5rem",
+                  transition: "transform 0.18s ease-in-out",
+                  cursor: "pointer", // Change cursor to pointer
+                  "&:hover": {
+                    transform: "scale(1.3)", // Scale up on hover
+                  },
                 }}
               >
                 {year} | {moment().month(month).format("MMM")} {/* Format month */}
@@ -77,6 +84,10 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
             {isExpanded &&
               uniqueDays.map(({ day, thought }) => (
                 <TimelineItem key={thought.thoughtId} onClick={() => onDateSelect(new Date(thought.createdAt))}>
+                  <TimelineSeparator>
+                    <TimelineDot />
+                    <TimelineConnector />
+                  </TimelineSeparator>
                   <TimelineContent
                     sx={{
                       typography: "body1",
