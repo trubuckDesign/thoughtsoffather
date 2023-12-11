@@ -1,9 +1,9 @@
 // components/TimelineBar.tsx
-import React from "react";
+"use client";
+import React, { useRef } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineDot, TimelineConnector, TimelineContent, TimelineOppositeContent } from "@mui/lab";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material";
-import { GroupedData, GroupedThoughts } from "@/app/page";
+
+import { GroupedData } from "@/app/page";
 import { Moment } from "moment";
 import moment from "moment";
 
@@ -17,17 +17,27 @@ interface TimelineBarProps {
 
 const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onDateSelect, expandedMonth, onMonthToggle }) => {
   const currentMonthKey = moment(currentVisibleDate).format("YYYY-MMMM");
+  const timelineRef = useRef<HTMLUListElement>(null); // Updated ref type
 
   return (
     <Timeline
       position="right"
+      ref={timelineRef}
       sx={{
         position: "fixed",
         left: "10px",
         top: "50%",
         transform: "translateY(-50%)",
         width: "auto",
-        zIndex: 1000, // Increased z-index
+        zIndex: 1000,
+        overflowY: "auto",
+        height: "100vh",
+        // Custom styles to hide the scrollbar
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+        msOverflowStyle: "none", // IE and Edge
+        scrollbarWidth: "none", // Firefox
       }}
     >
       {Object.entries(data).map(([key, { year, month, days }], index) => {
@@ -40,7 +50,17 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
 
         return (
           <React.Fragment key={`${year}-${month}`}>
-            <TimelineItem onClick={() => onMonthToggle(key)}>
+            <TimelineItem
+              onClick={() => onMonthToggle(key)}
+              sx={{
+                marginBottom: "8px", // Regular margin
+                transition: "transform 0.18s ease-in-out",
+                cursor: "pointer", // Change cursor to pointer
+                "&:hover": {
+                  transform: "scale(1.3)", // Scale up on hover
+                },
+              }}
+            >
               <TimelineOppositeContent sx={{ display: "none" }}></TimelineOppositeContent>
               <TimelineSeparator>
                 <TimelineDot />
@@ -60,11 +80,12 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
                   <TimelineContent
                     sx={{
                       typography: "body1",
-                      transition: "transform 1s, font-size 1s",
-                      transform: day === currentDate ? "scale(1.5)" : "scale(1)",
+                      transition: "transform .18s, font-size 1s",
+                      transform: day === currentDate ? "scale(1.3)" : "scale(1)",
                       fontWeight: day === currentDate ? "bold" : "normal",
                       textDecoration: day === currentDate ? "underline" : "none",
                       fontSize: day === currentDate ? "larger" : "inherit",
+                      cursor: "pointer",
                       "&:hover": {
                         transform: "scale(1.5)",
                       },

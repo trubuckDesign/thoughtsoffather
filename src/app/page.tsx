@@ -17,6 +17,7 @@ import { Moment } from "moment";
 import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
+import TimelineComponent from "@/components/timeline/newTimeline";
 
 const POSTS_PER_PAGE = 5;
 const PRIOR_POST_COUNT = 3;
@@ -146,6 +147,7 @@ const LandingPage = () => {
   const navigateToDate = (date: Date) => {
     setThoughts([]);
     setSelectedDate(date);
+    console.log("date selected", date);
   };
   useEffect(() => {
     const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
@@ -239,24 +241,13 @@ const LandingPage = () => {
               },
             }}
           >
-            <TimelineBar
-              data={timelineData}
-              currentVisibleDate={currentVisibleDate}
-              onDateSelect={navigateToDate}
-              expandedMonth={expandedMonth}
-              onMonthToggle={handleMonthToggle}
-            />
+            <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} expandedMonth={expandedMonth} onMonthToggle={handleMonthToggle} />
           </Drawer>
         )}
 
         {!isMobile && isOpen && (
-          <TimelineBar
-            data={timelineData}
-            currentVisibleDate={currentVisibleDate}
-            onDateSelect={navigateToDate}
-            expandedMonth={expandedMonth}
-            onMonthToggle={handleMonthToggle}
-          />
+          // <TimelineBar data={timelineData} currentVisibleDate={currentVisibleDate} onDateSelect={navigateToDate} expandedMonth={expandedMonth} onMonthToggle={handleMonthToggle} />
+          <TimelineComponent groupedData={timelineData} />
         )}
         {/* <Box id="content-area" sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "0px" }}> */}
         <Box
