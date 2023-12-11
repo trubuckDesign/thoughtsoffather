@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Box, Dialog, DialogContent, DialogContentText } from "@mui/material";
+import Image from "next/image";
 
 interface ContinueProp {
   showAbout: boolean;
@@ -12,10 +13,11 @@ const AboutDialog: FC<ContinueProp> = ({ showAbout, setShowAbout }) => {
       <DialogContent>
         <DialogContentText>
           <Box>
+            <Image src="/elopement.jpg" layout="fill" objectFit="contain" alt={"Family"} />
             This gift is a heartfelt homage to the man who is both my father and so much more - my dad. To me, the term &apos;father&apos;
             doesn&apos;t quite capture the depth of his influence and the special bond we share. He&apos;s the one I&apos;ve always looked up to, the
             one I&apos;ve sought to emulate in so many ways. My dad is not just a parent; he&apos;s my confidant, my best friend. I am endlessly
-            grateful for the joy and privilege of calling him my dad.
+            grateful for the joy and privilege of calling him my dad. Merry Christmas (2023) from your family, we love you
           </Box>
           <Box sx={{ marginTop: 4 }}>
             My dad&apos;s passion for writing and his profound respect for the past are aspects of his character that I deeply admire. To celebrate
