@@ -68,6 +68,7 @@ const LandingPage = () => {
   const router = useRouter();
 
   const handleMonthToggle = (monthKey: string) => {
+    console.log(monthKey);
     setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
   };
 
