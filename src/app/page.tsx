@@ -91,6 +91,8 @@ const LandingPage = () => {
   const startFromBeginning = () => {
     setShowContinuePrompt(false);
     localStorage.removeItem("lastReadThoughtId");
+    setHasMore(true); // Reset hasMore state
+    setThoughts([]); // Clear current posts
     setLastVisiblePostId(1);
     setShowStartFromBeginningButton(false);
     fetchMoreData(1);
@@ -110,14 +112,14 @@ const LandingPage = () => {
   const fetchMoreData = async (startId?: number) => {
     if (!hasMore || isLoading) return;
     setIsLoading(true);
-    console.log("preload thoughts:", thoughts);
+    console.log(`fetchMoreData called, startId: ${startId}`, thoughts);
     // Use startId if provided, otherwise calculate based on the current posts
     let fetchStartId = startId ?? (thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId + 1 : 0);
 
     try {
       const response = await fetch(`/api/thoughts?startId=${fetchStartId}&thoughtCount=${POSTS_PER_PAGE}`);
       const data = await response.json();
-      console.log("response thoughts:", data.posts);
+      console.log("Fetched data:", data.posts);
       // If starting fresh, replace thoughts, otherwise append
       const newThoughts = startId === 1 ? data.posts : [...thoughts, ...data.posts];
       setThoughts(newThoughts);
@@ -129,10 +131,11 @@ const LandingPage = () => {
     }
   };
 
-  const { setTarget } = useInfiniteScroll({
+  const { setTarget, target } = useInfiniteScroll({
     isLoading,
     hasMore,
     onLoadMore: fetchMoreData,
+    threshold: [0, 0.25, 0.5, 0.75, 1], // Your desired threshold values
   });
   useEffect(() => {
     if (selectedDate) {
@@ -212,6 +215,14 @@ const LandingPage = () => {
   const navigateToSignIn = () => {
     router.push("/add"); // Navigates to the sign-in page
   };
+  // In LandingPage component
+  useEffect(() => {
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      console.log("Target element rect:", rect);
+    }
+  }, [target]);
+
   return (
     <BackgroundImageContainer>
       <Box
