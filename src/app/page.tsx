@@ -61,6 +61,7 @@ const LandingPage = () => {
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isLargOrMedium = useMediaQuery(theme.breakpoints.down("lg"));
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -225,7 +226,7 @@ const LandingPage = () => {
           π
         </Button>
       </Box>
-      <Box id="main-layout-box" sx={{ display: "flex", flexDirection: "row" }}>
+      <Box id="main-layout-box" sx={{ display: "flex", marginLeft: isLargOrMedium ? 23 : 9 }}>
         {isMobile && (
           <Drawer
             id="timeline-drawer"
@@ -269,6 +270,7 @@ const LandingPage = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            marginLeft: 1,
             width: "100%", // Take full width
           }}
         >

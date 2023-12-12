@@ -126,7 +126,8 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
               <TimelineContent
                 sx={{
                   fontSize: "1.5rem",
-                  transition: "transform 0.18s ease-in-out",
+                  marginLeft: 1,
+                  transition: "transform 0.2s ease-in-out",
                   cursor: "pointer", // Change cursor to pointer
                   "&:hover": {
                     transform: "scale(1.3)", // Scale up on hover

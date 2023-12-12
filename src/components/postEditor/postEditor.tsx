@@ -82,10 +82,11 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
   };
   const postThought = async () => {
     try {
+      console.log("currentThought:", existingThoughtId);
       const method = existingThoughtId ? "PUT" : "POST";
       const url = existingThoughtId ? `/api/thoughts/${existingThoughtId}` : "/api/thoughts";
 
-      const response = await fetch("/api/thoughts", {
+      const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
