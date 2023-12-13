@@ -24,7 +24,34 @@ async function optimizeImageWithTinify(imageBuffer: Buffer) {
 
   return tinifyResponse.json();
 }
+async function resizeImageWithTinify(locationUrl: string) {
+  const resizeUrl = locationUrl;
+  const authHeader = "Basic " + Buffer.from(`api:${process.env.TINIFY_API_KEY}`).toString("base64");
+  console.log("Reducing size");
 
+  const resizeOptions = {
+    method: "POST",
+    headers: {
+      Authorization: authHeader,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      resize: {
+        method: "scale",
+        width: 600,
+      },
+    }),
+  };
+
+  const response = await fetch(resizeUrl, resizeOptions);
+  if (!response.ok) {
+    throw new Error(`Resize API responded with status: ${response.status}`);
+  }
+
+  // Handle the response as binary data
+  const buffer = await response.arrayBuffer();
+  return Buffer.from(buffer);
+}
 // Function to download the optimized image
 async function downloadOptimizedImage(url: string) {
   const response = await fetch(url);
@@ -68,9 +95,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (request.body && filename) {
       const imageBuffer = await bufferRequestBody(request);
       const tinifyData = await optimizeImageWithTinify(imageBuffer);
-      console.log(tinifyData.output);
-      const optimizedImageBuffer = await downloadOptimizedImage(tinifyData.output.url);
-      const optimizedBlob = await uploadToVercelBlob(filename, optimizedImageBuffer);
+      console.log(tinifyData);
+      const resizedData = await resizeImageWithTinify(tinifyData.output.url);
+      //console.log("resizedData:", resizedData);
+      //const optimizedImageBuffer = await downloadOptimizedImage(resizedData.output.url);
+      const optimizedBlob = await uploadToVercelBlob(filename, resizedData);
 
       return NextResponse.json(optimizedBlob);
     }
