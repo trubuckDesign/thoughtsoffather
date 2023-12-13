@@ -11,17 +11,13 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore, threshold = 
   const [target, setTarget] = useState<Element | null>(null);
 
   useEffect(() => {
-    console.log(`isLoading: ${isLoading}, hasMore: ${hasMore}, threshhold:${threshold}`);
-
     if (isLoading) {
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          console.log(`Entry for ${entry.target.id}: isIntersecting = ${entry.isIntersecting}, intersectionRatio = ${entry.intersectionRatio}`);
-        });
+        entries.forEach((entry) => {});
         if (entries[0].isIntersecting && hasMore) {
           onLoadMore();
         }

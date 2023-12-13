@@ -6,25 +6,25 @@ import { debounce } from "lodash";
 
 interface ThoughtPageProps {
   thought: Thoughts;
-  setLastVisiblePostId: React.Dispatch<React.SetStateAction<number>>;
+  setLastVisibleCreatedDate: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
 const areEqual = (prevProps: ThoughtPageProps, nextProps: ThoughtPageProps) => {
   return prevProps.thought.thoughtId === nextProps.thought.thoughtId;
 };
-const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisiblePostId }) => {
+const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisibleCreatedDate }) => {
   const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 0.5, 0.75, 1] });
 
   useEffect(() => {
     console.log(`Thought ID: ${thought.thoughtId}, isIntersecting: ${isIntersecting}`);
 
-    const debounceSaveLastRead = debounce((id) => {
-      localStorage.setItem("lastReadThoughtId", id.toString());
-      setLastVisiblePostId(id);
+    const debounceSaveLastRead = debounce((createdAt) => {
+      localStorage.setItem("lastReadDate", createdAt);
+      setLastVisibleCreatedDate(createdAt);
     }, 1000); // Adjust debounce timing as needed
 
     if (isIntersecting) {
-      debounceSaveLastRead(thought.thoughtId);
+      debounceSaveLastRead(thought.createdAt);
     }
   }, [isIntersecting, thought.thoughtId]);
 

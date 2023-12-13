@@ -17,15 +17,50 @@ import { Moment } from "moment";
 import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
+import moment from "moment";
 
-const POSTS_PER_PAGE = 5;
-const PRIOR_POST_COUNT = 3;
-
-interface TimelineData {
-  year: number;
-  month: string;
-  count: number;
+const POSTS_PER_PAGE = 3;
+interface batchDateRange {
+  startDate: Date;
+  endDate: Date;
 }
+function getBatchOfPosts(thoughts: Thought[], batchSize: number, lastEndDate?: Date): batchDateRange {
+  // Sort the thoughts by createdAt in descending order
+  const sortedThoughts = [...thoughts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  let startIndex: number;
+
+  if (lastEndDate) {
+    // Find the first thought that is equal or before the lastEndDate
+    startIndex = sortedThoughts.findIndex((thought) => new Date(thought.createdAt).getTime() <= new Date(lastEndDate).getTime());
+
+    // Adjust the start index if it's not the first element and a matching element is found
+    if (startIndex > 0) {
+      startIndex -= 1;
+    } else if (startIndex === -1) {
+      // If no match is found, start from the beginning of the sorted array
+      startIndex = 0;
+    }
+  } else {
+    // If no lastEndDate is provided, start from the beginning
+    startIndex = 0;
+  }
+
+  // Slice the array to get the batch
+  const batch = sortedThoughts.slice(startIndex, startIndex + batchSize);
+  console.log("startIndex", startIndex, batch, thoughts);
+  if (batch.length === 0) {
+    // Handle case where there are no posts in the batch
+    return { startDate: new Date(), endDate: new Date() };
+  }
+
+  // Determine startDate and endDate
+  const startDate = new Date(batch[0].createdAt);
+  const endDate = new Date(batch[batch.length - 1].createdAt);
+
+  return { startDate, endDate };
+}
+
 export interface Thought {
   thoughtId: number;
   createdAt: string;
@@ -47,6 +82,11 @@ export interface GroupedData {
   [key: string]: GroupedThoughts;
 }
 
+function getDateMinusThirtyDays(inputDate: Date): Date {
+  const returnDate = moment(inputDate).subtract(30, "days").toDate();
+  return returnDate;
+}
+
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
   const [thoughts, setThoughts] = useState<Thoughts[]>([]);
@@ -55,7 +95,7 @@ const LandingPage = () => {
   const [showStartFromBeginningButton, setShowStartFromBeginningButton] = useState(false);
 
   const [hasMore, setHasMore] = useState(true);
-  const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
+  const [lastVisibleCreatedDate, setLastVisibleCreatedDate] = useState<Date | null>(null);
   const [timelineData, setTimelineData] = useState<GroupedData>({});
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
@@ -67,9 +107,9 @@ const LandingPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   const router = useRouter();
+  const startDate = new Date();
 
   const handleMonthToggle = (monthKey: string) => {
-    console.log(monthKey);
     setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
   };
 
@@ -82,48 +122,60 @@ const LandingPage = () => {
 
   const continueFromLastRead = async () => {
     setShowContinuePrompt(false);
-    const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
-    setLastVisiblePostId(lastReadPostId);
+    const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
+    const lastReadPostDate: Date = lastReadPostDateStr === "" ? startDate : new Date(lastReadPostDateStr);
+    setLastVisibleCreatedDate(lastReadPostDate);
     setShowStartFromBeginningButton(true); // Show the button when continuing
 
-    fetchMoreData(lastReadPostId);
+    fetchMoreData(lastReadPostDate);
   };
-  const startFromBeginning = () => {
+  const startFromBeginning = async () => {
     setShowContinuePrompt(false);
-    localStorage.removeItem("lastReadThoughtId");
+    localStorage.removeItem("lastReadDate");
     setHasMore(true); // Reset hasMore state
     setThoughts([]); // Clear current posts
-    setLastVisiblePostId(1);
+    const resetDate: Date = startDate;
+    setLastVisibleCreatedDate(resetDate);
     setShowStartFromBeginningButton(false);
-    fetchMoreData(1);
+    await fetchMoreData(resetDate);
   };
   const resetAndFetchFromStart = async () => {
     setShowStartFromBeginningButton(false);
     setThoughts([]); // Clear current posts
     setHasMore(true); // Reset hasMore state
-    setLastVisiblePostId(1); // Reset last visible post ID
-    await fetchMoreData(1); // Fetch from the first post
+    const resetDate: Date = startDate;
+    setLastVisibleCreatedDate(resetDate);
+    await fetchMoreData(resetDate); // Fetch from the first post
   };
 
   const handleBookClick = () => {
     setOpen(!isOpen);
   };
 
-  const fetchMoreData = async (startId?: number) => {
+  const fetchMoreData = async (lastReadPostDate?: Date) => {
     if (!hasMore || isLoading) return;
     setIsLoading(true);
-    console.log(`fetchMoreData called, startId: ${startId}`, thoughts);
-    // Use startId if provided, otherwise calculate based on the current posts
-    let fetchStartId = startId ?? (thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId + 1 : 0);
-
+    let fetchStartDate: Date;
+    // Use lastVisibleCreatedDate if available
+    if (lastReadPostDate) {
+      fetchStartDate = lastReadPostDate;
+    } else {
+      fetchStartDate = lastVisibleCreatedDate ?? getDateMinusThirtyDays(startDate);
+    }
     try {
-      const response = await fetch(`/api/thoughts?startId=${fetchStartId}&thoughtCount=${POSTS_PER_PAGE}`);
+      const batchDates: batchDateRange = getBatchOfPosts(thoughtSummary, POSTS_PER_PAGE, fetchStartDate);
+
+      const urlSafeStartDate = encodeURIComponent(batchDates.startDate.toISOString());
+      const urlSafeEndDate = encodeURIComponent(batchDates.endDate.toISOString());
+      console.log("UNDEFINEDLASTREAD??:", batchDates, fetchStartDate);
+      const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`);
       const data = await response.json();
-      console.log("Fetched data:", data.posts);
-      // If starting fresh, replace thoughts, otherwise append
-      const newThoughts = startId === 1 ? data.posts : [...thoughts, ...data.posts];
-      setThoughts(newThoughts);
+      console.log("Fetched data upd?:", data.posts, urlSafeStartDate, urlSafeEndDate, fetchStartDate);
+
+      const newThoughts = data.posts;
+      setThoughts((prev) => [...prev, ...newThoughts]);
       setHasMore(data.posts.length === POSTS_PER_PAGE);
+      setLastVisibleCreatedDate(newThoughts.length > 0 ? new Date(newThoughts[newThoughts.length - 1].createdAt) : startDate);
     } catch (error) {
       console.error("Error loading more posts:", error);
     } finally {
@@ -142,8 +194,9 @@ const LandingPage = () => {
       const thoughtForDate = thoughtSummary.find((thought) => new Date(thought.createdAt).toDateString() === selectedDate.toDateString());
 
       if (thoughtForDate) {
-        setLastVisiblePostId(thoughtForDate.thoughtId);
-        fetchMoreData(thoughtForDate.thoughtId);
+        const tempDate: Date = new Date(thoughtForDate.createdAt);
+        setLastVisibleCreatedDate(tempDate);
+        fetchMoreData(tempDate);
       }
     }
   }, [selectedDate]);
@@ -151,26 +204,34 @@ const LandingPage = () => {
   const navigateToDate = (date: Date) => {
     setThoughts([]);
     setSelectedDate(date);
-    console.log("date selected", date);
   };
   useEffect(() => {
-    const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
-    setLastVisiblePostId(lastReadPostId);
-    if (lastReadPostId) {
-      setShowContinuePrompt(true); // Show prompt if there's a last read post ID
-    } else {
-      fetchMoreData(); // Initial data load
+    if (thoughtSummary.length > 0) {
+      const getInitialLoad = async () => {
+        const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
+        if (lastReadPostDateStr !== "") {
+          const lastReadPostDate: Date = lastReadPostDateStr === "" ? startDate : new Date(lastReadPostDateStr);
+          setLastVisibleCreatedDate(lastReadPostDate);
+        }
+
+        if (lastVisibleCreatedDate) {
+          setShowContinuePrompt(true); // Show prompt if there's a last read post ID
+        } else {
+          await fetchMoreData(); // Initial data load
+        }
+      };
+      getInitialLoad();
     }
-  }, []);
+  }, [thoughtSummary]);
   useEffect(() => {
-    if (thoughtSummary && lastVisiblePostId) {
-      const visibleThought = thoughtSummary.find((thought) => thought.thoughtId === lastVisiblePostId);
+    if (thoughtSummary && lastVisibleCreatedDate) {
+      const visibleThought = thoughtSummary.find((thought) => new Date(thought.createdAt) === lastVisibleCreatedDate);
       if (visibleThought) {
         const visibleDate = new Date(visibleThought.createdAt);
         setCurrentVisibleDate(visibleDate);
       }
     }
-  }, [lastVisiblePostId, thoughtSummary]);
+  }, [lastVisibleCreatedDate, thoughtSummary]);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
@@ -202,7 +263,6 @@ const LandingPage = () => {
         };
 
         const formattedData = groupThoughtsByDate(thoughtSummary);
-        console.log("formattedData", formattedData);
 
         setTimelineData(formattedData);
       } catch (error) {
@@ -320,7 +380,7 @@ const LandingPage = () => {
                 )}
                 {thoughts.map((thought, index) => (
                   <Box key={index}>
-                    <ThoughtPage thought={thought} setLastVisiblePostId={setLastVisiblePostId} />
+                    <ThoughtPage thought={thought} setLastVisibleCreatedDate={setLastVisibleCreatedDate} />
                   </Box>
                 ))}
                 {hasMore && (

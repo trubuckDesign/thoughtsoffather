@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/prismaClient";
 
 export async function GET(req: NextRequest) {
-  const pageCount = parseInt(req.nextUrl.searchParams.get("thoughtCount") as string) || 0;
-  const startId = parseInt(req.nextUrl.searchParams.get("startId") as string) || 0;
+  const endDate = new Date(req.nextUrl.searchParams.get("endDate") as string) || new Date();
+  const startDate = new Date(req.nextUrl.searchParams.get("startDate") as string) || new Date();
+  const limitCount: number = parseInt(req.nextUrl.searchParams.get("postPerPage") as string) || 3;
   try {
     const posts = await prisma.thoughts.findMany({
-      take: pageCount,
-      where: { isExpired: false, thoughtId: { gte: startId } },
+      take: limitCount,
+      where: { isExpired: false, createdAt: { gte: startDate } },
       orderBy: {
         createdAt: "desc",
       },
