@@ -16,8 +16,6 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
   const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 0.5, 0.75, 1] });
 
   useEffect(() => {
-    console.log(`Thought ID: ${thought.thoughtId}, isIntersecting: ${isIntersecting}`);
-
     const debounceSaveLastRead = debounce((createdAt) => {
       localStorage.setItem("lastReadDate", createdAt);
       setLastVisibleCreatedDate(createdAt);

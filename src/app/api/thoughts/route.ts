@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   try {
     const posts = await prisma.thoughts.findMany({
       take: limitCount,
-      where: { isExpired: false, createdAt: { gte: startDate } },
+      where: { isExpired: false, createdAt: { lte: startDate } },
       orderBy: {
         createdAt: "desc",
       },

@@ -5,9 +5,16 @@ interface UseInfiniteScrollProps {
   threshold?: number | number[];
   isLoading: boolean;
   hasMore: boolean;
-  onLoadMore: () => void;
+  onLoadMore: (lastReadPostDate?: Date) => Promise<void>;
+  getLastPostDate: () => Date | "";
 }
-export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore, threshold = [0, 0.25, 0.5, 0.75, 1] }: UseInfiniteScrollProps) => {
+export const useInfiniteScroll = ({
+  isLoading,
+  hasMore,
+  onLoadMore,
+  getLastPostDate,
+  threshold = [0, 0.25, 0.5, 0.75, 1],
+}: UseInfiniteScrollProps) => {
   const [target, setTarget] = useState<Element | null>(null);
 
   useEffect(() => {
@@ -17,15 +24,16 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore, threshold = 
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {});
         if (entries[0].isIntersecting && hasMore) {
-          onLoadMore();
+          const lastPostDate = getLastPostDate();
+          if (lastPostDate === "") {
+            onLoadMore();
+          } else {
+            onLoadMore(new Date(lastPostDate));
+          }
         }
       },
-      {
-        rootMargin: "0px",
-        threshold: threshold,
-      }
+      { rootMargin: "0px", threshold: threshold }
     );
 
     if (target) {

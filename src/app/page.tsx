@@ -24,19 +24,23 @@ interface batchDateRange {
   startDate: Date;
   endDate: Date;
 }
-function getBatchOfPosts(thoughts: Thought[], batchSize: number, lastEndDate?: Date): batchDateRange {
+function getBatchOfPosts(thoughts: Thought[], batchSize: number, isInitialLoad: boolean, lastEndDate?: Date): batchDateRange {
   // Sort the thoughts by createdAt in descending order
   const sortedThoughts = [...thoughts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   let startIndex: number;
 
   if (lastEndDate) {
-    // Find the first thought that is equal or before the lastEndDate
-    startIndex = sortedThoughts.findIndex((thought) => new Date(thought.createdAt).getTime() <= new Date(lastEndDate).getTime());
-
+    if (isInitialLoad) {
+      // For the initial load, include the post that matches the lastEndDate
+      startIndex = sortedThoughts.findIndex((thought) => new Date(thought.createdAt).getTime() <= new Date(lastEndDate).getTime());
+    } else {
+      // For subsequent loads, start after the lastEndDate
+      startIndex = sortedThoughts.findIndex((thought) => new Date(thought.createdAt).getTime() < new Date(lastEndDate).getTime());
+    }
     // Adjust the start index if it's not the first element and a matching element is found
     if (startIndex > 0) {
-      startIndex -= 1;
+      startIndex + 1;
     } else if (startIndex === -1) {
       // If no match is found, start from the beginning of the sorted array
       startIndex = 0;
@@ -93,11 +97,14 @@ const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showContinuePrompt, setShowContinuePrompt] = useState(false);
   const [showStartFromBeginningButton, setShowStartFromBeginningButton] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const [hasMore, setHasMore] = useState(true);
   const [lastVisibleCreatedDate, setLastVisibleCreatedDate] = useState<Date | null>(null);
   const [timelineData, setTimelineData] = useState<GroupedData>({});
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
+  const [isTimelineDataLoaded, setIsTimelineDataLoaded] = useState(false);
+
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -153,21 +160,22 @@ const LandingPage = () => {
   };
 
   const fetchMoreData = async (lastReadPostDate?: Date) => {
-    if (!hasMore || isLoading) return;
+    if (!hasMore || isLoading || !isTimelineDataLoaded) return;
+
     setIsLoading(true);
     let fetchStartDate: Date;
     // Use lastVisibleCreatedDate if available
     if (lastReadPostDate) {
       fetchStartDate = lastReadPostDate;
     } else {
-      fetchStartDate = lastVisibleCreatedDate ?? getDateMinusThirtyDays(startDate);
+      fetchStartDate = lastVisibleCreatedDate ?? startDate;
     }
     try {
-      const batchDates: batchDateRange = getBatchOfPosts(thoughtSummary, POSTS_PER_PAGE, fetchStartDate);
+      const batchDates: batchDateRange = getBatchOfPosts(thoughtSummary, POSTS_PER_PAGE, isInitialLoad, fetchStartDate);
+      setIsInitialLoad(false); // this ensures that the getBatchofPosts will not start on the wrong index of posts.
 
       const urlSafeStartDate = encodeURIComponent(batchDates.startDate.toISOString());
       const urlSafeEndDate = encodeURIComponent(batchDates.endDate.toISOString());
-      console.log("UNDEFINEDLASTREAD??:", batchDates, fetchStartDate);
       const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`);
       const data = await response.json();
       console.log("Fetched data upd?:", data.posts, urlSafeStartDate, urlSafeEndDate, fetchStartDate);
@@ -182,11 +190,18 @@ const LandingPage = () => {
       setIsLoading(false);
     }
   };
+  const getLastPostDate = () => {
+    if (thoughts.length === 0) return "";
+
+    // Assuming 'thoughts' is an array of your post objects and they have a 'createdAt' property
+    return thoughts[thoughts.length - 1].createdAt;
+  };
 
   const { setTarget, target } = useInfiniteScroll({
     isLoading,
     hasMore,
     onLoadMore: fetchMoreData,
+    getLastPostDate: getLastPostDate,
     threshold: [0, 0.25, 0.5, 0.75, 1], // Your desired threshold values
   });
   useEffect(() => {
@@ -206,23 +221,30 @@ const LandingPage = () => {
     setSelectedDate(date);
   };
   useEffect(() => {
-    if (thoughtSummary.length > 0) {
-      const getInitialLoad = async () => {
-        const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
-        if (lastReadPostDateStr !== "") {
-          const lastReadPostDate: Date = lastReadPostDateStr === "" ? startDate : new Date(lastReadPostDateStr);
-          setLastVisibleCreatedDate(lastReadPostDate);
-        }
+    if (isTimelineDataLoaded) {
+      if (thoughtSummary.length > 0) {
+        const getInitialLoad = async () => {
+          const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
+          let lastReadPostDate: Date;
+          let isLocalStorageUsed: boolean = false;
+          if (lastReadPostDateStr !== "") {
+            isLocalStorageUsed = true;
+            lastReadPostDate = new Date(lastReadPostDateStr);
+            setLastVisibleCreatedDate(lastReadPostDate);
+          } else {
+            lastReadPostDate = new Date(thoughtSummary[0].createdAt);
+          }
 
-        if (lastVisibleCreatedDate) {
-          setShowContinuePrompt(true); // Show prompt if there's a last read post ID
-        } else {
-          await fetchMoreData(); // Initial data load
-        }
-      };
-      getInitialLoad();
+          if (isLocalStorageUsed) {
+            setShowContinuePrompt(true); // Show prompt if there's a last read post ID
+          } else {
+            await fetchMoreData(lastReadPostDate); // Initial data load
+          }
+        };
+        getInitialLoad();
+      }
     }
-  }, [thoughtSummary]);
+  }, [isTimelineDataLoaded]);
   useEffect(() => {
     if (thoughtSummary && lastVisibleCreatedDate) {
       const visibleThought = thoughtSummary.find((thought) => new Date(thought.createdAt) === lastVisibleCreatedDate);
@@ -240,6 +262,8 @@ const LandingPage = () => {
         const { thoughtSummary }: { thoughtSummary: Thought[] } = await response.json();
 
         setThoughtSummary(thoughtSummary);
+        setIsTimelineDataLoaded(true); // Set to true when data is loaded
+
         // Log the data to check its structure
         const groupThoughtsByDate = (thoughts: Thought[]): GroupedData => {
           return thoughts.reduce<GroupedData>((acc, thought) => {
