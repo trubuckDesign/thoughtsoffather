@@ -13,13 +13,14 @@ const areEqual = (prevProps: ThoughtPageProps, nextProps: ThoughtPageProps) => {
   return prevProps.thought.thoughtId === nextProps.thought.thoughtId;
 };
 const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVisibleCreatedDate }) => {
-  const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 0.5, 0.75, 1] });
+  const [ref, isIntersecting] = useOnScreen({ threshold: [0, 0.25, 1], rootMargin: "0px" });
 
   useEffect(() => {
     const debounceSaveLastRead = debounce((createdAt) => {
       localStorage.setItem("lastReadDate", createdAt);
+      console.log("inside thoughtPage debounceUpdate:", createdAt, thought);
       setLastVisibleCreatedDate(createdAt);
-    }, 1000); // Adjust debounce timing as needed
+    }, 1500); // Adjust debounce timing as needed
 
     if (isIntersecting) {
       debounceSaveLastRead(thought.createdAt);

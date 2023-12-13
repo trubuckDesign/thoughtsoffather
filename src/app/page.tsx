@@ -245,6 +245,7 @@ const LandingPage = () => {
   }, [isTimelineDataLoaded]);
   useEffect(() => {
     if (thoughtSummary && lastVisibleCreatedDate) {
+      console.log("insidePage:", lastVisibleCreatedDate, currentVisibleDate);
       const visibleThought = thoughtSummary.find((thought) => new Date(thought.createdAt) === lastVisibleCreatedDate);
       if (visibleThought) {
         const visibleDate = new Date(visibleThought.createdAt);
@@ -327,7 +328,7 @@ const LandingPage = () => {
           >
             <TimelineBar
               data={timelineData}
-              currentVisibleDate={currentVisibleDate}
+              currentVisibleDate={lastVisibleCreatedDate ?? currentVisibleDate}
               onDateSelect={navigateToDate}
               expandedMonth={expandedMonth}
               onMonthToggle={handleMonthToggle}
@@ -338,13 +339,12 @@ const LandingPage = () => {
         {!isMobile && isOpen && (
           <TimelineBar
             data={timelineData}
-            currentVisibleDate={currentVisibleDate}
+            currentVisibleDate={lastVisibleCreatedDate ?? currentVisibleDate}
             onDateSelect={navigateToDate}
             expandedMonth={expandedMonth}
             onMonthToggle={handleMonthToggle}
           />
         )}
-        {/* <Box id="content-area" sx={{ flexGrow: 1, paddingLeft: showTimeline ? "160px" : "0px" }}> */}
         <Box
           id="content-area"
           sx={{

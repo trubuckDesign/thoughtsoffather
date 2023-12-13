@@ -108,6 +108,16 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
         const currentDate = moment(currentVisibleDate).date();
         const isExpanded = key === expandedMonth || key === currentMonthKey;
 
+        console.log(
+          "currentDate",
+          currentDate,
+          isExpanded,
+          expandedMonth,
+          "currentVisibleDate:",
+          moment(currentVisibleDate).toDate,
+          "currentMonthKey:",
+          currentMonthKey
+        );
         return (
           <React.Fragment key={`${year}-${month}`}>
             <TimelineItem
