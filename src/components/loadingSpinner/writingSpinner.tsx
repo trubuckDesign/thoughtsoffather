@@ -1,16 +1,20 @@
-import { Avatar, Box, Card, CardHeader, IconButton, Skeleton } from "@mui/material";
-import React from "react";
-import { useSpring, animated } from "react-spring";
+import { Box, CircularProgress } from "@mui/material";
 
-const HandwritingSpinner = () => {
-  return (
-    <Card sx={{ maxWidth: 345, m: 2 }}>
-      <CardHeader
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-      />
-    </Card>
-  );
-};
-
-export default HandwritingSpinner;
+export const LoadingOverlay = () => (
+  <Box
+    sx={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black
+      zIndex: 2000, // Make sure this is above other content
+    }}
+  >
+    <CircularProgress />
+  </Box>
+);

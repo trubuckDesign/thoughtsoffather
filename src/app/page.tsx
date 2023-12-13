@@ -5,7 +5,7 @@ import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
 import BackgroundImageContainer from "@/components/background/background";
-import HandwritingSpinner from "@/components/loadingSpinner/writingSpinner";
+import { LoadingOverlay } from "@/components/loadingSpinner/writingSpinner";
 import ThoughtPage from "@/components/thoughtPage/thoughtPage";
 import { Thoughts } from "@prisma/client";
 import { useInfiniteScroll } from "@/components/infiniteScroll/infiniteScroll";
@@ -109,6 +109,7 @@ const LandingPage = () => {
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   const router = useRouter();
   const startDate = new Date();
+  const isPostListEmpty = thoughts.length === 0;
 
   const handleMonthToggle = (monthKey: string) => {
     setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
@@ -381,6 +382,8 @@ const LandingPage = () => {
                   {isDrawerOpen ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
                 </IconButton>
               )}
+              {isLoading && <LoadingOverlay />}
+
               <Box id="posts-container" sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
                 {showStartFromBeginningButton && (
                   <Box sx={{ position: "relative", marginLeft: "auto", display: "flex", justifyContent: "center" }}>
@@ -394,11 +397,7 @@ const LandingPage = () => {
                     <ThoughtPage thought={thought} setLastVisibleCreatedDate={setLastVisibleCreatedDate} />
                   </Box>
                 ))}
-                {hasMore && (
-                  <div ref={(el) => setTarget(el)}>
-                    <HandwritingSpinner />
-                  </div>
-                )}
+                {hasMore && <div ref={(el) => setTarget(el)}></div>}
               </Box>
             </>
           </CSSTransition>
