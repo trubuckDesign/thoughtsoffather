@@ -7,7 +7,7 @@ interface UseInfiniteScrollProps {
   hasMore: boolean;
   onLoadMore: () => void;
 }
-export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore }: UseInfiniteScrollProps) => {
+export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore, threshold = [0, 0.25, 0.5, 0.75, 1] }: UseInfiniteScrollProps) => {
   const [target, setTarget] = useState<Element | null>(null);
 
   useEffect(() => {
@@ -17,13 +17,14 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore }: UseInfinit
 
     const observer = new IntersectionObserver(
       (entries) => {
+        entries.forEach((entry) => {});
         if (entries[0].isIntersecting && hasMore) {
           onLoadMore();
         }
       },
       {
         rootMargin: "0px",
-        threshold: 1.0,
+        threshold: threshold,
       }
     );
 
@@ -34,7 +35,7 @@ export const useInfiniteScroll = ({ isLoading, hasMore, onLoadMore }: UseInfinit
     return () => {
       if (target) observer.unobserve(target);
     };
-  }, [target, isLoading, hasMore, onLoadMore]);
+  }, [target, isLoading, hasMore, onLoadMore, threshold]);
 
-  return { setTarget };
+  return { setTarget, target };
 };

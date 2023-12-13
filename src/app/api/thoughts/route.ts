@@ -2,32 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/prismaClient";
 
 export async function GET(req: NextRequest) {
-  const pageCount = parseInt(req.nextUrl.searchParams.get("thoughtCount") as string) || 0;
-  const startId = parseInt(req.nextUrl.searchParams.get("startId") as string) || 0;
+  const lastPostId = parseInt(req.nextUrl.searchParams.get("lastPostId") as string) || null;
+  const limitCount: number = parseInt(req.nextUrl.searchParams.get("postPerPage") as string) || 3;
+
   try {
     const posts = await prisma.thoughts.findMany({
-      take: pageCount,
-      where: { isExpired: false, thoughtId: { gte: startId } },
+      take: limitCount,
+      where: {
+        isExpired: false,
+        ...(lastPostId && { thoughtId: { lt: lastPostId } }),
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return NextResponse.json(
-      {
-        posts,
-      },
-      { status: 200 }
-    );
+
+    return NextResponse.json({ posts }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "There was an issue with loading the thoughts",
-        error: error,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Error fetching posts", error: error }, { status: 500 });
   }
 }
+
 export async function POST(req: NextRequest) {
   try {
     const { title, content } = await req.json();

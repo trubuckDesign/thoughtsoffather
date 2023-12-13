@@ -18,8 +18,7 @@ import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
 
-const POSTS_PER_PAGE = 5;
-const PRIOR_POST_COUNT = 3;
+const POSTS_PER_PAGE = 3;
 
 interface TimelineData {
   year: number;
@@ -53,6 +52,7 @@ const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showContinuePrompt, setShowContinuePrompt] = useState(false);
   const [showStartFromBeginningButton, setShowStartFromBeginningButton] = useState(false);
+  const [isTimelineDataLoaded, setIsTimelineDataLoaded] = useState(false);
 
   const [hasMore, setHasMore] = useState(true);
   const [lastVisiblePostId, setLastVisiblePostId] = useState<number>(1);
@@ -107,27 +107,29 @@ const LandingPage = () => {
     setOpen(!isOpen);
   };
 
-  const fetchMoreData = async (startId?: number) => {
-    if (!hasMore || isLoading) return;
-    setIsLoading(true);
-    console.log("preload thoughts:", thoughts);
-    // Use startId if provided, otherwise calculate based on the current posts
-    let fetchStartId = startId ?? (thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId + 1 : 0);
+  const fetchMoreData = useCallback(
+    async (getById?: number) => {
+      console.log("thoughtSummary", thoughtSummary, thoughts, getById);
+      if (!hasMore || isLoading || !isTimelineDataLoaded) return;
+      if (thoughtSummary.length <= 0) return;
 
-    try {
-      const response = await fetch(`/api/thoughts?startId=${fetchStartId}&thoughtCount=${POSTS_PER_PAGE}`);
-      const data = await response.json();
-      console.log("response thoughts:", data.posts);
-      // If starting fresh, replace thoughts, otherwise append
-      const newThoughts = startId === 1 ? data.posts : [...thoughts, ...data.posts];
-      setThoughts(newThoughts);
-      setHasMore(data.posts.length === POSTS_PER_PAGE);
-    } catch (error) {
-      console.error("Error loading more posts:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      setIsLoading(true);
+
+      try {
+        const lastPostId = thoughts.length > 0 ? thoughts[thoughts.length - 1].thoughtId : thoughtSummary[0].thoughtId;
+        const response = await fetch(`/api/thoughts?lastPostId=${lastPostId}&postPerPage=${POSTS_PER_PAGE}`);
+        const data = await response.json();
+
+        setThoughts((prev) => [...prev, ...data.posts]);
+        setHasMore(data.posts.length === POSTS_PER_PAGE);
+      } catch (error) {
+        console.error("Error loading more posts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [hasMore, isLoading, isTimelineDataLoaded, thoughts]
+  );
 
   const { setTarget } = useInfiniteScroll({
     isLoading,
@@ -151,14 +153,23 @@ const LandingPage = () => {
     console.log("date selected", date);
   };
   useEffect(() => {
-    const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
-    setLastVisiblePostId(lastReadPostId);
-    if (lastReadPostId) {
-      setShowContinuePrompt(true); // Show prompt if there's a last read post ID
-    } else {
-      fetchMoreData(); // Initial data load
+    if (isTimelineDataLoaded) {
+      const getInitialData = async () => {
+        const lastReadPostId = parseInt(localStorage.getItem("lastReadThoughtId") || "0");
+        setLastVisiblePostId(lastReadPostId);
+        if (lastReadPostId) {
+          setShowContinuePrompt(true); // Show prompt if there's a last read post ID
+        } else {
+          await fetchMoreData(); // Initial data load
+        }
+      };
+      console.log("initialData RAN", thoughtSummary, thoughtSummary.length, thoughtSummary.length > 0);
+      if (thoughtSummary.length > 0) {
+        console.log("thoughtSummaryLengthIniital", thoughtSummary.length);
+        getInitialData();
+      }
     }
-  }, []);
+  }, [isTimelineDataLoaded]);
   useEffect(() => {
     if (thoughtSummary && lastVisiblePostId) {
       const visibleThought = thoughtSummary.find((thought) => thought.thoughtId === lastVisiblePostId);
@@ -176,6 +187,8 @@ const LandingPage = () => {
         const { thoughtSummary }: { thoughtSummary: Thought[] } = await response.json();
 
         setThoughtSummary(thoughtSummary);
+        setIsTimelineDataLoaded(true); // Set to true when data is loaded
+
         // Log the data to check its structure
         const groupThoughtsByDate = (thoughts: Thought[]): GroupedData => {
           return thoughts.reduce<GroupedData>((acc, thought) => {
@@ -313,7 +326,7 @@ const LandingPage = () => {
                   </Box>
                 ))}
                 {hasMore && (
-                  <div ref={(el) => setTarget(el)}>
+                  <div ref={setTarget}>
                     <HandwritingSpinner />
                   </div>
                 )}
