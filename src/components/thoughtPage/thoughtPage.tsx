@@ -18,9 +18,8 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
   useEffect(() => {
     const debounceSaveLastRead = debounce((createdAt) => {
       localStorage.setItem("lastReadDate", createdAt);
-      console.log("inside thoughtPage debounceUpdate:", createdAt, thought);
       setLastVisibleCreatedDate(createdAt);
-    }, 1500); // Adjust debounce timing as needed
+    }, 500); // Adjust debounce timing as needed
 
     if (isIntersecting) {
       debounceSaveLastRead(thought.createdAt);

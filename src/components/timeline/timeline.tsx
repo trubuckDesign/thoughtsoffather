@@ -81,6 +81,16 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
       });
     }
   }, [expandedMonth, currentMonthKey, updateHeight]);
+  useEffect(() => {
+    if (currentVisibleDate) {
+      const formattedDate = moment(currentVisibleDate).format("YYYY-MM-DD");
+      const elementToScroll = document.getElementById(`timeline-day-${formattedDate}`);
+
+      if (elementToScroll) {
+        elementToScroll.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [currentVisibleDate]);
 
   return (
     <Timeline
@@ -150,7 +160,11 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
             <div ref={(el) => (itemRefs.current[key] = el)}>
               {isExpanded &&
                 uniqueDays.map(({ day, thought }, index, arr) => (
-                  <TimelineItem key={thought.thoughtId} onClick={() => onDateSelect(new Date(thought.createdAt))}>
+                  <TimelineItem
+                    key={thought.thoughtId}
+                    id={`timeline-day-${moment(thought.createdAt).format("YYYY-MM-DD")}`} // Add an ID based on the date
+                    onClick={() => onDateSelect(new Date(thought.createdAt))}
+                  >
                     <TimelineSeparator>
                       <TimelineDot sx={{ backgroundColor: "white" }} />
                       {index !== arr.length - 1 && <TimelineConnector sx={{ backgroundColor: "white" }} />}
