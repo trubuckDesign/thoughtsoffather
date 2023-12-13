@@ -102,7 +102,7 @@ const LandingPage = () => {
   const [currentVisibleDate, setCurrentVisibleDate] = useState<Date | Moment | undefined>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isLargOrMedium = useMediaQuery(theme.breakpoints.down("lg"));
+  const isLargOrMedium = useMediaQuery(theme.breakpoints.between("sm", "lg"));
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -310,7 +310,7 @@ const LandingPage = () => {
           π
         </Button>
       </Box>
-      <Box id="main-layout-box" sx={{ display: "flex", marginLeft: isLargOrMedium ? 23 : 9 }}>
+      <Box id="main-layout-box" sx={{ display: "flex", marginLeft: isMobile ? 0 : isLargOrMedium ? 23 : 9 }}>
         {isMobile && (
           <Drawer
             id="timeline-drawer"
@@ -364,24 +364,6 @@ const LandingPage = () => {
           </CSSTransition>
           <CSSTransition in={isOpen} timeout={1900} classNames="fade" unmountOnExit>
             <>
-              {isMobile && isOpen && (
-                <IconButton
-                  id="toggle-timeline-button"
-                  sx={{
-                    backgroundColor: theme.palette.primary.main, // Theme primary color
-                    color: theme.palette.primary.contrastText, // Contrast text color for the primary color
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
-                    },
-                    marginTop: 2,
-                    marginLeft: -8,
-                  }}
-                  onClick={toggleDrawer}
-                  size="large"
-                >
-                  {isDrawerOpen ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
-                </IconButton>
-              )}
               {isLoading && <LoadingOverlay />}
 
               <Box id="posts-container" sx={{ overflowY: "auto", maxHeight: "95vh", width: "100vw", padding: "20px 0" }}>
@@ -391,6 +373,24 @@ const LandingPage = () => {
                       Start from Beginning
                     </Button>
                   </Box>
+                )}
+                {isMobile && isOpen && (
+                  <IconButton
+                    id="toggle-timeline-button"
+                    sx={{
+                      backgroundColor: theme.palette.primary.main, // Theme primary color
+                      color: theme.palette.primary.contrastText, // Contrast text color for the primary color
+                      "&:hover": {
+                        backgroundColor: theme.palette.primary.dark, // Darker shade for hover state
+                      },
+                      marginTop: 0,
+                      marginLeft: 1,
+                    }}
+                    onClick={toggleDrawer}
+                    size="large"
+                  >
+                    {isDrawerOpen ? <KeyboardDoubleArrowLeftIcon /> : <KeyboardDoubleArrowRightIcon />}
+                  </IconButton>
                 )}
                 {thoughts.map((thought, index) => (
                   <Box key={index}>
