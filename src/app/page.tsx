@@ -52,7 +52,6 @@ function getBatchOfPosts(thoughts: Thought[], batchSize: number, isInitialLoad: 
 
   // Slice the array to get the batch
   const batch = sortedThoughts.slice(startIndex, startIndex + batchSize);
-  console.log("startIndex", startIndex, batch, thoughts);
   if (batch.length === 0) {
     // Handle case where there are no posts in the batch
     return { startDate: new Date(), endDate: new Date() };
@@ -86,18 +85,13 @@ export interface GroupedData {
   [key: string]: GroupedThoughts;
 }
 
-function getDateMinusThirtyDays(inputDate: Date): Date {
-  const returnDate = moment(inputDate).subtract(30, "days").toDate();
-  return returnDate;
-}
-
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
   const [thoughts, setThoughts] = useState<Thoughts[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showContinuePrompt, setShowContinuePrompt] = useState(false);
   const [showStartFromBeginningButton, setShowStartFromBeginningButton] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [skipStartingPost, setSkipStartingPost] = useState(true);
 
   const [hasMore, setHasMore] = useState(true);
   const [lastVisibleCreatedDate, setLastVisibleCreatedDate] = useState<Date | null>(null);
@@ -127,6 +121,25 @@ const LandingPage = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const handleBookClick = () => {
+    setOpen(!isOpen);
+  };
+
+  const navigateToSignIn = () => {
+    router.push("/add"); // Navigates to the sign-in page
+  };
+  const getLastPostDate = () => {
+    if (thoughts.length === 0) return "";
+
+    // Assuming 'thoughts' is an array of your post objects and they have a 'createdAt' property
+    return thoughts[thoughts.length - 1].createdAt;
+  };
+  const navigateToDate = (date: Date) => {
+    setThoughts([]);
+    setSkipStartingPost(true); // this ensures that the getBatchofPosts will not start on the wrong index of posts.
+    setShowStartFromBeginningButton(true);
+    setSelectedDate(date);
+  };
   const continueFromLastRead = async () => {
     setShowContinuePrompt(false);
     const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
@@ -155,10 +168,6 @@ const LandingPage = () => {
     await fetchMoreData(resetDate); // Fetch from the first post
   };
 
-  const handleBookClick = () => {
-    setOpen(!isOpen);
-  };
-
   const fetchMoreData = async (lastReadPostDate?: Date) => {
     if (!hasMore || isLoading || !isTimelineDataLoaded) return;
 
@@ -171,15 +180,13 @@ const LandingPage = () => {
       fetchStartDate = lastVisibleCreatedDate ?? startDate;
     }
     try {
-      const batchDates: batchDateRange = getBatchOfPosts(thoughtSummary, POSTS_PER_PAGE, isInitialLoad, fetchStartDate);
-      setIsInitialLoad(false); // this ensures that the getBatchofPosts will not start on the wrong index of posts.
+      const batchDates: batchDateRange = getBatchOfPosts(thoughtSummary, POSTS_PER_PAGE, skipStartingPost, fetchStartDate);
+      setSkipStartingPost(false); // this ensures that the getBatchofPosts will not start on the wrong index of posts.
 
       const urlSafeStartDate = encodeURIComponent(batchDates.startDate.toISOString());
       const urlSafeEndDate = encodeURIComponent(batchDates.endDate.toISOString());
       const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`);
       const data = await response.json();
-      console.log("Fetched data upd?:", data.posts, urlSafeStartDate, urlSafeEndDate, fetchStartDate);
-
       const newThoughts = data.posts;
       setThoughts((prev) => [...prev, ...newThoughts]);
       setHasMore(data.posts.length === POSTS_PER_PAGE);
@@ -189,12 +196,6 @@ const LandingPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-  const getLastPostDate = () => {
-    if (thoughts.length === 0) return "";
-
-    // Assuming 'thoughts' is an array of your post objects and they have a 'createdAt' property
-    return thoughts[thoughts.length - 1].createdAt;
   };
 
   const { setTarget, target } = useInfiniteScroll({
@@ -216,10 +217,6 @@ const LandingPage = () => {
     }
   }, [selectedDate]);
 
-  const navigateToDate = (date: Date) => {
-    setThoughts([]);
-    setSelectedDate(date);
-  };
   useEffect(() => {
     if (isTimelineDataLoaded) {
       if (thoughtSummary.length > 0) {
@@ -296,16 +293,6 @@ const LandingPage = () => {
 
     fetchTimelineData();
   }, []);
-  const navigateToSignIn = () => {
-    router.push("/add"); // Navigates to the sign-in page
-  };
-  // In LandingPage component
-  useEffect(() => {
-    if (target) {
-      const rect = target.getBoundingClientRect();
-      console.log("Target element rect:", rect);
-    }
-  }, [target]);
 
   return (
     <BackgroundImageContainer>
