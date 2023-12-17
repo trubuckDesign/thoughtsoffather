@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { Box, Button, List, ListItem, TextField } from "@mui/material";
 
 type BlobWithUrl = {
   url: string;
@@ -32,19 +33,42 @@ const BlobList = () => {
   return (
     <div>
       {selectedImage && (
-        <div>
+        <Box position="fixed" top={0} left={0} zIndex="modal" bgcolor="background.paper" p={2} border={1} borderColor="grey.300">
           <Image src={selectedImage.url} alt="Selected Blob" width={500} height={300} />
-          <button onClick={() => setSelectedImage(null)}>Close</button>
-        </div>
+          <Button variant="contained" color="primary" onClick={() => setSelectedImage(null)}>
+            Close
+          </Button>
+        </Box>
       )}
 
-      <ul>
+      <List>
         {blobs.map((blob) => (
-          <li key={blob.url} onClick={() => setSelectedImage(blob)}>
-            URL: {blob.url}, Size: {blob.size} bytes
-          </li>
+          <ListItem key={blob.url} onClick={() => setSelectedImage(blob)}>
+            <TextField
+              fullWidth
+              label="URL"
+              value={blob.url}
+              InputProps={{
+                readOnly: true,
+                sx: { bgcolor: "background.paper" }, // Set the background color
+              }}
+              variant="outlined"
+              margin="dense"
+            />
+            <TextField
+              fullWidth
+              label="Size"
+              value={`${blob.size} bytes`}
+              InputProps={{
+                readOnly: true,
+                sx: { bgcolor: "background.paper" }, // Set the background color
+              }}
+              variant="outlined"
+              margin="dense"
+            />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 };
