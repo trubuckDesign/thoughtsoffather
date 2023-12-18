@@ -109,8 +109,9 @@ const StatisticsPage: React.FC = () => {
       ))}
 
       <ParallaxLayer offset={0} speed={0.85} factor={imageUrls.length + 1}>
-        <LargeTextComponent />
         <GeneralStats wordCount={0} averageLength={0} />
+        <LargeTextComponent />
+
         <ChartComponent />
       </ParallaxLayer>
     </Parallax>
