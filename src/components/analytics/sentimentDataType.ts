@@ -1,5 +1,6 @@
 export interface SentimentData {
   title: string;
+  postCount?: number;
   createdAt: string;
   thoughtid: number;
   neg_score: number;
