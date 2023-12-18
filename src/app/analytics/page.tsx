@@ -2,9 +2,9 @@
 import React, { CSSProperties } from "react";
 import { Box } from "@mui/material";
 import ChartComponent from "@/components/analytics/charts/charts";
-import StatisticsComponent from "@/components/analytics/statistics/statistics";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import Image from "next/image";
+import GeneralStats from "@/components/analytics/statistics/statistics";
 
 const LargeTextComponent = () => {
   return (
@@ -54,8 +54,8 @@ const LargeTextComponent = () => {
 
 const getRandomStyle = (): CSSProperties => {
   const rotation = Math.random() * 10.5 - 5;
-  const left = 20 + Math.random() * 60; // Random left position between 20% and 80%
-  const margin = Math.random() * 50; // Random margin up to 50px
+  const left = 10 + Math.random() * 50; // Random left position between 20% and 80%
+  const margin = Math.random() * 20; // Random margin up to 50px
 
   return {
     position: "absolute",
@@ -66,7 +66,7 @@ const getRandomStyle = (): CSSProperties => {
     boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
     display: "inline-block",
     maxWidth: "600px",
-    minWidth: "200px",
+    minWidth: "100px",
     width: `100%`,
     left: `${left}%`,
     marginBottom: `${margin}px`,
@@ -93,8 +93,9 @@ const StatisticsPage: React.FC = () => {
         <ParallaxLayer
           key={index}
           offset={index}
+          factor={0.5}
           speed={Math.random() * 2.5}
-          style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}
+          style={{ position: "relative", display: "flex", justifyContent: "center", height: "auto" }}
         >
           <Image
             src={src}
@@ -107,9 +108,9 @@ const StatisticsPage: React.FC = () => {
         </ParallaxLayer>
       ))}
 
-      <ParallaxLayer offset={0} speed={1} factor={imageUrls.length + 1}>
+      <ParallaxLayer offset={0} speed={0.85} factor={imageUrls.length + 1}>
         <LargeTextComponent />
-        <StatisticsComponent />
+        <GeneralStats wordCount={0} averageLength={0} />
         <ChartComponent />
       </ParallaxLayer>
     </Parallax>

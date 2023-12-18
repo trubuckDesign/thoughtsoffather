@@ -1,15 +1,20 @@
-import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 
-const StatisticsComponent: React.FC = () => {
-  // Fetch and display blog statistics
+interface GeneralStatsProps {
+  wordCount: number;
+  averageLength: number;
+}
 
+const GeneralStats: React.FC<GeneralStatsProps> = ({ wordCount, averageLength }) => {
   return (
-    <Box>
-      <Typography variant="h4">Blog Statistics</Typography>
-      {/* Statistics content here */}
-    </Box>
+    <Card sx={{ margin: 2, elevation: 3 }}>
+      <CardContent>
+        <Typography variant="h5">General Statistics</Typography>
+        <Typography>Word Count: {wordCount}</Typography>
+        <Typography>Average Length: {averageLength} words</Typography>
+      </CardContent>
+    </Card>
   );
 };
 
-export default StatisticsComponent;
+export default GeneralStats;
