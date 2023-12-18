@@ -1,56 +1,358 @@
 "use client";
 import React, { CSSProperties } from "react";
-import { Box } from "@mui/material";
-import ChartComponent from "@/components/analytics/charts/charts";
+import { Box, Grid } from "@mui/material";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import Image from "next/image";
 import GeneralStats from "@/components/analytics/statistics/statistics";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import TimerIcon from "@mui/icons-material/Timer";
+import ArticleIcon from "@mui/icons-material/Article";
+import UpdateIcon from "@mui/icons-material/Update";
+import TextFieldsIcon from "@mui/icons-material/TextFields";
+import TitleIcon from "@mui/icons-material/Title";
+import DescriptionIcon from "@mui/icons-material/Description";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import { SentimentTimelineChart } from "@/components/analytics/charts/sentimentChart";
+import { SentimentDistributionPieChart } from "@/components/analytics/charts/sentimentDistribution";
+import { EmotionBreakdownBarChart } from "@/components/analytics/charts/emotionalChart";
+import { SentimentData } from "@/components/analytics/sentimentDataType";
 
 const LargeTextComponent = () => {
   return (
     <Box sx={{ height: 900, width: 500 }}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-      anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-      officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-      et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-      sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-      anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-      officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-      et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-      sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+      nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+      sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+      ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem
+      ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+      culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem
+      ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+      culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem
+      ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+      culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       {/* Repeat the paragraph or add more lorem ipsum text as needed */}
     </Box>
   );
 };
+
+const stats = [
+  { label: "Total time spent extracting", value: "9:01:06", icon: <AccessTimeIcon /> },
+  { label: "Average Duration to format", value: "0:05:21", icon: <TimerIcon /> },
+  { label: "# of posts", value: 122, icon: <ArticleIcon /> },
+  { label: "Average time between posts", value: "7.10", icon: <UpdateIcon /> },
+  { label: "Average number of characters", value: "4608.60", icon: <TextFieldsIcon /> },
+  { label: "Max characters", value: 17469, icon: <TitleIcon /> },
+  { label: "Max Words", value: 3140, icon: <DescriptionIcon /> },
+  { label: "Average Words", value: "832.37", icon: <ShortTextIcon /> },
+  { label: "Total Words", value: "98,223", icon: <CalculateIcon /> },
+];
+
+const sampleData: SentimentData[] = [
+  {
+    title: "TBT - 1975 Version",
+    createdAt: "2021-06-17T21:53:16.370Z",
+    thoughtid: 104,
+    neg_score: 0.0,
+    neu_score: 0.645,
+    pos_score: 0.355,
+    compound_score: 0.765,
+    positive: 0,
+    negative: 0,
+    anger: 0,
+    anticipation: 0,
+    disgust: 0,
+    fear: 0,
+    joy: 0,
+    sadness: 0,
+    surprise: 0,
+    trust: 0,
+  },
+  {
+    title: "Happy Mother's Day - miss you.",
+    createdAt: "2021-05-09T21:57:17.431Z",
+    thoughtid: 105,
+    neg_score: 0.0,
+    neu_score: 0.0,
+    pos_score: 0.0,
+    compound_score: 0.0,
+    positive: 0,
+    negative: 0,
+    anger: 0,
+    anticipation: 0,
+    disgust: 0,
+    fear: 0,
+    joy: 0,
+    sadness: 0,
+    surprise: 0,
+    trust: 0,
+  },
+  {
+    title: "A Day Late",
+    createdAt: "2021-02-05T22:25:55.881Z",
+    thoughtid: 114,
+    neg_score: 0.0,
+    neu_score: 0.933,
+    pos_score: 0.067,
+    compound_score: 0.3612,
+    positive: 1,
+    negative: 2,
+    anger: 1,
+    anticipation: 1,
+    disgust: 0,
+    fear: 1,
+    joy: 0,
+    sadness: 1,
+    surprise: 1,
+    trust: 0,
+  },
+  {
+    title: "Throwback Thursday",
+    createdAt: "2020-11-10T23:51:37.265Z",
+    thoughtid: 120,
+    neg_score: 0.0,
+    neu_score: 0.957,
+    pos_score: 0.043,
+    compound_score: 0.6361,
+    positive: 3,
+    negative: 3,
+    anger: 0,
+    anticipation: 0,
+    disgust: 0,
+    fear: 0,
+    joy: 0,
+    sadness: 0,
+    surprise: 1,
+    trust: 2,
+  },
+  {
+    title: "Snark",
+    createdAt: "2021-04-01T22:04:36.280Z",
+    thoughtid: 107,
+    neg_score: 0.042,
+    neu_score: 0.873,
+    pos_score: 0.086,
+    compound_score: 0.4045,
+    positive: 2,
+    negative: 3,
+    anger: 2,
+    anticipation: 4,
+    disgust: 0,
+    fear: 3,
+    joy: 1,
+    sadness: 1,
+    surprise: 1,
+    trust: 3,
+  },
+  {
+    title: "The Soundtrack of My Life, Pt 3",
+    createdAt: "2023-06-02T06:49:46.226Z",
+    thoughtid: 70,
+    neg_score: 0.01,
+    neu_score: 0.825,
+    pos_score: 0.165,
+    compound_score: 0.9547,
+    positive: 4,
+    negative: 4,
+    anger: 3,
+    anticipation: 3,
+    disgust: 1,
+    fear: 3,
+    joy: 3,
+    sadness: 1,
+    surprise: 1,
+    trust: 3,
+  },
+  {
+    title: "A Question",
+    createdAt: "2023-01-02T10:05:46.716Z",
+    thoughtid: 77,
+    neg_score: 0.085,
+    neu_score: 0.816,
+    pos_score: 0.099,
+    compound_score: 0.4927,
+    positive: 6,
+    negative: 7,
+    anger: 2,
+    anticipation: 7,
+    disgust: 2,
+    fear: 2,
+    joy: 5,
+    sadness: 4,
+    surprise: 3,
+    trust: 5,
+  },
+  {
+    title: "Online Ads",
+    createdAt: "2021-03-25T22:06:14.925Z",
+    thoughtid: 108,
+    neg_score: 0.069,
+    neu_score: 0.894,
+    pos_score: 0.037,
+    compound_score: -0.5647,
+    positive: 3,
+    negative: 9,
+    anger: 1,
+    anticipation: 4,
+    disgust: 1,
+    fear: 1,
+    joy: 0,
+    sadness: 1,
+    surprise: 4,
+    trust: 1,
+  },
+  {
+    title: "A blast from the past, aka throw-back Thursday.",
+    createdAt: "2021-10-07T21:35:32.890Z",
+    thoughtid: 100,
+    neg_score: 0.0,
+    neu_score: 0.0,
+    pos_score: 0.0,
+    compound_score: 0.0,
+    positive: 0,
+    negative: 0,
+    anger: 0,
+    anticipation: 0,
+    disgust: 0,
+    fear: 0,
+    joy: 0,
+    sadness: 0,
+    surprise: 0,
+    trust: 0,
+  },
+  {
+    title: "Passing Of Years",
+    createdAt: "2020-12-20T22:57:01.527Z",
+    thoughtid: 117,
+    neg_score: 0.195,
+    neu_score: 0.629,
+    pos_score: 0.175,
+    compound_score: -0.1655,
+    positive: 3,
+    negative: 5,
+    anger: 3,
+    anticipation: 2,
+    disgust: 2,
+    fear: 3,
+    joy: 2,
+    sadness: 4,
+    surprise: 2,
+    trust: 3,
+  },
+  {
+    title: "Old Slides",
+    createdAt: "2020-12-19T23:21:01.092Z",
+    thoughtid: 118,
+    neg_score: 0.047,
+    neu_score: 0.875,
+    pos_score: 0.078,
+    compound_score: 0.2458,
+    positive: 0,
+    negative: 0,
+    anger: 0,
+    anticipation: 0,
+    disgust: 0,
+    fear: 0,
+    joy: 0,
+    sadness: 0,
+    surprise: 0,
+    trust: 1,
+  },
+  {
+    title: "A 42nd anniversary",
+    createdAt: "2022-10-04T09:23:22.174Z",
+    thoughtid: 79,
+    neg_score: 0.073,
+    neu_score: 0.807,
+    pos_score: 0.12,
+    compound_score: 0.8858,
+    positive: 9,
+    negative: 7,
+    anger: 1,
+    anticipation: 8,
+    disgust: 0,
+    fear: 4,
+    joy: 5,
+    sadness: 4,
+    surprise: 2,
+    trust: 6,
+  },
+  {
+    title: "Getting Noticed",
+    createdAt: "2023-06-19T06:43:56.574Z",
+    thoughtid: 67,
+    neg_score: 0.026,
+    neu_score: 0.873,
+    pos_score: 0.101,
+    compound_score: 0.9902,
+    positive: 29,
+    negative: 9,
+    anger: 3,
+    anticipation: 18,
+    disgust: 4,
+    fear: 4,
+    joy: 8,
+    sadness: 2,
+    surprise: 3,
+    trust: 14,
+  },
+  {
+    title: "Lackland Air Force Base",
+    createdAt: "2023-06-01T06:52:22.625Z",
+    thoughtid: 71,
+    neg_score: 0.065,
+    neu_score: 0.877,
+    pos_score: 0.058,
+    compound_score: -0.7967,
+    positive: 29,
+    negative: 19,
+    anger: 7,
+    anticipation: 13,
+    disgust: 5,
+    fear: 12,
+    joy: 10,
+    sadness: 8,
+    surprise: 1,
+    trust: 19,
+  },
+  {
+    title: "My (brief) Career as a Terrorist",
+    createdAt: "2021-02-20T23:10:22.487Z",
+    thoughtid: 109,
+    neg_score: 0.054,
+    neu_score: 0.856,
+    pos_score: 0.09,
+    compound_score: 0.9945,
+    positive: 66,
+    negative: 24,
+    anger: 8,
+    anticipation: 19,
+    disgust: 10,
+    fear: 18,
+    joy: 22,
+    sadness: 13,
+    surprise: 16,
+    trust: 36,
+  },
+];
 
 const getRandomStyle = (): CSSProperties => {
   const rotation = Math.random() * 10.5 - 5;
@@ -90,13 +392,7 @@ const StatisticsPage: React.FC = () => {
   return (
     <Parallax pages={imageUrls.length + 1}>
       {imageUrls.map((src, index) => (
-        <ParallaxLayer
-          key={index}
-          offset={index}
-          factor={0.5}
-          speed={Math.random() * 2.5}
-          style={{ position: "relative", display: "flex", justifyContent: "center", height: "auto" }}
-        >
+        <ParallaxLayer key={index} offset={index} factor={0.5} speed={Math.random() * 2.5} style={{ position: "relative", display: "flex", justifyContent: "center", height: "auto" }}>
           <Image
             src={src}
             alt={`Background ${index}`}
@@ -109,10 +405,24 @@ const StatisticsPage: React.FC = () => {
       ))}
 
       <ParallaxLayer offset={0} speed={0.85} factor={imageUrls.length + 1}>
-        <GeneralStats wordCount={0} averageLength={0} />
-        <LargeTextComponent />
-
-        <ChartComponent />
+        <Grid container spacing={2} style={{ padding: 20 }}>
+          {/* Adjust the grid layout as needed */}
+          <Grid item xs={12} md={6}>
+            <GeneralStats stats={stats} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <EmotionBreakdownBarChart data={sampleData} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <SentimentTimelineChart data={sampleData} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <SentimentDistributionPieChart data={sampleData} />
+          </Grid>
+          <Grid item xs={12}>
+            <LargeTextComponent />
+          </Grid>
+        </Grid>
       </ParallaxLayer>
     </Parallax>
   );
