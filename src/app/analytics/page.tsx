@@ -20,7 +20,7 @@ import { SentimentData } from "@/components/analytics/sentimentDataType";
 
 const LargeTextComponent = () => {
   return (
-    <Box sx={{ height: 900, width: 500 }}>
+    <Box sx={{ width: 500 }}>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
       nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
       sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -390,7 +390,7 @@ const StatisticsPage: React.FC = () => {
   ];
 
   return (
-    <Parallax pages={imageUrls.length + 1}>
+    <Parallax id="ParallaxMain" pages={imageUrls.length + 1}>
       {imageUrls.map((src, index) => (
         <ParallaxLayer key={index} offset={index} factor={0.5} speed={Math.random() * 2.5} style={{ position: "relative", display: "flex", justifyContent: "center", height: "auto" }}>
           <Image
@@ -404,8 +404,8 @@ const StatisticsPage: React.FC = () => {
         </ParallaxLayer>
       ))}
 
-      <ParallaxLayer offset={0} speed={0.85} factor={imageUrls.length + 1}>
-        <Grid container spacing={2} style={{ padding: 20 }}>
+      <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={1}>
+        <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
           {/* Adjust the grid layout as needed */}
           <Grid item xs={12} md={6}>
             <GeneralStats stats={stats} />
