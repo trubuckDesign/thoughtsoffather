@@ -19,6 +19,8 @@ import { EmotionBreakdownBarChart } from "@/components/analytics/charts/emotiona
 import { SentimentData } from "@/components/analytics/sentimentDataType";
 import moment from "moment";
 import { BlobWithUrl } from "../admin/page";
+import BackgroundImageContainer from "@/components/background/background";
+import { ParallaxImages } from "@/components/analytics/backgroundImgs/backgroundImgs";
 
 const stats = [
   { label: "Total time spent extracting", value: "9:01:06", icon: <AccessTimeIcon /> },
@@ -81,35 +83,20 @@ function aggregateDataByMonth(data: SentimentData[]): SentimentData[] {
   });
 }
 
-const getRandomStyle = (): CSSProperties => {
-  const rotation = Math.random() * 10.5 - 5;
-  const left = 10 + Math.random() * 50; // Random left position between 20% and 80%
-  const margin = Math.random() * 20; // Random margin up to 50px
-  return {
-    position: "absolute",
-    transform: `rotate(${rotation}deg)`,
-    padding: "10px",
-    backgroundColor: "white",
-    border: "1px solid #ddd",
-    boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
-    display: "inline-block",
-    maxWidth: "600px",
-    minWidth: "100px",
-    width: `100%`,
-    left: `${left}%`,
-    marginBottom: `${margin}px`,
-    marginTop: `${margin}px`,
-  };
-};
 const StatisticsPage: React.FC = () => {
   const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
   const [aggSentimentData, setAggSentimentData] = useState<SentimentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isImgLoading, setIsImgLoading] = useState(true);
   const [blobs, setBlobs] = useState<BlobWithUrl[]>([]);
-  const numImagesToPull = 10;
+  const numImagesToPull = 12;
+  const numImagesPerLayer = 3;
+  const layers = Math.ceil(blobs.length / numImagesPerLayer);
+  const overlapAmount = 0.5; // The amount by which each layer will overlap the previous one
 
   useEffect(() => {
     const fetchBlobs = async () => {
+      setIsImgLoading(true);
       try {
         const response = await fetch("/api/blobs");
         if (!response.ok) {
@@ -121,7 +108,9 @@ const StatisticsPage: React.FC = () => {
         const filteredData = data.filter((blob) => blob.size < 80000 && blob.size > 25000); // 80KB in bytes
         const topBlobs = filteredData.slice(0, numImagesToPull); // Replace 'x' with the number of items you want
         setBlobs(topBlobs);
+        setIsImgLoading(false);
       } catch (error) {
+        setIsImgLoading(false);
         console.error("Error fetching blobs:", error);
       }
     };
@@ -153,30 +142,19 @@ const StatisticsPage: React.FC = () => {
     setIsLoading(false);
   }, []);
 
-  return isLoading === true ? (
+  return isLoading === true || isImgLoading === true ? (
     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <CircularProgress />
     </Box>
   ) : (
-    <Parallax id="ParallaxMain" pages={numImagesToPull}>
-      {blobs.map((src, index) => (
-        <ParallaxLayer
-          id="parallaxBackground"
-          key={index}
-          offset={index}
-          factor={0.1}
-          speed={Math.random() * 2.5}
-          style={{ position: "relative", display: "flex", justifyContent: "center" }}
-        >
-          <Image
-            src={src.url}
-            alt={`Background ${index}`}
-            width={600} // Maximum width
-            height={400} // Set an appropriate height
-            objectFit="cover"
-            style={getRandomStyle()}
-          />
-        </ParallaxLayer>
+    <Parallax id="ParallaxMain" pages={layers}>
+      {[...Array(layers)].map((_, layerIndex) => (
+        <ParallaxImages
+          key={layerIndex}
+          imageUrls={blobs.slice(layerIndex * numImagesPerLayer, (layerIndex + 1) * numImagesPerLayer).map((blob) => blob.url)}
+          layerOffset={layerIndex - layerIndex * overlapAmount}
+          layerFactor={1}
+        />
       ))}
 
       <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>

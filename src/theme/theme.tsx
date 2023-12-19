@@ -29,6 +29,12 @@ const theme = createTheme({
     },
     // Add other typography variants as needed
   },
+  palette: {
+    mode: "light", // Set mode to 'light' to ignore system preference
+    background: {
+      default: "#f0f0f0", // Replace with your desired background color
+    },
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: `
