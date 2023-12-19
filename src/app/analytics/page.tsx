@@ -91,10 +91,11 @@ const StatisticsPage: React.FC = () => {
   const [isImgLoading, setIsImgLoading] = useState(true);
   const [blobs, setBlobs] = useState<BlobWithUrl[]>([]);
   const numImagesToPull = 12;
-  const numImagesPerLayer = 6;
+  const numImagesPerLayer = 3;
   const layers = Math.ceil(blobs.length / numImagesPerLayer);
   const overlapAmount = 0.5; // The amount by which each layer will overlap the previous one
-
+  const gridMedCols = 8;
+  const gridSmallCols = 12;
   useEffect(() => {
     const fetchBlobs = async () => {
       setIsImgLoading(true);
@@ -148,37 +149,38 @@ const StatisticsPage: React.FC = () => {
       <CircularProgress />
     </Box>
   ) : (
-    <Parallax id="ParallaxMain" pages={layers}>
-      {[...Array(layers)].map((_, layerIndex) => (
-        <ParallaxImages
-          key={layerIndex}
-          imageUrls={blobs.slice(layerIndex * numImagesPerLayer, (layerIndex + 1) * numImagesPerLayer).map((blob) => blob.url)}
-          layerOffset={layerIndex - layerIndex * overlapAmount}
-          layerFactor={1}
-        />
-      ))}
-
+    <Parallax id="ParallaxMain" pages={3}>
+      <Grid container justifyContent="flex-end">
+        {[...Array(layers)].map((_, layerIndex) => (
+          <ParallaxImages
+            key={layerIndex}
+            imageUrls={blobs.slice(layerIndex * numImagesPerLayer, (layerIndex + 1) * numImagesPerLayer).map((blob) => blob.url)}
+            layerOffset={layerIndex - layerIndex * overlapAmount}
+            layerFactor={1}
+          />
+        ))}
+      </Grid>
       <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>
         <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <GeneralStats stats={stats} />
             </AnalyticsCard>
           </Grid>
-          <Grid item xs={0} md={6}></Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={0} md={gridMedCols}></Grid>
+          <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <EmotionBreakdownBarChart data={sentimentData} />
             </AnalyticsCard>
           </Grid>
-          <Grid item xs={0} md={6}></Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={0} md={gridMedCols}></Grid>
+          <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <SentimentTimelineChart data={aggSentimentData} />
             </AnalyticsCard>
           </Grid>
-          <Grid item xs={0} md={6}></Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={0} md={gridMedCols}></Grid>
+          <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <SentimentDistributionPieChart data={sentimentData} />
             </AnalyticsCard>
