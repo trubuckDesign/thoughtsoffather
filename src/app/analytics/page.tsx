@@ -21,6 +21,7 @@ import moment from "moment";
 import { BlobWithUrl } from "../admin/page";
 import BackgroundImageContainer from "@/components/background/background";
 import { ParallaxImages } from "@/components/analytics/backgroundImgs/backgroundImgs";
+import { AnalyticsCard } from "@/components/analytics/card/analyticsCard";
 
 const stats = [
   { label: "Total time spent extracting", value: "9:01:06", icon: <AccessTimeIcon /> },
@@ -159,17 +160,28 @@ const StatisticsPage: React.FC = () => {
 
       <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>
         <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
-          <Grid item xs={12}>
-            <GeneralStats stats={stats} />
+          <Grid item xs={12} md={6}>
+            <AnalyticsCard>
+              <GeneralStats stats={stats} />
+            </AnalyticsCard>
           </Grid>
-          <Grid item xs={12}>
-            <EmotionBreakdownBarChart data={sentimentData} />
+          <Grid item xs={0} md={6}></Grid>
+          <Grid item xs={12} md={6}>
+            <AnalyticsCard>
+              <EmotionBreakdownBarChart data={sentimentData} />
+            </AnalyticsCard>
           </Grid>
-          <Grid item xs={12}>
-            <SentimentTimelineChart data={aggSentimentData} />
+          <Grid item xs={0} md={6}></Grid>
+          <Grid item xs={12} md={6}>
+            <AnalyticsCard>
+              <SentimentTimelineChart data={aggSentimentData} />
+            </AnalyticsCard>
           </Grid>
-          <Grid item xs={12}>
-            <SentimentDistributionPieChart data={sentimentData} />
+          <Grid item xs={0} md={6}></Grid>
+          <Grid item xs={12} md={6}>
+            <AnalyticsCard>
+              <SentimentDistributionPieChart data={sentimentData} />
+            </AnalyticsCard>
           </Grid>
         </Grid>
       </ParallaxLayer>

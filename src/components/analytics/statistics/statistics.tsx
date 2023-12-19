@@ -15,36 +15,22 @@ const GeneralStats: React.FC<GeneralStatsProps> = ({ stats }) => {
   const theme = useTheme();
 
   return (
-    <Card
-      sx={{
-        margin: 2,
-        backgroundColor: "rgba(245, 250, 255, 0.90)",
-        elevation: 3,
-        borderColor: theme.palette.primary.main,
-        borderWidth: 1,
-        borderRadius: 10,
-        boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
-        borderStyle: "solid",
-        padding: theme.spacing(2),
-      }}
-    >
-      <CardContent>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
-          General Statistics
-        </Typography>
-        <Grid container spacing={3}>
-          {stats.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index} sx={{ textAlign: "center" }}>
-              {stat.icon || <InfoIcon color="primary" />} {/* Default to InfoIcon if no icon provided */}
-              <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
-                {stat.label}
-              </Typography>
-              <Typography variant="body1">{stat.value}</Typography>
-            </Grid>
-          ))}
-        </Grid>
-      </CardContent>
-    </Card>
+    <>
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
+        General Statistics
+      </Typography>
+      <Grid container spacing={3}>
+        {stats.map((stat, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index} sx={{ textAlign: "center" }}>
+            {stat.icon || <InfoIcon color="primary" />} {/* Default to InfoIcon if no icon provided */}
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
+              {stat.label}
+            </Typography>
+            <Typography variant="body1">{stat.value}</Typography>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 };
 
