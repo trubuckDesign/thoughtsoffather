@@ -18,52 +18,7 @@ import { SentimentDistributionPieChart } from "@/components/analytics/charts/sen
 import { EmotionBreakdownBarChart } from "@/components/analytics/charts/emotionalChart";
 import { SentimentData } from "@/components/analytics/sentimentDataType";
 import moment from "moment";
-
-const LargeTextComponent = () => {
-  return (
-    <Box sx={{ width: 500 }}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-      anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-      officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-      et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-      sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-      anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-      officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-      et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-      sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      {/* Repeat the paragraph or add more lorem ipsum text as needed */}
-    </Box>
-  );
-};
+import { BlobWithUrl } from "../admin/page";
 
 const stats = [
   { label: "Total time spent extracting", value: "9:01:06", icon: <AccessTimeIcon /> },
@@ -147,22 +102,33 @@ const getRandomStyle = (): CSSProperties => {
   };
 };
 const StatisticsPage: React.FC = () => {
-  const imageUrls: string[] = [
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-dPwJ4viuAZd7fIPPRBCvfCBGrJjDzk", // Replace with your actual image URLs
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-sEpwlVqK4BrGstWdZexGmjP79haNdK",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-V7pzz09LYrqTCAykLfbSKHsdqtn4I9",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-e4dMn2AE4Mj413SjA2nVLBAdTXsaLo",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-ICKcI76mUbFQnSDxHJag5xaT5jBECw",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-bWSJVW8Eg45ZPA1bDiSls2dYmutRaJ",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-Ntk1NNaPw1F1TxqkaTlqyo3mdXA8NH",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-rWMz6hqWoWIdJcoHxmukphBisW0FyG",
-    "https://aoswchlkodefxg8r.public.blob.vercel-storage.com/()=%3Ee-dPwJ4viuAZd7fIPPRBCvfCBGrJjDzk",
-    // ... more images
-  ];
-
   const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
   const [aggSentimentData, setAggSentimentData] = useState<SentimentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [blobs, setBlobs] = useState<BlobWithUrl[]>([]);
+  const numImagesToPull = 10;
+
+  useEffect(() => {
+    const fetchBlobs = async () => {
+      try {
+        const response = await fetch("/api/blobs");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data: BlobWithUrl[] = await response.json();
+
+        // Filter blobs to include only those with size less than 80KB
+        const filteredData = data.filter((blob) => blob.size < 80000 && blob.size > 25000); // 80KB in bytes
+        const topBlobs = filteredData.slice(0, numImagesToPull); // Replace 'x' with the number of items you want
+        setBlobs(topBlobs);
+      } catch (error) {
+        console.error("Error fetching blobs:", error);
+      }
+    };
+
+    fetchBlobs();
+  }, []);
+
   useEffect(() => {
     // Define the URL for your API endpoint with the required query parameters
     const apiUrl = "/api/analytics?requestType=sentiment";
@@ -186,26 +152,24 @@ const StatisticsPage: React.FC = () => {
       });
     setIsLoading(false);
   }, []);
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-  return (
-    <Parallax id="ParallaxMain" pages={imageUrls.length + 1}>
-      {imageUrls.map((src, index) => (
+
+  return isLoading === true ? (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <CircularProgress />
+    </Box>
+  ) : (
+    <Parallax id="ParallaxMain" pages={numImagesToPull}>
+      {blobs.map((src, index) => (
         <ParallaxLayer
           id="parallaxBackground"
           key={index}
           offset={index}
-          factor={0.5}
+          factor={0.1}
           speed={Math.random() * 2.5}
-          style={{ position: "relative", display: "flex", justifyContent: "center", height: "auto" }}
+          style={{ position: "relative", display: "flex", justifyContent: "center" }}
         >
           <Image
-            src={src}
+            src={src.url}
             alt={`Background ${index}`}
             width={600} // Maximum width
             height={400} // Set an appropriate height

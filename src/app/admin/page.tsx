@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Box, Button, List, ListItem, TextField } from "@mui/material";
 
-type BlobWithUrl = {
+export type BlobWithUrl = {
   url: string;
   size: number;
 };
