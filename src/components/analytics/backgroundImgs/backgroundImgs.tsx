@@ -8,15 +8,35 @@ interface BackgroundImageContainerProps {
   layerFactor: number; // The factor for the ParallaxLayer
 }
 
+const baseTop = 10;
+const baseLeft = 10;
+const baseSpeed = 2;
+const variationRange = 15;
+
 const getRandomSpeed = () => {
-  const randomSpeed = Math.random() * 4 + 1;
+  const randomSpeed = Math.random() * baseSpeed + 1;
   return randomSpeed;
 };
 
-const getRandomStyle = (usedPositions: Set<string>): CSSProperties => {
-  const rotation = Math.random() * 10.5 - 5;
+const getRandomStyle = (index: number, totalImages: number): CSSProperties => {
+  const rotation = Math.random() * 15.5 - 5;
   const margin = Math.random() * 20; // Random margin up to 50px
   const marginTop = Math.random() * 80;
+  // Base percentages for positioning
+
+  // Increment values for each iteration
+  const topIncrement = 100 / Math.ceil(totalImages / 2); // Divide the vertical space into parts
+  const leftIncrement = totalImages > 1 ? 80 / (totalImages / 2 - 1) : 0; // Increment for the left position, adjusted for the number of images
+
+  // Function to add random variation
+  const addRandomVariation = (value: number) => {
+    const variation = Math.random() * variationRange * 2 - variationRange; // Random value between -variationRange and +variationRange
+    return Math.max(0, Math.min(100, value + variation)); // Ensure the final value is between 0% and 100%
+  };
+
+  // Calculate the top and left positions
+  const top = addRandomVariation((baseTop + (index % 2) * (index * topIncrement)) % 100); // Every other iteration increases top
+  const left = addRandomVariation(baseLeft + ((Math.floor(index / 2) * leftIncrement) % 100)); // Increment left position on every other iteration
 
   return {
     position: "absolute",
@@ -48,7 +68,7 @@ export const ParallaxImages: FC<BackgroundImageContainerProps> = ({ imageUrls, l
           width={300} // Adjust width as needed
           height={200} // Adjust height as needed
           objectFit="cover"
-          style={getRandomStyle(usedPositions)}
+          style={getRandomStyle(index, imageUrls.length)}
         />
       ))}
     </ParallaxLayer>

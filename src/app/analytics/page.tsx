@@ -90,7 +90,7 @@ const StatisticsPage: React.FC = () => {
   const [isImgLoading, setIsImgLoading] = useState(true);
   const [blobs, setBlobs] = useState<BlobWithUrl[]>([]);
   const numImagesToPull = 12;
-  const numImagesPerLayer = 3;
+  const numImagesPerLayer = 6;
   const layers = Math.ceil(blobs.length / numImagesPerLayer);
   const overlapAmount = 0.5; // The amount by which each layer will overlap the previous one
 
@@ -159,16 +159,16 @@ const StatisticsPage: React.FC = () => {
 
       <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>
         <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <GeneralStats stats={stats} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <EmotionBreakdownBarChart data={sentimentData} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <SentimentTimelineChart data={aggSentimentData} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <SentimentDistributionPieChart data={sentimentData} />
           </Grid>
         </Grid>

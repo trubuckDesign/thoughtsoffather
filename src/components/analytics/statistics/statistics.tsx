@@ -23,6 +23,7 @@ const GeneralStats: React.FC<GeneralStatsProps> = ({ stats }) => {
         borderColor: theme.palette.primary.main,
         borderWidth: 1,
         borderRadius: 10,
+        boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
         borderStyle: "solid",
         padding: theme.spacing(2),
       }}
