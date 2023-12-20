@@ -31,9 +31,9 @@ import commitData from "@/components/analytics/statistics/devGithubInsights.json
 const generalStats = [
   { label: "# of posts", value: 122, icon: <ArticleIcon /> },
   { label: "Average time between posts", value: "7.10", icon: <UpdateIcon /> },
-  { label: "Average number of characters", value: "4608.60", icon: <TextFieldsIcon /> },
-  { label: "Max characters", value: 17469, icon: <TitleIcon /> },
-  { label: "Max Words", value: 3140, icon: <DescriptionIcon /> },
+  { label: "Average number of characters", value: "4,608.60", icon: <TextFieldsIcon /> },
+  { label: "Max characters", value: "17,469", icon: <TitleIcon /> },
+  { label: "Max Words", value: "3,140", icon: <DescriptionIcon /> },
   { label: "Average Words", value: "832.37", icon: <ShortTextIcon /> },
   { label: "Total Words", value: "98,223", icon: <CalculateIcon /> },
 ];
@@ -58,13 +58,15 @@ const numberOfCommitDays = commitData.reduce((acc, week) => {
 const formatDate = (timestamp: number) => new Date(timestamp * 1000).toLocaleDateString("en-US");
 
 const developmentStats = [
-  { label: "Total Time Compiling Posts", value: "9:01:06", icon: <AccessTimeIcon /> },
-  { label: "Average Duration to format", value: "0:05:21", icon: <TimerIcon /> },
+  { label: "Number of Lines Of Code", value: " 9,621", icon: <ShortTextIcon /> },
   { label: "Development Days", value: `${numberOfCommitDays}`, icon: <TimerIcon /> },
   { label: "Total Activity (Updates)", value: `${totalActivity}`, icon: <BarChartIcon /> },
   { label: "Weekly Average (Updates)", value: weeklyAverage.toFixed(2), icon: <TrendingUpIcon /> },
   { label: "Most Active Day", value: daysOfWeek[mostActiveDayIndex], icon: <CalendarTodayIcon /> },
   { label: "Week With Highest Activity", value: `${formatDate(weekWithHighestActivity.week)}`, icon: <EventBusyIcon /> },
+  { label: "Total Time Compiling Posts", value: "9:01:06", icon: <AccessTimeIcon /> },
+  { label: "Average Duration to format", value: "0:05:21", icon: <TimerIcon /> },
+
   // Add more stats as needed
 ];
 
@@ -218,39 +220,35 @@ const StatisticsPage: React.FC = () => {
               Analytics
             </Typography>
             <Typography>
-              My father loves statistics, he loves data. As long as I could remember, my dad would love to see how long it would take to get from
-              point A to point B. He would track his spending, his walking distances, and find interesting facts about the world as a whole. I
-              thankfully inherited this fascination with data and finding patterns or interesting facts. As I finished this site, I realized I could
-              probably find some interesting facts about all of his posts, and so I started digging into what I could find.
+              My father has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between
+              points A and B, tracking his spending, and exploring various interesting facts about the world. I am thankful to have inherited this
+              fascination with data, always seeking patterns and intriguing insights. As I was completing this site, I realized that I could uncover
+              some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
             </Typography>
             <Typography variant="h5" sx={{ textAlign: "center", marginTop: 3 }} gutterBottom>
               Development Journey
             </Typography>
             <Typography>
-              I started with some statistics of the development process and the process of compiling all of the posts that he made over time. I have
-              been developing websites for the past 15 years (as of 2023), and though I haven't been as efficient in coding (and I'm not the best
-              developer out there) I typically could create websites, that weren't too complicated, fairly quickly. This time around I wanted to try
-              something different, as of 2022, ChatGPT became a thing. I wanted to see how quickly I could put it together with the help of ChatGPT.
-              As I did not go to school for web design or any sort of computer engineering, I usually would learn through other people's code or
-              viewing examples from the various sources and taylor it to my needs. I learned over time how to write more efficient, clean, and
-              maintainable code but I still found to save time, writing snippets that I can reuse later. There are some that are worried that ChatGPT
-              will replace their jobs as software engineers, but I can tell you that in it's current state, it is at least a few years off. Even then,
-              I don't think it will replace us, it will only change how we do our work. Still though, it is a very helpful tool. It took me based on
-              my update history, 17 days to complete, and I honestly think it would have taken me at a minimum 3 times that to do it without ChatGPT.
-              It was good that I had it because I had a deadline to meet. I wanted to give this site as a Christmas gift and I started it on Nov 27th,
-              so time was ticking. I believe I probably could have gotten some of it done but I for sure could not have gotten the entire thing done
-              and been able to build out the analyitics page. I think ChatGPT is a gamechanger for software development along with every other
-              industry that has to do with creative arts, software, and many others.
+              For the past 15 years, I've been developing websites, and as of 2023, I've had quite a journey. Admittedly, I'm not the most efficient
+              coder out there, but I can quickly put together uncomplicated websites. This project, however, was different. With the advent of ChatGPT
+              in 2022, I was curious to see how it could aid my development process. My education didn't formally cover web design or computer
+              engineering; instead, I learned by studying other people's code and adapting various examples to my needs. Over time, I've honed my
+              skills in writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
+            </Typography>
+            <Typography sx={{ marginTop: 1 }}>
+              While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods. ChatGPT
+              was invaluable in this project, helping me complete it in just 17 days - a task that would have likely taken thrice as long without it.
+              This efficiency was crucial, as I had set a deadline to present this site as a Christmas gift. Starting on November 27th, the clock was
+              ticking. ChatGPT proved to be a game-changer, not just in software development but across various creative and technical industries.
             </Typography>
             <Typography variant="h5" sx={{ textAlign: "center", marginTop: 1 }} gutterBottom>
               Content Journey
             </Typography>
             <Typography>
-              Once I had finished the coding of the site, I needed to focus on finding the content for the site. I found that most of the time spent
-              was just going through his [numerous] posts on Facebook to find the ones I was looking for. The frequency of posting for this site is
-              about 1 for every 10 other posts he made, and so I think that took the most time. Then it was going through and formatting the posts,
-              and the way Facebook handles pictures in posts is that it keeps them separate. So another part of the time was spent finding where each
-              picture should go within each post, to find the context behind the pictures and make sure it matched up with the section I placed it in.
+              After completing the coding, I shifted focus to content curation. Most of my time was spent sifting through his numerous Facebook posts
+              to find relevant ones. Roughly, one out of every ten posts made it to this site. The challenge was in formatting these posts and
+              aligning them with the corresponding pictures, as Facebook stores images separately from text. My task was to match each picture with
+              its context and ensure it fit seamlessly into the narrative of each post.
             </Typography>
           </Grid>
           <Grid item xs={gridSmallCols} md={gridMedCols}>
@@ -267,12 +265,11 @@ const StatisticsPage: React.FC = () => {
           <Grid item xs={0} md={gridMedCols}></Grid>
           <Grid item xs={gridSmallCols} md={gridMedCols}>
             <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
-              Overview of Statistics
+              My Dad's Stats
             </Typography>
             <Typography>
-              The statistics provide insights into the application's usage patterns and development progress. They reflect the dedication and hard
-              work that went into the project, showcasing periods of intense productivity and creative problem-solving. The metrics have been
-              carefully curated to present a transparent view of both the triumphs and challenges faced during the development lifecycle.
+              I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most
+              to me is{" "}
             </Typography>
           </Grid>
           <Grid item xs={gridSmallCols} md={gridMedCols}>
