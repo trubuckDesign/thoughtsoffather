@@ -230,16 +230,16 @@ const StatisticsPage: React.FC = () => {
           ))}
         </Grid>
         <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>
-          <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
+          <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%", marginTop: 30 }}>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
                 <Typography variant="h1" sx={{ textAlign: "center", fontWeight: "bold" }} gutterBottom>
                   Analytics
                 </Typography>
                 <Typography>
-                  My father has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between points A and B, tracking his spending, and
-                  exploring various interesting facts about the world. I am thankful to have inherited this fascination with data, always seeking patterns and intriguing insights. As I was completing
-                  this site, I realized that I could uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
+                  My dad has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between points A and B, tracking his spending, and exploring
+                  various interesting facts about the world. I am thankful to have inherited this fascination with data, always seeking patterns and intriguing insights. As I was completing this site,
+                  I realized that I could uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
                 </Typography>
                 <Typography variant="h5" sx={{ textAlign: "center", marginTop: 3 }} gutterBottom>
                   Development Journey
