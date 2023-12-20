@@ -139,10 +139,10 @@ const StatisticsPage: React.FC = () => {
   const [isImgLoading, setIsImgLoading] = useState(true);
   const [blobs, setBlobs] = useState<BlobWithUrl[]>([]);
   const router = useRouter();
-  const numImagesToPull = 15;
-  const numImagesPerLayer = 5;
+  const numImagesToPull = 6;
+  const numImagesPerLayer = 1;
   const layers = Math.ceil(blobs.length / numImagesPerLayer);
-  const overlapAmount = 0.5; // The amount by which each layer will overlap the previous one
+  const overlapAmount = 0; // The amount by which each layer will overlap the previous one
   const gridMedCols = 8;
   const gridSmallCols = 12;
   const theme = useTheme();
@@ -213,7 +213,7 @@ const StatisticsPage: React.FC = () => {
             <ParallaxImages
               key={layerIndex}
               imageUrls={blobs.slice(layerIndex * numImagesPerLayer, (layerIndex + 1) * numImagesPerLayer).map((blob) => blob.url)}
-              layerOffset={layerIndex - layerIndex * overlapAmount}
+              layerOffset={layerIndex * overlapAmount}
               layerFactor={1}
             />
           ))}

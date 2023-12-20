@@ -14,17 +14,23 @@ const baseSpeed = 1;
 const getRandomSpeed = () => {
   const randomSpeed = Math.random() * baseSpeed + 1;
   console.log("speed:", randomSpeed);
-  return randomSpeed;
+  return 2;
 };
 
 const getRandomStyle = (): CSSProperties => {
   const rotation = Math.random() * 50 - 15; // Rotation range: -15 to 15 degrees
-  const marginTop = 20 + Math.random() * 40; // Vertical margin range: 20px to 60px
-  const marginRight = 20 + Math.random() * 100;
+  const marginTop = 200 + Math.random() * 40; // Vertical margin range: 20px to 60px
+  const marginRight = 50 + Math.random() * 100;
   return {
     transform: `rotate(${rotation}deg)`,
     marginTop: `${marginTop}px`,
     marginRight: `${marginRight}px`,
+    padding: "10px",
+    backgroundColor: "white",
+    border: "1px solid #ddd",
+    boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.5)",
+
+    display: "inline-block",
   };
 };
 
