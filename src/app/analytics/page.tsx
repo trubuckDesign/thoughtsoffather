@@ -245,10 +245,10 @@ const StatisticsPage: React.FC = () => {
                   Development Journey
                 </Typography>
                 <Typography>
-                  For the past 15 years, I've been developing websites, and as of 2023, I've had quite a journey. Admittedly, I'm not the most efficient coder out there, but I can quickly put together
-                  uncomplicated websites. This project, however, was different. With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process. My education didn't
-                  formally cover web design or computer engineering; instead, I learned by studying other people's code and adapting various examples to my needs. Over time, I've honed my skills in
-                  writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
+                  For the past 15 years, I&apos;ve been developing websites, and as of 2023, I&apos;ve had quite a journey. Admittedly, I&apos;m not the most efficient coder out there, but I can
+                  quickly put together uncomplicated websites. This project, however, was different. With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process.
+                  My education didn&apos;t formally cover web design or computer engineering; instead, I learned by studying other people&apos;s code and adapting various examples to my needs. Over
+                  time, I&apos;ve honed my skills in writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
                 </Typography>
                 <Typography sx={{ marginTop: 1 }}>
                   While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods. ChatGPT was invaluable in this project, helping me
@@ -280,7 +280,7 @@ const StatisticsPage: React.FC = () => {
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
                 <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
-                  My Dad's Stats
+                  My Dad&apos;s Stats
                 </Typography>
                 <Typography>
                   I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most to me is that on average his posts are 832
@@ -301,8 +301,8 @@ const StatisticsPage: React.FC = () => {
                 </Typography>
                 <Typography>
                   Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning (ML) and Natural Language Processing (NLP) to see what kind of
-                  interesting info I might find. I was hoping I would find some interesting patterns or some correlations to events, but unfortunately there weren't any patterns I could see in the
-                  data. However, it is still interesting to see what information can be extracted from a relatively small amount of text.
+                  interesting info I might find. I was hoping I would find some interesting patterns or some correlations to events, but unfortunately there weren&apos;t any patterns I could see in
+                  the data. However, it is still interesting to see what information can be extracted from a relatively small amount of text.
                 </Typography>
               </Paper>
             </Grid>
@@ -318,8 +318,8 @@ const StatisticsPage: React.FC = () => {
                   Sentiment
                 </Typography>
                 <Typography>
-                  As with the emotions from the posts, I couldn't really find too many insights from the sentiments in the posts, but it's kinda interesting to read through the posts and see how the
-                  NLP was able to come up with some of the sentiment values (positive, negative, neutral)
+                  As with the emotions from the posts, I couldn&apos;t really find too many insights from the sentiments in the posts, but it&apos;s kinda interesting to read through the posts and see
+                  how the NLP was able to come up with some of the sentiment values (positive, negative, neutral)
                 </Typography>
               </Paper>
             </Grid>

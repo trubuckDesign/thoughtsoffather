@@ -64,14 +64,14 @@ export const EmotionBreakdownBarChart: React.FC<EmotionsProp> = ({ data }) => {
           <YAxis />
           <Tooltip content={renderTooltip} />
           <Legend />
-          <Bar dataKey="anger" fill="#e53935" /> // Red for anger
-          <Bar dataKey="anticipation" fill="#ffb300" /> // Orange for anticipation
-          <Bar dataKey="disgust" fill="#7cb342" /> // Green for disgust
-          <Bar dataKey="fear" fill="#6a1b9a" /> // Purple for fear
-          <Bar dataKey="joy" fill="#ffd600" /> // Yellow for joy
-          <Bar dataKey="sadness" fill="#1e88e5" /> // Blue for sadness
-          <Bar dataKey="surprise" fill="#ec407a" /> // Pink for surprise
-          <Bar dataKey="trust" fill="#43a047" /> // Dark green for trust
+          <Bar dataKey="anger" fill="#e53935" />
+          <Bar dataKey="anticipation" fill="#ffb300" />
+          <Bar dataKey="disgust" fill="#7cb342" />
+          <Bar dataKey="fear" fill="#6a1b9a" />
+          <Bar dataKey="joy" fill="#ffd600" />
+          <Bar dataKey="sadness" fill="#1e88e5" />
+          <Bar dataKey="surprise" fill="#ec407a" />
+          <Bar dataKey="trust" fill="#43a047" />
         </BarChart>
       </ResponsiveContainer>
     </Box>
