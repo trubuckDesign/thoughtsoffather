@@ -269,7 +269,8 @@ const StatisticsPage: React.FC = () => {
             </Typography>
             <Typography>
               I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most
-              to me is{" "}
+              to me is that on average his posts are 832 words long, but the longest post has over 3,000 words! That would be 7 pages single spaced
+              and would have taken me two weeks to write in highschool/college.
             </Typography>
           </Grid>
           <Grid item xs={gridSmallCols} md={gridMedCols}>
@@ -279,6 +280,17 @@ const StatisticsPage: React.FC = () => {
           </Grid>
           <Grid item xs={0} md={gridMedCols}></Grid>
           <Grid item xs={gridSmallCols} md={gridMedCols}>
+            <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
+              Emotions
+            </Typography>
+            <Typography>
+              Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning and Natural
+              Language Processing to see what kind of interesting info I might find. I was hoping I would find some interesting patterns or some
+              correlations to events, but unfortunately there weren't any patterns I could see in the data. However, it is still interesting to see
+              what information can be extracted from a relatively small amount of text.
+            </Typography>
+          </Grid>
+          <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <EmotionBreakdownBarChart data={aggSentimentData} />
             </AnalyticsCard>
@@ -287,12 +299,6 @@ const StatisticsPage: React.FC = () => {
           <Grid item xs={gridSmallCols} md={gridMedCols}>
             <AnalyticsCard>
               <SentimentTimelineChart data={aggSentimentData} />
-            </AnalyticsCard>
-          </Grid>
-          <Grid item xs={0} md={gridMedCols}></Grid>
-          <Grid item xs={gridSmallCols} md={gridMedCols}>
-            <AnalyticsCard>
-              <SentimentDistributionPieChart data={aggSentimentData} />
             </AnalyticsCard>
           </Grid>
         </Grid>

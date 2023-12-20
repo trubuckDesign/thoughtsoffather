@@ -31,14 +31,10 @@ export const SentimentTimelineChart: FC<sentimentProps> = ({ data }) => {
       return (
         <Box sx={{ backgroundColor: "white", padding: "10px", border: "1px solid #ccc" }}>
           <Typography variant="h5">{moment(payload.createdAt).format("MMM-YYYY")}</Typography>
-
-          <Typography variant="body2">
-            <p># of Posts: {payload.postCount}</p>
-            <p>Sentiment Score: {payload.compound_score}</p>
-            <p>positive:{payload.pos_score} </p>
-            <p>positive:{payload.neg_score} </p>
-          </Typography>
-          {/* Add more details if needed */}
+          <Typography variant="body2"># of Posts: {payload.postCount}</Typography>
+          <Typography variant="body2">Sentiment Score: {payload.compound_score}</Typography>
+          <Typography variant="body2">Positive:{payload.pos_score}</Typography>
+          <Typography variant="body2">Negative:{payload.neg_score}</Typography>
         </Box>
       );
     }
