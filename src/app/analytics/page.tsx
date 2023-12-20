@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, Typography, styled, useTheme } from "@mui/material";
+import { Box, CircularProgress, Grid, IconButton, Paper, Typography, styled, useMediaQuery, useTheme } from "@mui/material";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import GeneralStats from "@/components/analytics/statistics/generalStats";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -145,7 +145,18 @@ const StatisticsPage: React.FC = () => {
   const overlapAmount = 0; // The amount by which each layer will overlap the previous one
   const gridMedCols = 8;
   const gridSmallCols = 12;
+  const isMobile = useMediaQuery("(max-width: 600px)"); // Adjust the breakpoint as needed
+  const [numPages, setNumPages] = useState(3);
   const theme = useTheme();
+
+  useEffect(() => {
+    // Update the number of pages based on screen size
+    if (isMobile) {
+      setNumPages(9); // Adjust the number of pages for smaller screens
+    } else {
+      setNumPages(3); // Default number of pages for larger screens
+    }
+  }, [isMobile]);
   useEffect(() => {
     const fetchBlobs = async () => {
       setIsImgLoading(true);
@@ -204,7 +215,7 @@ const StatisticsPage: React.FC = () => {
     </Box>
   ) : (
     <>
-      <Parallax id="ParallaxMain" pages={3}>
+      <Parallax id="ParallaxMain" pages={numPages}>
         <IconButton color="primary" onClick={onClick} sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText, margin: 2 }}>
           <HomeIcon />
         </IconButton>
@@ -221,36 +232,38 @@ const StatisticsPage: React.FC = () => {
         <ParallaxLayer id="parallaxContent" offset={0} speed={0.85} factor={0.1}>
           <Grid id="contentGrid" container spacing={2} style={{ padding: 20, height: "100%" }}>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
-              <Typography variant="h1" sx={{ textAlign: "center", fontWeight: "bold" }} gutterBottom>
-                Analytics
-              </Typography>
-              <Typography>
-                My father has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between points A and B, tracking his spending, and
-                exploring various interesting facts about the world. I am thankful to have inherited this fascination with data, always seeking patterns and intriguing insights. As I was completing
-                this site, I realized that I could uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
-              </Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", marginTop: 3 }} gutterBottom>
-                Development Journey
-              </Typography>
-              <Typography>
-                For the past 15 years, I've been developing websites, and as of 2023, I've had quite a journey. Admittedly, I'm not the most efficient coder out there, but I can quickly put together
-                uncomplicated websites. This project, however, was different. With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process. My education didn't
-                formally cover web design or computer engineering; instead, I learned by studying other people's code and adapting various examples to my needs. Over time, I've honed my skills in
-                writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
-              </Typography>
-              <Typography sx={{ marginTop: 1 }}>
-                While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods. ChatGPT was invaluable in this project, helping me
-                complete it in just 17 days - a task that would have likely taken thrice as long without it. This efficiency was crucial, as I had set a deadline to present this site as a Christmas
-                gift. Starting on November 27th, the clock was ticking. ChatGPT proved to be a game-changer, not just in software development but across various creative and technical industries.
-              </Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", marginTop: 1 }} gutterBottom>
-                Content Journey
-              </Typography>
-              <Typography>
-                After completing the coding, I shifted focus to content curation. Most of my time was spent sifting through his numerous Facebook posts to find relevant ones. Roughly, one out of every
-                ten posts made it to this site. The challenge was in formatting these posts and aligning them with the corresponding pictures, as Facebook stores images separately from text. My task
-                was to match each picture with its context and ensure it fit seamlessly into the narrative of each post.
-              </Typography>
+              <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+                <Typography variant="h1" sx={{ textAlign: "center", fontWeight: "bold" }} gutterBottom>
+                  Analytics
+                </Typography>
+                <Typography>
+                  My father has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between points A and B, tracking his spending, and
+                  exploring various interesting facts about the world. I am thankful to have inherited this fascination with data, always seeking patterns and intriguing insights. As I was completing
+                  this site, I realized that I could uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
+                </Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", marginTop: 3 }} gutterBottom>
+                  Development Journey
+                </Typography>
+                <Typography>
+                  For the past 15 years, I've been developing websites, and as of 2023, I've had quite a journey. Admittedly, I'm not the most efficient coder out there, but I can quickly put together
+                  uncomplicated websites. This project, however, was different. With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process. My education didn't
+                  formally cover web design or computer engineering; instead, I learned by studying other people's code and adapting various examples to my needs. Over time, I've honed my skills in
+                  writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
+                </Typography>
+                <Typography sx={{ marginTop: 1 }}>
+                  While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods. ChatGPT was invaluable in this project, helping me
+                  complete it in just 17 days - a task that would have likely taken thrice as long without it. This efficiency was crucial, as I had set a deadline to present this site as a Christmas
+                  gift. Starting on November 27th, the clock was ticking. ChatGPT proved to be a game-changer, not just in software development but across various creative and technical industries.
+                </Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", marginTop: 1 }} gutterBottom>
+                  Content Journey
+                </Typography>
+                <Typography>
+                  After completing the coding, I shifted focus to content curation. Most of my time was spent sifting through his numerous Facebook posts to find relevant ones. Roughly, one out of
+                  every ten posts made it to this site. The challenge was in formatting these posts and aligning them with the corresponding pictures, as Facebook stores images separately from text.
+                  My task was to match each picture with its context and ensure it fit seamlessly into the narrative of each post.
+                </Typography>
+              </Paper>
             </Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <AnalyticsCard>
@@ -265,13 +278,15 @@ const StatisticsPage: React.FC = () => {
             </Grid>
             <Grid item xs={0} md={gridMedCols}></Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
-              <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
-                My Dad's Stats
-              </Typography>
-              <Typography>
-                I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most to me is that on average his posts are 832 words
-                long, but the longest post has over 3,000 words! That would be 7 pages single spaced and would have taken me two weeks to write in highschool/college.
-              </Typography>
+              <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+                <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
+                  My Dad's Stats
+                </Typography>
+                <Typography>
+                  I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most to me is that on average his posts are 832
+                  words long, but the longest post has over 3,000 words! That would be 7 pages single spaced and would have taken me two weeks to write in highschool/college.
+                </Typography>
+              </Paper>
             </Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <AnalyticsCard>
@@ -280,14 +295,16 @@ const StatisticsPage: React.FC = () => {
             </Grid>
             <Grid item xs={0} md={gridMedCols}></Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
-              <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
-                Emotions
-              </Typography>
-              <Typography>
-                Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning and Natural Language Processing to see what kind of interesting
-                info I might find. I was hoping I would find some interesting patterns or some correlations to events, but unfortunately there weren't any patterns I could see in the data. However, it
-                is still interesting to see what information can be extracted from a relatively small amount of text.
-              </Typography>
+              <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+                <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
+                  Emotions
+                </Typography>
+                <Typography>
+                  Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning (ML) and Natural Language Processing (NLP) to see what kind of
+                  interesting info I might find. I was hoping I would find some interesting patterns or some correlations to events, but unfortunately there weren't any patterns I could see in the
+                  data. However, it is still interesting to see what information can be extracted from a relatively small amount of text.
+                </Typography>
+              </Paper>
             </Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <AnalyticsCard>
@@ -295,6 +312,17 @@ const StatisticsPage: React.FC = () => {
               </AnalyticsCard>
             </Grid>
             <Grid item xs={0} md={gridMedCols}></Grid>
+            <Grid item xs={gridSmallCols} md={gridMedCols}>
+              <Paper sx={{ padding: 2, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+                <Typography variant="h5" sx={{ textAlign: "center" }} gutterBottom>
+                  Sentiment
+                </Typography>
+                <Typography>
+                  As with the emotions from the posts, I couldn't really find too many insights from the sentiments in the posts, but it's kinda interesting to read through the posts and see how the
+                  NLP was able to come up with some of the sentiment values (positive, negative, neutral)
+                </Typography>
+              </Paper>
+            </Grid>
             <Grid item xs={gridSmallCols} md={gridMedCols}>
               <AnalyticsCard>
                 <SentimentTimelineChart data={aggSentimentData} />
