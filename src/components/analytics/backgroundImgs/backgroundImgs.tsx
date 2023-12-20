@@ -20,7 +20,6 @@ const getRandomStyle = (): CSSProperties => {
   const rotation = Math.random() * 50 - 15; // Rotation range: -15 to 15 degrees
   const marginTop = 20 + Math.random() * 40; // Vertical margin range: 20px to 60px
   const marginRight = 20 + Math.random() * 100;
-  console.log("marginRight", marginRight);
   return {
     transform: `rotate(${rotation}deg)`,
     marginTop: `${marginTop}px`,

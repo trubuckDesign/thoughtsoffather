@@ -1,34 +1,62 @@
+import React from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
-import { SentimentData } from "../sentimentDataType";
-import { FC } from "react";
 
-interface sentimentDistProps {
+// Assuming SentimentData type is appropriate for your data structure
+import { SentimentData } from "../sentimentDataType";
+
+interface SentimentDistProps {
   data: SentimentData[];
 }
 
-export const SentimentDistributionPieChart: FC<sentimentDistProps> = ({ data }) => {
-  // Define a color mapping for each sentiment name
-  const colorMapping: { [key: string]: string } = {
-    neg_score: "#ff6347", // tomato
-    neu_score: "#ffd700", // gold
-    pos_score: "#90ee90", // lightgreen
-    compound_score: "#6a5acd", // slateblue
-    // Add more mappings for other entries if necessary
+export const SentimentDistributionPieChart: React.FC<SentimentDistProps> = ({ data }) => {
+  // Colors for each sentiment score
+  const colors = {
+    neg_score: "#ef5350", // red for negative
+    neu_score: "#ffee58", // yellow for neutral
+    pos_score: "#66bb6a", // green for positive
+    compound_score: "#42a5f5", // blue for compound
+    // Add more colors if needed
   };
 
-  // Transform data into suitable format for PieChart
-  // Assuming each data point is an object with 'name' and 'value' fields
-  const transformedData = data.map((entry) => ({
-    name: entry.title, // or other field that represents 'name'
-    value: entry.neg_score, // or other field that represents 'value'
-    // Adjust according to your data structure
+  // Calculate the total for each sentiment score
+  const sentimentTotals = data.reduce(
+    (totals, entry) => {
+      totals.neg_score += entry.neg_score;
+      totals.neu_score += entry.neu_score;
+      totals.pos_score += entry.pos_score;
+      totals.compound_score += entry.compound_score;
+      // Add other sentiments if needed
+      return totals;
+    },
+    {
+      neg_score: 0,
+      neu_score: 0,
+      pos_score: 0,
+      compound_score: 0,
+      // Initialize other sentiments to 0 if needed
+    }
+  );
+
+  // Transform totals into an array for the PieChart
+  const pieData = Object.keys(sentimentTotals).map((key) => ({
+    name: key,
+    value: sentimentTotals[key as keyof typeof sentimentTotals],
   }));
 
   return (
     <PieChart width={400} height={400}>
-      <Pie data={transformedData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-        {transformedData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={colorMapping[entry.name] || "#8884d8"} />
+      <Pie
+        data={pieData}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={120}
+        fill="#8884d8"
+        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+      >
+        {pieData.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={colors[entry.name as keyof typeof colors]} />
         ))}
       </Pie>
       <Tooltip />
