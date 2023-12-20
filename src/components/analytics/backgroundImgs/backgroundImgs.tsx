@@ -9,10 +9,11 @@ interface BackgroundImageContainerProps {
   layerFactor: number; // The factor for the ParallaxLayer
 }
 
-const baseSpeed = 2;
+const baseSpeed = 1;
 
 const getRandomSpeed = () => {
   const randomSpeed = Math.random() * baseSpeed + 1;
+  console.log("speed:", randomSpeed);
   return randomSpeed;
 };
 

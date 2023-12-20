@@ -18,6 +18,7 @@ import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
 import moment from "moment";
+import { AnimatedAnalyticsButton } from "@/components/buttons/floatAnalyticsButton";
 
 const POSTS_PER_PAGE = 3;
 interface batchDateRange {
@@ -124,6 +125,10 @@ const LandingPage = () => {
 
   const handleBookClick = () => {
     setOpen(!isOpen);
+  };
+
+  const openAnalytics = () => {
+    router.push("/analytics");
   };
 
   const navigateToSignIn = () => {
@@ -407,6 +412,7 @@ const LandingPage = () => {
             showContinuePrompt={showContinuePrompt}
             startFromBeginning={startFromBeginning}
           />
+          <AnimatedAnalyticsButton onClick={openAnalytics} />
           <AnimatedAboutButton onClick={toggleAboutDialog} />
           <AboutDialog setShowAbout={setIsAboutOpen} showAbout={isAboutOpen} />
         </Box>

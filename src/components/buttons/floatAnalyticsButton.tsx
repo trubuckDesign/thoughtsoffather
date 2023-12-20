@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { styled, useTheme } from "@mui/material/styles";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import { Tooltip } from "@mui/material";
 
 // Define a custom interface that extends IconButtonProps and includes the 'animate' prop
@@ -15,7 +15,7 @@ const AnimatedIconButton = styled(IconButton, {
 })<AnimatedIconButtonProps>(({ theme, animate }) => ({
   position: "fixed",
   bottom: "20px",
-  right: "20px",
+  right: "100px",
   animation: animate ? "float 3s ease-in-out infinite" : "none",
   boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.6)",
   backgroundColor: theme.palette.primary.main,
@@ -33,7 +33,7 @@ interface AnimatedButtonProps {
   onClick: () => void;
 }
 
-const AnimatedAboutButton: React.FC<AnimatedButtonProps> = ({ onClick }) => {
+export const AnimatedAnalyticsButton: React.FC<AnimatedButtonProps> = ({ onClick }) => {
   const theme = useTheme();
   const [animate, setAnimate] = useState(true);
 
@@ -46,17 +46,15 @@ const AnimatedAboutButton: React.FC<AnimatedButtonProps> = ({ onClick }) => {
   }, []);
 
   return (
-    <Tooltip title="View About Site" arrow>
+    <Tooltip title="View Analytics" arrow>
       <AnimatedIconButton
         color="primary"
         theme={theme}
         onClick={onClick}
         animate={animate} // Pass the animate state
       >
-        <QuestionMarkIcon style={{ fontSize: "3rem" }} />
+        <LeaderboardIcon style={{ fontSize: "3rem" }} />
       </AnimatedIconButton>
     </Tooltip>
   );
 };
-
-export default AnimatedAboutButton;
