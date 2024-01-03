@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Button, Drawer, Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Drawer, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
@@ -17,7 +17,6 @@ import { Moment } from "moment";
 import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
-import moment from "moment";
 import { AnimatedAnalyticsButton } from "@/components/buttons/floatAnalyticsButton";
 
 const POSTS_PER_PAGE = 3;
