@@ -191,7 +191,11 @@ const LandingPage = () => {
 
       const urlSafeStartDate = encodeURIComponent(batchDates.startDate.toISOString());
       const urlSafeEndDate = encodeURIComponent(batchDates.endDate.toISOString());
-      const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`);
+      const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`, {
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      });
       const data = await response.json();
       const newThoughts = data.posts;
       setThoughts((prev) => [...prev, ...newThoughts]);
