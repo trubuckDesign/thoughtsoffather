@@ -109,7 +109,7 @@ const LandingPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   const router = useRouter();
-  const startDate = new Date(Date.now() - 6 * 60 * 60 * 1000);
+  const startDate = new Date();
   const isPostListEmpty = thoughts.length === 0;
 
   const handleMonthToggle = (monthKey: string) => {
