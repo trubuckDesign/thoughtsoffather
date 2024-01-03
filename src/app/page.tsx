@@ -1,4 +1,5 @@
 "use client";
+export const revalidate = 0;
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box, Button, Drawer, Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import JournalButton from "@/components/buttons/journalButton";
