@@ -17,8 +17,9 @@ import { Moment } from "moment";
 import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
-import moment from "moment";
 import { AnimatedAnalyticsButton } from "@/components/buttons/floatAnalyticsButton";
+import { GetStaticProps } from "next";
+import fetchInitialPosts from "../lib/fetchInitialPosts";
 
 const POSTS_PER_PAGE = 3;
 interface batchDateRange {
@@ -85,10 +86,13 @@ export interface GroupedThoughts {
 export interface GroupedData {
   [key: string]: GroupedThoughts;
 }
+interface LandingPageProps {
+  initialPosts: Thoughts[]; // Adjust the type according to your data structure
+}
 
-const LandingPage = () => {
+const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
   const [isOpen, setOpen] = useState(false);
-  const [thoughts, setThoughts] = useState<Thoughts[]>([]);
+  const [thoughts, setThoughts] = useState<Thoughts[]>(initialPosts);
   const [isLoading, setIsLoading] = useState(false);
   const [showContinuePrompt, setShowContinuePrompt] = useState(false);
   const [showStartFromBeginningButton, setShowStartFromBeginningButton] = useState(false);
@@ -419,6 +423,17 @@ const LandingPage = () => {
       </Box>
     </BackgroundImageContainer>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const initialPosts = await fetchInitialPosts();
+
+  return {
+    props: {
+      initialPosts,
+    },
+    revalidate: 60, // Revalidate every 60 seconds for ISR
+  };
 };
 
 export default LandingPage;
