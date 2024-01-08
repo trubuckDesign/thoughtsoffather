@@ -157,25 +157,26 @@ const AddPostPage = () => {
                 setSelectedThought={setSelectedThought}
               />
             </Grid>
+            <Grid item xs={12}>
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: "center",
+                  width: "100%",
+                  padding: 1,
+                  marginBottom: 5,
+                  color: "black",
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                }}
+              >
+                To My Hero, I Love You. -Ryan
+              </Typography>
+            </Grid>
             {/* Optionally hide the last column on smaller screens */}
             <Grid item xs={0} sm={1}>
               {/* Content for the last column */}
             </Grid>
           </Grid>
-          <Typography
-            variant="h6"
-            sx={{
-              textAlign: "center",
-              width: "100%",
-              position: "absolute",
-              bottom: 10,
-              padding: 1,
-              color: "black",
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-            }}
-          >
-            To My Hero, I Love You. -Ryan
-          </Typography>
         </>
       )}
     </BackgroundImageContainer>

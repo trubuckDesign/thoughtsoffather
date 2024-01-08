@@ -41,8 +41,14 @@ const generalStats = [
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const totalActivity = commitData.reduce((sum, week) => sum + week.total, 0);
 const weeklyAverage = totalActivity / commitData.length;
-const mostActiveDayIndex = commitData.flatMap((week) => week.days).reduce((maxIndex, currentDay, currentIndex, days) => (currentDay > days[maxIndex] ? currentIndex : maxIndex), 0) % 7;
-const weekWithHighestActivity = commitData.reduce((maxWeek, currentWeek) => (currentWeek.total > maxWeek.total ? currentWeek : maxWeek), commitData[0]);
+const mostActiveDayIndex =
+  commitData
+    .flatMap((week) => week.days)
+    .reduce((maxIndex, currentDay, currentIndex, days) => (currentDay > days[maxIndex] ? currentIndex : maxIndex), 0) % 7;
+const weekWithHighestActivity = commitData.reduce(
+  (maxWeek, currentWeek) => (currentWeek.total > maxWeek.total ? currentWeek : maxWeek),
+  commitData[0]
+);
 
 const numberOfCommitDays = commitData.reduce((acc, week) => {
   // Count the number of days with non-zero commits in each week
@@ -215,10 +221,14 @@ const StatisticsPage: React.FC = () => {
     </Box>
   ) : (
     <>
+      <IconButton
+        color="primary"
+        onClick={onClick}
+        sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText, margin: 2 }}
+      >
+        <HomeIcon />
+      </IconButton>
       <Parallax id="ParallaxMain" pages={numPages}>
-        <IconButton color="primary" onClick={onClick} sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText, margin: 2 }}>
-          <HomeIcon />
-        </IconButton>
         <Grid container justifyContent="flex-end">
           {[...Array(layers)].map((_, layerIndex) => (
             <ParallaxImages
@@ -237,31 +247,37 @@ const StatisticsPage: React.FC = () => {
                   Analytics
                 </Typography>
                 <Typography>
-                  My dad has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between points A and B, tracking his spending, and exploring
-                  various interesting facts about the world. I am thankful to have inherited this fascination with data, always seeking patterns and intriguing insights. As I was completing this site,
-                  I realized that I could uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
+                  My dad has always loved statistics and data. For as long as I can remember, he was fascinated by measuring time intervals between
+                  points A and B, tracking his spending, and exploring various interesting facts about the world. I am thankful to have inherited this
+                  fascination with data, always seeking patterns and intriguing insights. As I was completing this site, I realized that I could
+                  uncover some fascinating facts about all of his posts. This realization led me to delve into the data more deeply.
                 </Typography>
                 <Typography variant="h5" sx={{ textAlign: "center", marginTop: 3 }} gutterBottom>
                   Development Journey
                 </Typography>
                 <Typography>
-                  For the past 15 years, I&apos;ve been developing websites, and as of 2023, I&apos;ve had quite a journey. Admittedly, I&apos;m not the most efficient coder out there, but I can
-                  quickly put together uncomplicated websites. This project, however, was different. With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process.
-                  My education didn&apos;t formally cover web design or computer engineering; instead, I learned by studying other people&apos;s code and adapting various examples to my needs. Over
-                  time, I&apos;ve honed my skills in writing efficient, clean, and maintainable code, often creating reusable snippets to save time.
+                  For the past 15 years, I&apos;ve been developing websites, and as of 2023, I&apos;ve had quite a journey. Admittedly, I&apos;m not
+                  the most efficient coder out there, but I can quickly put together uncomplicated websites. This project, however, was different.
+                  With the advent of ChatGPT in 2022, I was curious to see how it could aid my development process. My education didn&apos;t formally
+                  cover web design or computer engineering; instead, I learned by studying other people&apos;s code and adapting various examples to
+                  my needs. Over time, I&apos;ve honed my skills in writing efficient, clean, and maintainable code, often creating reusable snippets
+                  to save time.
                 </Typography>
                 <Typography sx={{ marginTop: 1 }}>
-                  While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods. ChatGPT was invaluable in this project, helping me
-                  complete it in just 17 days - a task that would have likely taken thrice as long without it. This efficiency was crucial, as I had set a deadline to present this site as a Christmas
-                  gift. Starting on November 27th, the clock was ticking. ChatGPT proved to be a game-changer, not just in software development but across various creative and technical industries.
+                  While some fear that tools like ChatGPT might replace software engineers, I believe they will rather transform our work methods.
+                  ChatGPT was invaluable in this project, helping me complete it in just 17 days - a task that would have likely taken thrice as long
+                  without it. This efficiency was crucial, as I had set a deadline to present this site as a Christmas gift. Starting on November
+                  27th, the clock was ticking. ChatGPT proved to be a game-changer, not just in software development but across various creative and
+                  technical industries.
                 </Typography>
                 <Typography variant="h5" sx={{ textAlign: "center", marginTop: 1 }} gutterBottom>
                   Content Journey
                 </Typography>
                 <Typography>
-                  After completing the coding, I shifted focus to content curation. Most of my time was spent sifting through his numerous Facebook posts to find relevant ones. Roughly, one out of
-                  every ten posts made it to this site. The challenge was in formatting these posts and aligning them with the corresponding pictures, as Facebook stores images separately from text.
-                  My task was to match each picture with its context and ensure it fit seamlessly into the narrative of each post.
+                  After completing the coding, I shifted focus to content curation. Most of my time was spent sifting through his numerous Facebook
+                  posts to find relevant ones. Roughly, one out of every ten posts made it to this site. The challenge was in formatting these posts
+                  and aligning them with the corresponding pictures, as Facebook stores images separately from text. My task was to match each picture
+                  with its context and ensure it fit seamlessly into the narrative of each post.
                 </Typography>
               </Paper>
             </Grid>
@@ -283,8 +299,9 @@ const StatisticsPage: React.FC = () => {
                   My Dad&apos;s Stats
                 </Typography>
                 <Typography>
-                  I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the most to me is that on average his posts are 832
-                  words long, but the longest post has over 3,000 words! That would be 7 pages single spaced and would have taken me two weeks to write in highschool/college.
+                  I went through and put together some general stats on his posts that I found interesting, and I think the one that stands out the
+                  most to me is that on average his posts are 832 words long, but the longest post has over 3,000 words! That would be 7 pages single
+                  spaced and would have taken me two weeks to write in highschool/college.
                 </Typography>
               </Paper>
             </Grid>
@@ -300,9 +317,10 @@ const StatisticsPage: React.FC = () => {
                   Emotions
                 </Typography>
                 <Typography>
-                  Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning (ML) and Natural Language Processing (NLP) to see what kind of
-                  interesting info I might find. I was hoping I would find some interesting patterns or some correlations to events, but unfortunately there weren&apos;t any patterns I could see in
-                  the data. However, it is still interesting to see what information can be extracted from a relatively small amount of text.
+                  Part of what I wanted to do with this project as well was learn a few new technologies, so I turned to Machine Learning (ML) and
+                  Natural Language Processing (NLP) to see what kind of interesting info I might find. I was hoping I would find some interesting
+                  patterns or some correlations to events, but unfortunately there weren&apos;t any patterns I could see in the data. However, it is
+                  still interesting to see what information can be extracted from a relatively small amount of text.
                 </Typography>
               </Paper>
             </Grid>
@@ -318,8 +336,9 @@ const StatisticsPage: React.FC = () => {
                   Sentiment
                 </Typography>
                 <Typography>
-                  As with the emotions from the posts, I couldn&apos;t really find too many insights from the sentiments in the posts, but it&apos;s kinda interesting to read through the posts and see
-                  how the NLP was able to come up with some of the sentiment values (positive, negative, neutral)
+                  As with the emotions from the posts, I couldn&apos;t really find too many insights from the sentiments in the posts, but it&apos;s
+                  kinda interesting to read through the posts and see how the NLP was able to come up with some of the sentiment values (positive,
+                  negative, neutral)
                 </Typography>
               </Paper>
             </Grid>

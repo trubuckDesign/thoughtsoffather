@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Button, Drawer, Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Drawer, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import JournalButton from "@/components/buttons/journalButton";
 import { CSSTransition } from "react-transition-group";
 import "../css/transitions.css";
@@ -56,7 +56,7 @@ function getBatchOfPosts(thoughts: Thought[], batchSize: number, isInitialLoad: 
   const batch = sortedThoughts.slice(startIndex, startIndex + batchSize);
   if (batch.length === 0) {
     // Handle case where there are no posts in the batch
-    return { startDate: new Date(), endDate: new Date() };
+    return { startDate: new Date(Date.now() + 24 * 60 * 60 * 1000), endDate: new Date() };
   }
 
   // Determine startDate and endDate
@@ -113,7 +113,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   const router = useRouter();
-  const startDate = new Date();
+  const startDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const isPostListEmpty = thoughts.length === 0;
 
   const handleMonthToggle = (monthKey: string) => {
@@ -195,7 +195,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
 
       const urlSafeStartDate = encodeURIComponent(batchDates.startDate.toISOString());
       const urlSafeEndDate = encodeURIComponent(batchDates.endDate.toISOString());
-      const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`);
+      const response = await fetch(`/api/thoughts?startDate=${urlSafeStartDate}&endDate=${urlSafeEndDate}&postPerPage=${POSTS_PER_PAGE}`, {
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      });
       const data = await response.json();
       const newThoughts = data.posts;
       setThoughts((prev) => [...prev, ...newThoughts]);
