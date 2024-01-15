@@ -43,14 +43,12 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
     // If the month is expanded, calculate its content height
     if (isExpanded && itemRefs.current[key]) {
       const newHeight = itemRefs.current[key]?.clientHeight || 0;
-      console.log("Expanded newHeight", newHeight);
       setExpandedHeights((prev) => ({
         ...prev,
         [key]: newHeight,
       }));
     } else {
       // If the month is collapsed, set the height to a default collapsed value
-      console.log("Collapsed height set to default for key:", key);
       setExpandedHeights((prev) => ({
         ...prev,
         [key]: defaultCollapseHeight, // Default collapsed height
@@ -118,7 +116,6 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
         const currentDate = moment(currentVisibleDate).date();
         const isExpanded = key === expandedMonth || key === currentMonthKey;
 
-        console.log("currentDate", currentDate, isExpanded, expandedMonth, "currentVisibleDate:", moment(currentVisibleDate).toDate, "currentMonthKey:", currentMonthKey);
         return (
           <React.Fragment key={`${year}-${month}`}>
             <TimelineItem
@@ -131,7 +128,9 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
               <TimelineSeparator sx={{ height: "auto" }}>
                 <TimelineDot sx={{ backgroundColor: "white" }} />
               </TimelineSeparator>
-              {index !== arr.length - 1 && <CustomConnector key={key} height={key === expandedMonth || key === currentMonthKey ? expandedHeights[key] : defaultCollapseHeight} />}
+              {index !== arr.length - 1 && (
+                <CustomConnector key={key} height={key === expandedMonth || key === currentMonthKey ? expandedHeights[key] : defaultCollapseHeight} />
+              )}
               <TimelineContent
                 sx={{
                   fontSize: "1.5rem",
