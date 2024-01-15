@@ -15,12 +15,14 @@ export async function GET(req: NextRequest) {
         createdAt: "desc",
       },
     });
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         posts,
       },
       { status: 200 }
     );
+    response.headers.set("Cache-Control", "no-store, max-age=0");
+    return response;
   } catch (error) {
     return NextResponse.json(
       {
