@@ -3,10 +3,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineDot, TimelineConnector, TimelineContent, TimelineOppositeContent } from "@mui/lab";
 
-import { GroupedData } from "@/app/page";
 import { Moment } from "moment";
 import moment from "moment";
 import { Box } from "@mui/material";
+import { GroupedData } from "../landingPage";
 
 interface TimelineBarProps {
   data: GroupedData;
@@ -118,16 +118,7 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
         const currentDate = moment(currentVisibleDate).date();
         const isExpanded = key === expandedMonth || key === currentMonthKey;
 
-        console.log(
-          "currentDate",
-          currentDate,
-          isExpanded,
-          expandedMonth,
-          "currentVisibleDate:",
-          moment(currentVisibleDate).toDate,
-          "currentMonthKey:",
-          currentMonthKey
-        );
+        console.log("currentDate", currentDate, isExpanded, expandedMonth, "currentVisibleDate:", moment(currentVisibleDate).toDate, "currentMonthKey:", currentMonthKey);
         return (
           <React.Fragment key={`${year}-${month}`}>
             <TimelineItem
@@ -140,9 +131,7 @@ const TimelineBar: React.FC<TimelineBarProps> = ({ data, currentVisibleDate, onD
               <TimelineSeparator sx={{ height: "auto" }}>
                 <TimelineDot sx={{ backgroundColor: "white" }} />
               </TimelineSeparator>
-              {index !== arr.length - 1 && (
-                <CustomConnector key={key} height={key === expandedMonth || key === currentMonthKey ? expandedHeights[key] : defaultCollapseHeight} />
-              )}
+              {index !== arr.length - 1 && <CustomConnector key={key} height={key === expandedMonth || key === currentMonthKey ? expandedHeights[key] : defaultCollapseHeight} />}
               <TimelineContent
                 sx={{
                   fontSize: "1.5rem",

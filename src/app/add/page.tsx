@@ -1,30 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Box,
-  CircularProgress,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Button,
-} from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Box, CircularProgress, Grid, List, ListItem, ListItemText, Typography, useMediaQuery, useTheme, Button } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
 
 import BackgroundImageContainer from "@/components/background/background";
 import PostEditor from "@/components/postEditor/postEditor";
-import { Thought } from "../page";
 import { Thoughts } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Thought } from "@/components/landingPage";
 
 const AddPostPage = () => {
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
@@ -122,11 +108,7 @@ const AddPostPage = () => {
               Home
             </Button>
           </Box>
-          <Grid
-            container
-            spacing={1}
-            sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1, marginTop: 5 }}
-          >
+          <Grid container spacing={1} sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1, marginTop: 5 }}>
             <Grid item xs={12} sm={4}>
               {isMobile ? (
                 <Accordion sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}>
@@ -137,25 +119,15 @@ const AddPostPage = () => {
                 </Accordion>
               ) : (
                 <>
-                  <Typography
-                    variant="h6"
-                    sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: 1.5, marginTop: 2, marginBottom: 1, color: "black" }}
-                  >
+                  <Typography variant="h6" sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: 1.5, marginTop: 2, marginBottom: 1, color: "black" }}>
                     Existing Posts
                   </Typography>
-                  <Box sx={{ overflowY: "auto", height: "70vh", backgroundColor: "rgba(255, 255, 255, 0.8)", color: "black" }}>
-                    {renderPostList()}
-                  </Box>
+                  <Box sx={{ overflowY: "auto", height: "70vh", backgroundColor: "rgba(255, 255, 255, 0.8)", color: "black" }}>{renderPostList()}</Box>
                 </>
               )}
             </Grid>
             <Grid item xs={12} sm={7}>
-              <PostEditor
-                existingTitle={selectedThought?.title}
-                existingContent={selectedThought?.content}
-                existingThoughtId={selectedThought?.thoughtId}
-                setSelectedThought={setSelectedThought}
-              />
+              <PostEditor existingTitle={selectedThought?.title} existingContent={selectedThought?.content} existingThoughtId={selectedThought?.thoughtId} setSelectedThought={setSelectedThought} />
             </Grid>
             <Grid item xs={12}>
               <Typography
