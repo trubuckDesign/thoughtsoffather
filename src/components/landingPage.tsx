@@ -18,8 +18,6 @@ import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
 import { AnimatedAnalyticsButton } from "@/components/buttons/floatAnalyticsButton";
-import { GetStaticProps } from "next";
-import fetchInitialPosts from "../lib/fetchInitialPosts";
 
 const POSTS_PER_PAGE = 3;
 interface batchDateRange {
@@ -256,9 +254,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
       }
     }
   }, [isTimelineDataLoaded]);
+
   useEffect(() => {
     if (thoughtSummary && lastVisibleCreatedDate) {
-      console.log("insidePage:", lastVisibleCreatedDate, currentVisibleDate);
       const visibleThought = thoughtSummary.find((thought) => new Date(thought.createdAt) === lastVisibleCreatedDate);
       if (visibleThought) {
         const visibleDate = new Date(visibleThought.createdAt);
@@ -427,17 +425,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
       </Box>
     </BackgroundImageContainer>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const initialPosts = await fetchInitialPosts();
-
-  return {
-    props: {
-      initialPosts,
-    },
-    revalidate: 60, // Revalidate every 60 seconds for ISR
-  };
 };
 
 export default LandingPage;
