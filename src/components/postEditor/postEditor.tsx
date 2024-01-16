@@ -99,7 +99,9 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
       }
       if (response.ok) {
         // Assuming post creation/updation is successful
-        const revalidateResponse = await fetch("/api/revalidate");
+        const secretToken = process.env.NEXT_PUBLIC_MY_SECRET_TOKEN; // Ensure this is set in your environment variables
+        const revalidateResponse = await fetch(`/api/revalidate?secret=${secretToken}`);
+
         if (!revalidateResponse.ok) {
           throw new Error("Revalidation failed");
         }
