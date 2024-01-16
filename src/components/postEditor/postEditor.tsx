@@ -97,6 +97,16 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
+      if (response.ok) {
+        // Assuming post creation/updation is successful
+        const revalidateResponse = await fetch("/api/revalidate");
+        if (!revalidateResponse.ok) {
+          throw new Error("Revalidation failed");
+        }
+
+        console.log("Revalidation successful");
+        // Rest of your success handling code
+      }
 
       const data = await response.json();
 
@@ -123,8 +133,14 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
     height: isMobile ? "80vh" : "68vh",
     width: isMobile ? "98vw" : "60vw",
     menubar: false,
-    plugins: ["advlist table media autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetimetable paste code help wordcount", "image"],
-    table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+    plugins: [
+      "advlist table media autolink lists link image charmap print preview anchor",
+      "searchreplace visualblocks code fullscreen",
+      "insertdatetimetable paste code help wordcount",
+      "image",
+    ],
+    table_toolbar:
+      "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
     table_responsive_width: true,
     toolbar: isMobile
       ? ["undo redo | formatselect | bold italic", "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image"]
@@ -146,13 +162,26 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
 
   return (
     <Box>
-      <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} margin="normal" sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }} />
+      <TextField
+        label="Title"
+        variant="outlined"
+        value={title}
+        onChange={handleTitleChange}
+        margin="normal"
+        sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }}
+      />
       {isLoading ? (
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
           <CircularProgress />
         </Box>
       ) : (
-        <Editor onInit={(evt, editor) => (editorRef.current = editor)} initialValue="" apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY} init={editorInitConfig} onEditorChange={handleEditorChange} />
+        <Editor
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          initialValue=""
+          apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
+          init={editorInitConfig}
+          onEditorChange={handleEditorChange}
+        />
       )}
       <Button variant="contained" sx={{ margin: 2 }} onClick={postThought}>
         {existingThoughtId ? "Update Thought" : "Post Thought"}
