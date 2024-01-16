@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 export async function GET(req: NextRequest) {
   // Check for a secret token to secure the endpoint
   const secret = req.nextUrl.searchParams.get("secret");
-  if (secret !== process.env.MY_SECRET_TOKEN) {
+  if (secret !== process.env.NEXT_PUBLIC_MY_SECRET_TOKEN) {
     return new NextResponse(JSON.stringify({ message: "Invalid token" }), { status: 401 });
   }
 
