@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
   try {
     // Trigger a revalidation of the homepage
     await revalidatePath("/");
+    await revalidatePath("/api/thoughts");
     return new NextResponse(JSON.stringify({ revalidated: true }), { status: 200 });
   } catch (error) {
     return new NextResponse(JSON.stringify({ message: "Error revalidating", error }), { status: 500 });
