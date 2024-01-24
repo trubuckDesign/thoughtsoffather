@@ -1,9 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { Accordion, AccordionSummary, AccordionDetails, Box, CircularProgress, Grid, List, ListItem, ListItemText, Typography, useMediaQuery, useTheme, Button } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  CircularProgress,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Button,
+  IconButton,
+  ListItemSecondaryAction,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import BackgroundImageContainer from "@/components/background/background";
 import PostEditor from "@/components/postEditor/postEditor";
@@ -16,6 +33,7 @@ const AddPostPage = () => {
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
   const [selectedThought, setSelectedThought] = useState<Thoughts | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPostLoading, setIsPostLoading] = useState<boolean>(false);
 
   const { data: session, status } = useSession();
   const sessionLoading = status === "loading";
@@ -59,22 +77,54 @@ const AddPostPage = () => {
     fetchTimelineData();
   }, []);
   const handleThoughtSelect = async (thoughtId: number) => {
+    setIsPostLoading(true);
     try {
       const response = await fetch(`/api/thoughts/${thoughtId}`);
       const thought: Thoughts = await response.json();
       setSelectedThought(thought);
     } catch (error) {
       console.error("Error fetching thought details:", error);
+    } finally {
+      setIsPostLoading(false);
     }
   };
   const navigateHome = () => {
     router.push("/"); // Navigates to the home page
   };
+  const handleDeleteThought = async (thoughtId: number) => {
+    if (!confirm("Are you sure you want to delete this thought?")) {
+      return; // Do nothing if the user cancels the confirmation dialog
+    }
+
+    try {
+      const response = await fetch(`/api/thoughts/${thoughtId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      // Update the list of thoughts after deletion
+      const updatedThoughts = thoughtSummary.filter((thought) => thought.thoughtId !== thoughtId);
+      setThoughtSummary(updatedThoughts);
+      alert("Thought deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete thought", error);
+      alert("There was an error deleting the thought");
+    }
+  };
+
   const renderPostList = () => (
     <List>
       {thoughtSummary.map((thought) => (
         <ListItem key={thought.thoughtId} button onClick={() => handleThoughtSelect(thought.thoughtId)}>
           <ListItemText primary={thought.title} secondary={new Date(thought.createdAt).toLocaleDateString()} />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteThought(thought.thoughtId)}>
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItem>
       ))}
     </List>
@@ -108,7 +158,11 @@ const AddPostPage = () => {
               Home
             </Button>
           </Box>
-          <Grid container spacing={1} sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1, marginTop: 5 }}>
+          <Grid
+            container
+            spacing={1}
+            sx={{ height: "100vh", overflow: "auto", marginRight: isMobile ? 2 : 0, marginLeft: isMobile ? 0 : 1, marginTop: 5 }}
+          >
             <Grid item xs={12} sm={4}>
               {isMobile ? (
                 <Accordion sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}>
@@ -119,15 +173,40 @@ const AddPostPage = () => {
                 </Accordion>
               ) : (
                 <>
-                  <Typography variant="h6" sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: 1.5, marginTop: 2, marginBottom: 1, color: "black" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", padding: 1.5, marginTop: 2, marginBottom: 1, color: "black" }}
+                  >
                     Existing Posts
                   </Typography>
-                  <Box sx={{ overflowY: "auto", height: "70vh", backgroundColor: "rgba(255, 255, 255, 0.8)", color: "black" }}>{renderPostList()}</Box>
+                  <Box sx={{ overflowY: "auto", height: "70vh", backgroundColor: "rgba(255, 255, 255, 0.8)", color: "black" }}>
+                    {renderPostList()}
+                  </Box>
                 </>
               )}
             </Grid>
             <Grid item xs={12} sm={7}>
-              <PostEditor existingTitle={selectedThought?.title} existingContent={selectedThought?.content} existingThoughtId={selectedThought?.thoughtId} setSelectedThought={setSelectedThought} />
+              {isPostLoading && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              <PostEditor
+                existingTitle={selectedThought?.title}
+                existingContent={selectedThought?.content}
+                existingThoughtId={selectedThought?.thoughtId}
+                existingCreatedAt={selectedThought?.createdAt}
+                setThoughtSummary={setThoughtSummary}
+                setSelectedThought={setSelectedThought}
+              />
             </Grid>
             <Grid item xs={12}>
               <Typography

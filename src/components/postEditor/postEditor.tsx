@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Box, Button, CircularProgress, TextField, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import { Thought } from "../landingPage";
 
 interface PostEditorProps {
   existingTitle?: string;
   existingContent?: string;
   existingThoughtId?: number;
+  existingCreatedAt?: Date;
+  setThoughtSummary: React.Dispatch<React.SetStateAction<Thought[]>>;
   setSelectedThought: React.Dispatch<
     React.SetStateAction<{
       thoughtId: number;
@@ -18,25 +21,21 @@ interface PostEditorProps {
   >;
 }
 
-const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent, existingThoughtId, setSelectedThought }) => {
+const PostEditor: React.FC<PostEditorProps> = ({
+  existingTitle,
+  existingContent,
+  existingThoughtId,
+  existingCreatedAt,
+
+  setThoughtSummary,
+  setSelectedThought,
+}) => {
   const [content, setContent] = useState<string>(existingContent || "");
   const [title, setTitle] = useState<string>(existingTitle || "");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [postDate, setPostDate] = useState<Date>(existingCreatedAt || new Date());
   const editorRef = useRef<any>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  useEffect(() => {
-    if (existingContent) {
-      setIsLoading(true);
-      if (editorRef.current) {
-        editorRef.current.setContent(existingContent, { format: "raw" });
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, [existingContent]);
   const handleEditorChange = (content: string) => {
     setContent(content);
   };
@@ -52,6 +51,22 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
   }
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
+  };
+  const postDateString = postDate.toISOString().split("T")[0];
+  const handlePostDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const updatedDate = new Date(event.target.value);
+      if (!isNaN(updatedDate.getTime())) {
+        // Check if the date is valid
+        setPostDate(updatedDate);
+      } else {
+        // Handle invalid date (e.g., set to current date or a default value)
+        setPostDate(new Date());
+      }
+    } catch (error) {
+      console.log("PostDateError", error);
+      // Optionally, handle the error case
+    }
   };
 
   const uploadImage = (blobInfo: BlobInfo, progress: (percent: number) => void): Promise<string> => {
@@ -82,7 +97,6 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
   };
   const postThought = async () => {
     try {
-      console.log("currentThought:", existingThoughtId);
       const method = existingThoughtId ? "PUT" : "POST";
       const url = existingThoughtId ? `/api/thoughts/${existingThoughtId}` : "/api/thoughts";
 
@@ -91,7 +105,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content, thoughtId: existingThoughtId }), // Include thoughtId if editing
+        body: JSON.stringify({ title, content, postDateString, thoughtId: existingThoughtId }), // Include thoughtId if editing
       });
 
       if (!response.ok) {
@@ -110,8 +124,15 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
         // Rest of your success handling code
       }
 
-      const data = await response.json();
+      const { newThought } = await response.json();
 
+      if (method === "POST") {
+        // Add the new thought to the thoughtSummary state
+        setThoughtSummary((prevThoughts) => [newThought, ...prevThoughts]);
+      } else {
+        // Update the existing thought in the thoughtSummary state
+        setThoughtSummary((prevThoughts) => prevThoughts.map((thought) => (thought.thoughtId === newThought.thoughtId ? newThought : thought)));
+      }
       setContent("");
       setTitle("");
       if (editorRef.current) {
@@ -126,6 +147,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
   const handleReset = () => {
     setContent("");
     setTitle("");
+    setPostDate(new Date());
     setSelectedThought(null);
     if (editorRef.current) {
       editorRef.current.setContent("");
@@ -161,6 +183,22 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
       setTitle(existingTitle);
     }
   }, [existingTitle]);
+  useEffect(() => {
+    if (existingCreatedAt) {
+      const newPostDate = new Date(existingCreatedAt);
+      if (!isNaN(newPostDate.getTime())) {
+        setPostDate(newPostDate);
+      }
+    }
+  }, [existingCreatedAt]);
+  useEffect(() => {
+    if (existingContent) {
+      if (editorRef.current) {
+        editorRef.current.setContent(existingContent, { format: "raw" });
+      }
+    } else {
+    }
+  }, [existingContent]);
 
   return (
     <Box>
@@ -172,19 +210,24 @@ const PostEditor: React.FC<PostEditorProps> = ({ existingTitle, existingContent,
         margin="normal"
         sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }}
       />
-      {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Editor
-          onInit={(evt, editor) => (editorRef.current = editor)}
-          initialValue=""
-          apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
-          init={editorInitConfig}
-          onEditorChange={handleEditorChange}
-        />
-      )}
+      <TextField
+        label="Post Date"
+        variant="outlined"
+        type="date"
+        name="PostedDate"
+        value={postDateString} // Use the string format of the date
+        onChange={handlePostDateChange}
+        sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", marginBottom: 1, width: isMobile ? "200px" : "250px" }}
+      />
+
+      <Editor
+        onInit={(evt, editor) => (editorRef.current = editor)}
+        initialValue=""
+        apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
+        init={editorInitConfig}
+        onEditorChange={handleEditorChange}
+      />
+
       <Button variant="contained" sx={{ margin: 2 }} onClick={postThought}>
         {existingThoughtId ? "Update Thought" : "Post Thought"}
       </Button>

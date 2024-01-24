@@ -39,3 +39,16 @@ export async function PUT(req: NextRequest, { params }: { params: { thoughtId: n
     return NextResponse.json({ message: "Unable to fetch messages", error }, { status: 500 });
   }
 }
+export async function DELETE(req: NextRequest, { params }: { params: { thoughtId: number } }) {
+  try {
+    const deletedThought = await prisma.thoughts.update({
+      data: { isExpired: true },
+      where: { thoughtId: Number(params.thoughtId) },
+    });
+
+    return NextResponse.json({ message: "Thought deleted successfully", deletedThought }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting thought:", error);
+    return NextResponse.json({ message: "Error deleting thought", error: error }, { status: 500 });
+  }
+}

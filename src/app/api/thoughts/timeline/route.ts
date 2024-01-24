@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
         createdAt: true,
         title: true,
       },
+      where: { isExpired: false },
       orderBy: { createdAt: "desc" },
     });
 
