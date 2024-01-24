@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { thoughtId: n
   }
 }
 export async function PUT(req: NextRequest, { params }: { params: { thoughtId: number } }) {
-  const { title, content } = await req.json();
+  const { title, content, createdAt } = await req.json();
 
   // Validate input
   if (!params.thoughtId || !title || !content) {
@@ -30,10 +30,11 @@ export async function PUT(req: NextRequest, { params }: { params: { thoughtId: n
       data: {
         title,
         content,
+        createdAt,
       },
     });
-
-    return NextResponse.json(updatedThought, { status: 200 });
+    console.log("updatedThought", updatedThought);
+    return NextResponse.json({ message: "Success", updatedThought }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Unable to fetch messages", error }, { status: 500 });

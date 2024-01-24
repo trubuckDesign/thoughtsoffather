@@ -105,7 +105,7 @@ const PostEditor: React.FC<PostEditorProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content, postDateString, thoughtId: existingThoughtId }), // Include thoughtId if editing
+        body: JSON.stringify({ title, content, createdAt: postDate, thoughtId: existingThoughtId }), // Include thoughtId if editing
       });
 
       if (!response.ok) {
@@ -124,14 +124,15 @@ const PostEditor: React.FC<PostEditorProps> = ({
         // Rest of your success handling code
       }
 
-      const { newThought } = await response.json();
+      const { newThought, updatedThought } = await response.json();
 
       if (method === "POST") {
         // Add the new thought to the thoughtSummary state
         setThoughtSummary((prevThoughts) => [newThought, ...prevThoughts]);
       } else {
         // Update the existing thought in the thoughtSummary state
-        setThoughtSummary((prevThoughts) => prevThoughts.map((thought) => (thought.thoughtId === newThought.thoughtId ? newThought : thought)));
+        console.log("newthought", updatedThought);
+        setThoughtSummary((prevThoughts) => prevThoughts.map((thought) => (thought.thoughtId === updatedThought.thoughtId ? updatedThought : thought)));
       }
       setContent("");
       setTitle("");
@@ -157,14 +158,8 @@ const PostEditor: React.FC<PostEditorProps> = ({
     height: isMobile ? "80vh" : "68vh",
     width: isMobile ? "98vw" : "60vw",
     menubar: false,
-    plugins: [
-      "advlist table media autolink lists link image charmap print preview anchor",
-      "searchreplace visualblocks code fullscreen",
-      "insertdatetimetable paste code help wordcount",
-      "image",
-    ],
-    table_toolbar:
-      "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+    plugins: ["advlist table media autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetimetable paste code help wordcount", "image"],
+    table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
     table_responsive_width: true,
     toolbar: isMobile
       ? ["undo redo | formatselect | bold italic", "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image"]
@@ -202,14 +197,7 @@ const PostEditor: React.FC<PostEditorProps> = ({
 
   return (
     <Box>
-      <TextField
-        label="Title"
-        variant="outlined"
-        value={title}
-        onChange={handleTitleChange}
-        margin="normal"
-        sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }}
-      />
+      <TextField label="Title" variant="outlined" value={title} onChange={handleTitleChange} margin="normal" sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", width: isMobile ? "95vw" : "60vw" }} />
       <TextField
         label="Post Date"
         variant="outlined"
@@ -220,13 +208,7 @@ const PostEditor: React.FC<PostEditorProps> = ({
         sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", marginBottom: 1, width: isMobile ? "200px" : "250px" }}
       />
 
-      <Editor
-        onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue=""
-        apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
-        init={editorInitConfig}
-        onEditorChange={handleEditorChange}
-      />
+      <Editor onInit={(evt, editor) => (editorRef.current = editor)} initialValue="" apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY} init={editorInitConfig} onEditorChange={handleEditorChange} />
 
       <Button variant="contained" sx={{ margin: 2 }} onClick={postThought}>
         {existingThoughtId ? "Update Thought" : "Post Thought"}
