@@ -28,6 +28,8 @@ import { Thoughts } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Thought } from "@/components/landingPage";
+import ShareIcon from "@mui/icons-material/Share";
+import ShareDialog from "@/components/dialogs/shareDialog";
 
 const AddPostPage = () => {
   const [thoughtSummary, setThoughtSummary] = useState<Thought[]>([]);
@@ -40,6 +42,14 @@ const AddPostPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
+
+  const [selectedShareThought, setSelectedShareThought] = useState<Thought | null>(null);
+  const [openShareDialog, setOpenShareDialog] = useState(false);
+
+  const handleShareThought = (thought: Thought) => {
+    setSelectedShareThought(thought);
+    setOpenShareDialog(true);
+  };
 
   useEffect(() => {
     if (sessionLoading) return;
@@ -121,6 +131,9 @@ const AddPostPage = () => {
         <ListItem key={thought.thoughtId} button onClick={() => handleThoughtSelect(thought.thoughtId)}>
           <ListItemText primary={thought.title} secondary={new Date(thought.createdAt).toLocaleDateString()} />
           <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="share" onClick={() => handleShareThought(thought)}>
+              <ShareIcon />
+            </IconButton>
             <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteThought(thought.thoughtId)}>
               <DeleteIcon />
             </IconButton>
@@ -229,6 +242,14 @@ const AddPostPage = () => {
             </Grid>
           </Grid>
         </>
+      )}
+      {selectedShareThought && (
+        <ShareDialog
+          open={openShareDialog}
+          onClose={() => setOpenShareDialog(false)}
+          shareUrl={`${window.location.origin}/posts/${selectedShareThought.thoughtId}`}
+          thoughtTitle={selectedShareThought.title}
+        />
       )}
     </BackgroundImageContainer>
   );
