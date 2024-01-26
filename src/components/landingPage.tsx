@@ -86,10 +86,11 @@ export interface GroupedData {
 }
 interface LandingPageProps {
   initialPosts: Thoughts[]; // Adjust the type according to your data structure
+  skipInitialSteps?: boolean; // New optional boolean prop
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
-  const [isOpen, setOpen] = useState(false);
+const LandingPage: React.FC<LandingPageProps> = ({ initialPosts, skipInitialSteps = false }) => {
+  const [isOpen, setOpen] = useState(skipInitialSteps ? true : false);
   const [thoughts, setThoughts] = useState<Thoughts[]>(initialPosts);
   const [isLoading, setIsLoading] = useState(false);
   const [showContinuePrompt, setShowContinuePrompt] = useState(false);
@@ -230,30 +231,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts }) => {
   }, [selectedDate]);
 
   useEffect(() => {
-    if (isTimelineDataLoaded) {
-      if (thoughtSummary.length > 0) {
-        const getInitialLoad = async () => {
-          const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
-          let lastReadPostDate: Date;
-          let isLocalStorageUsed: boolean = false;
-          if (lastReadPostDateStr !== "") {
-            isLocalStorageUsed = true;
-            lastReadPostDate = new Date(lastReadPostDateStr);
-            setLastVisibleCreatedDate(lastReadPostDate);
-          } else {
-            lastReadPostDate = new Date(thoughtSummary[0].createdAt);
-          }
+    if (!skipInitialSteps) {
+      if (isTimelineDataLoaded) {
+        if (thoughtSummary.length > 0) {
+          const getInitialLoad = async () => {
+            const lastReadPostDateStr: string = localStorage.getItem("lastReadDate") || "";
+            let lastReadPostDate: Date;
+            let isLocalStorageUsed: boolean = false;
+            if (lastReadPostDateStr !== "") {
+              isLocalStorageUsed = true;
+              lastReadPostDate = new Date(lastReadPostDateStr);
+              setLastVisibleCreatedDate(lastReadPostDate);
+            } else {
+              lastReadPostDate = new Date(thoughtSummary[0].createdAt);
+            }
 
-          if (isLocalStorageUsed) {
-            setShowContinuePrompt(true); // Show prompt if there's a last read post ID
-          } else {
-            await fetchMoreData(lastReadPostDate); // Initial data load
-          }
-        };
-        getInitialLoad();
+            if (isLocalStorageUsed) {
+              setShowContinuePrompt(true); // Show prompt if there's a last read post ID
+            } else {
+              await fetchMoreData(lastReadPostDate); // Initial data load
+            }
+          };
+          getInitialLoad();
+        }
       }
     }
-  }, [isTimelineDataLoaded]);
+  }, [isTimelineDataLoaded, skipInitialSteps]);
 
   useEffect(() => {
     if (thoughtSummary && lastVisibleCreatedDate) {

@@ -1,16 +1,11 @@
 "use client";
 // pages/[thoughtId].tsx
-import { withRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import LandingPage from "@/components/landingPage";
 import { Thoughts } from "@prisma/client";
-import { usePathname } from "next/navigation";
+import { Box, CircularProgress } from "@mui/material";
 
 export default function Page({ params }: { params: { thoughtId: string } }) {
-  console.log("pathname", params.thoughtId);
-  // const router = useRouter();
-  // const thoughtId = router.query.thoughtId;
   const [post, setPost] = useState<Thoughts | null>(null);
 
   async function fetchPostById(id: string): Promise<Thoughts | null> {
@@ -34,8 +29,20 @@ export default function Page({ params }: { params: { thoughtId: string } }) {
   }, [params.thoughtId]);
 
   if (!post) {
-    return <div>Loading...</div>; // Replace with your loading component
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
-  return <LandingPage initialPosts={[post]} />;
+  return <LandingPage initialPosts={[post]} skipInitialSteps={true} />;
 }
