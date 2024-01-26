@@ -1,5 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, Grid, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Thoughts } from "@prisma/client";
 import { useOnScreen } from "@/globalHooks/useOnScreen";
 import { debounce } from "lodash";
@@ -144,8 +157,19 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
         />
       </Card>
       <Dialog open={openShareDialog} onClose={() => setOpenShareDialog(false)}>
+        <DialogTitle>Share this Post</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} justifyContent="center">
+          <DialogContentText>Copy the link below to share:</DialogContentText>
+          <TextField
+            autoFocus
+            fullWidth
+            variant="outlined"
+            value={shareUrl}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 2 }}>
             <Grid item>
               <Button startIcon={<TwitterIcon />} variant="outlined" href={twitterShareUrl} target="_blank">
                 Twitter
