@@ -157,12 +157,12 @@ const ThoughtPage: React.FC<ThoughtPageProps> = React.memo(({ thought, setLastVi
               </Button>
             </Grid>
             <Grid item>
-              <Button startIcon={<EmailIcon />} variant="outlined" href={emailShareUrl}>
+              <Button startIcon={<EmailIcon />} variant="outlined" href={emailShareUrl} target="_blank">
                 Email
               </Button>
             </Grid>
             <Grid item>
-              <Button startIcon={<TextsmsIcon />} variant="outlined" href={textShareUrl}>
+              <Button startIcon={<TextsmsIcon />} variant="outlined" href={textShareUrl} target="_blank">
                 Text
               </Button>
             </Grid>
