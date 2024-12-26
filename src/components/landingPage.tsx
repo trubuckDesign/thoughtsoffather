@@ -316,8 +316,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts, skipInitialStep
  <Box
         sx={{
           position: "fixed",
-          top: isMobile ? 50 : -10, // Push down for `xs` screens
-          left: isMobile ? "50%" : undefined, // Center horizontally for `xs`
+          top: isMobile ? 10 : 10, // Push down for `xs` screens
+          left: isMobile ? "55%" : '10% ', // Center horizontally for `xs`
           transform: isMobile ? "translateX(-50%)" : undefined, // Center horizontally for `xs`
           right: isMobile ? undefined : -10, // Adjust right alignment for other screen sizes
           zIndex: 1500,
