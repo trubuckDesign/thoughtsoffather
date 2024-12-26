@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchResultsModal from "./searchResults";
 
@@ -10,6 +10,9 @@ export default function SearchBar() {
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -52,7 +55,7 @@ export default function SearchBar() {
         placeholder="Search thoughts..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown} // Listen for Enter key
+        onKeyDown={handleKeyDown}
         variant="outlined"
         sx={{
           flex: 1,
@@ -64,20 +67,34 @@ export default function SearchBar() {
           },
         }}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSearch}
-        startIcon={<SearchIcon />}
-        sx={{
-          marginLeft: 1,
-          height: "36px",
-          fontSize: "0.875rem",
-        }}
-        disabled={loading}
-      >
-        {loading ? "Searching..." : "Search"}
-      </Button>
+      {isMobile ? (
+        <IconButton
+          color="primary"
+          onClick={handleSearch}
+          sx={{
+            marginLeft: 1,
+            height: "36px",
+            width: "36px",
+          }}
+        >
+          <SearchIcon />
+        </IconButton>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSearch}
+          startIcon={<SearchIcon />}
+          sx={{
+            marginLeft: 1,
+            height: "36px",
+            fontSize: "0.875rem",
+          }}
+          disabled={loading}
+        >
+          {loading ? "Searching..." : "Search"}
+        </Button>
+      )}
 
       {/* Render the modal */}
       <SearchResultsModal

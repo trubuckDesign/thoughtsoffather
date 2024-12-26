@@ -313,15 +313,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts, skipInitialStep
 
   return (
     <BackgroundImageContainer>
-       <Box
+ <Box
         sx={{
           position: "fixed",
-          top: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
+          top: isMobile ? 50 : -10, // Push down for `xs` screens
+          left: isMobile ? "50%" : undefined, // Center horizontally for `xs`
+          transform: isMobile ? "translateX(-50%)" : undefined, // Center horizontally for `xs`
+          right: isMobile ? undefined : -10, // Adjust right alignment for other screen sizes
           zIndex: 1500,
-          width: "90%",
-          maxWidth: 600,
         }}
       >
         <SearchBar />
