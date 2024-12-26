@@ -18,6 +18,7 @@ import AboutDialog from "@/components/dialogs/aboutDialog";
 import AnimatedAboutButton from "@/components/buttons/floatAboutButton";
 import { useRouter } from "next/navigation";
 import { AnimatedAnalyticsButton } from "@/components/buttons/floatAnalyticsButton";
+import SearchBar from "./searchBar/searchBar";
 
 const POSTS_PER_PAGE = 3;
 interface batchDateRange {
@@ -312,6 +313,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ initialPosts, skipInitialStep
 
   return (
     <BackgroundImageContainer>
+       <Box
+        sx={{
+          position: "fixed",
+          top: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1500,
+          width: "90%",
+          maxWidth: 600,
+        }}
+      >
+        <SearchBar />
+      </Box>
+
       <Box
         sx={{
           position: "fixed",

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -78,4 +75,13 @@ model Thoughts {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isExpired Boolean  @default(false)
+}
+
+/// Note: This model uses an expression index `chunk_content_search_idx` on `to_tsvector`.
+model ThoughtsChunks {
+  chunkId      Int     @id @default(autoincrement())
+  thoughtId    Int
+  chunkContent String
+
+  @@index([chunkContent], name: "chunk_content_search_idx") // Document for reference
 }
